@@ -594,18 +594,19 @@ def query_stock_holders(store: SQLiteStore, args: dict) -> ToolResult:
             extra_where += " AND s.asset_type = :_asset_type"
         sql = f"""
             SELECT h.fund_code AS 基金代码, s.fund_name AS 基金名称,
-                   s.fund_company AS 基金公司, s.asset_type AS 资产类型,
-                   ROUND(h.holding_value / 1e8, 4) AS 持仓规模_亿,
+                   h.stock_name AS 股票名称,
                    ROUND(h.nav_ratio, 2) AS 净值占比_pct,
+                   ROUND(h.holding_value / 1e8, 4) AS 持仓规模_亿,
+                   s.fund_company AS 基金公司, s.asset_type AS 资产类型,
                    ROUND(s.fund_size, 2) AS 基金规模_亿
             FROM fund_holding h
             JOIN fund_size s ON h.fund_code = s.fund_code AND h.date = s.date
             WHERE h.date = :_date AND {stock_clause} {extra_where}
-            ORDER BY h.holding_value DESC LIMIT :_top_n
+            ORDER BY h.nav_ratio DESC LIMIT :_top_n
         """
         df = store.query_df(sql, params)
         tables["fund_stock_holding"] = df_to_records(df)
-        notes += [f"股票关键词：{stock_keyword}", f"基金公司：{fund_company or '全市场'}"]
+        notes += [f"股票：{stock_keyword}", f"排序：净值占比（高→低）", f"基金公司：{fund_company or '全市场'}"]
     else:
         # 无股票关键词 → 全市场股票持仓排名
         sql = """

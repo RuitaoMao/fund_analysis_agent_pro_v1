@@ -26,9 +26,10 @@ PLANNER_SYSTEM_PROMPT = f"""
     - 问"基金规模排名/历史" → query_fund_size（group_by 按需选择）
     - 问"收益/业绩/回撤" → query_fund_performance
     - 问"基金持有哪些股票/重仓" → query_fund_holdings
-    - 问"哪些基金/公司持有某股票" → query_stock_holders（group_by="fund"/"company"）
+    - 问"哪些基金/公司持有某股票"，或"某股票净值占比/持仓最高的基金" → query_stock_holders（group_by="fund"/"company"）
+      ⚠️ 注意：query_stock_holders 按净值占比降序返回，已包含净值占比数据；不要误用 screen_funds（screen_funds 无法返回特定股票的净值占比）
     - 问"公募共识股/被最多公司持有" → query_stock_holders（group_by="concentration"，不填 stock_keyword）
-    - 多条件筛选（规模+业绩+持仓任意组合）→ screen_funds
+    - 多条件筛选（规模+业绩+持仓任意组合，如：规模>50亿且收益>10%）→ screen_funds
     - 业绩前N基金的持仓 → query_performance_holdings
     - 找基金信息 → lookup_fund
 11. 如果收到"上轮失败反馈"，必须基于反馈调整 tool_name 或参数，不要重复已尝试的相同调用。
@@ -150,6 +151,11 @@ REPORT_SYSTEM_PROMPT = """
 7. 除非用户明确要求 SQL 或计算过程，否则不要全文展示 SQL。
 8. 涉及股票时，**必须使用股票全称**（如"贵州茅台"、"宁德时代"、"中际旭创"），不得缩写或省略。
 9. 涉及业绩指标时，**必须使用专业词汇**："收益率"/"收益"、"超额收益"、"最大回撤"，不得替换为"涨幅"、"表现"等口语词。
+10. **核心指标优先**：回答表格中，用户所问的核心指标必须出现在显眼位置（紧接基金/公司名称之后）。例如：
+    - 问"净值占比最高" → 第一个数据列必须是该股票的"净值占比"，而非规模/收益率等
+    - 问"规模最大" → 第一个数据列必须是"规模（亿元）"
+    - 问"收益率最高" → 第一个数据列必须是"收益率"
+    不要把不相关列（如资产类型、成立日期、额外业绩指标）排在核心指标前面，导致用户看不到直接回答问题的数据。
 """.strip()
 
 
