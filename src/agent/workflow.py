@@ -19,7 +19,7 @@ from src.agent.report_writer import ReportWriterAgent
 from src.agent.self_check import SelfCheckAgent
 from src.agent.memory import MemoryStore
 from src.agent.tool_router import ToolRouter
-from src.agent.sql_generation import GeneratedSQLAgent, generated_sql_answer, sql_plan_to_agent_plan
+from src.agent.sql_generation import GeneratedSQLAgent, sql_plan_to_agent_plan
 from src.utils.table_utils import df_to_records
 
 
@@ -498,31 +498,47 @@ class FundAgentWorkflow:
             observation=f"{marker} next_action={requested}, sql_retry_count={retry_count}, max_steps={max_steps}",
         )
 
-    def sql_report_writer_node(self, state: AgentState) -> AgentState:
-        sql = state.get("generated_sql", "")
+    def analytical_report_writer_node(self, state: AgentState) -> AgentState:
+        """统一分析报告写作节点（Branch 2）。
+
+        服务 hard tools 路径和 generated SQL 路径：
+        - hard 路径：tool_result 来自工具执行器，generated_sql 为空。
+        - sql 路径：tool_result 来自 SQL 执行器，generated_sql 含 SQL 字符串。
+
+        三阶段流水线（llm 模式）：
+        1. 技能选择 → 默认大纲（report_skills，规则驱动）
+        2. Outliner LLM → 调整大纲（OUTLINER_SYSTEM_PROMPT，失败回退到技能大纲）
+        3. Drafter LLM → 撰写完整中文分析报告（DRAFTER_SYSTEM_PROMPT）
+
+        mock 模式：只用技能大纲 + 数据表格，不调用 LLM。
+        """
         result = state.get("tool_result")
+        generated_sql = state.get("generated_sql", "")
+
         if result is None:
-            answer = "生成 SQL 模式未能得到可用结果。"
-        elif state.get("mode", "mock") == "mock":
-            answer = generated_sql_answer(state["query"], sql, result)
+            answer = "未能得到可用结果，请尝试换一种提问方式或放宽查询条件。"
         else:
-            # Generated SQL 分支也交给 Report Writer LLM 生成最终表达；
-            # SQL 只作为证据和口径进入 prompt，不让模板直接把 list/raw SQL 堆给用户。
             answer = self.report_writer.write(
                 query=state["query"],
-                plan=state["plan"],
                 tool_result=result,
-                plan_validation=None,
-                result_validation=None,
+                generated_sql=generated_sql,
+                result_validation=state.get("result_validation"),
                 mode=state.get("mode", "mock"),
             )
+
         state = {**state, "draft_answer": answer, "next_action": "final"}
+        skill_type = getattr(self.report_writer, "last_skill_type", "?") or "?"
+        outline_source = getattr(self.report_writer, "last_outline_source", "?") or "?"
+        is_sql = bool(generated_sql)
         return _append_trace(
             state,
-            node="sql_report_writer_node",
-            thought="把生成 SQL、查询结果和数据口径说明整理成用户可读输出。",
-            action="generated_sql_answer()" if state.get("mode", "mock") == "mock" else "ReportWriterAgent.write(generated_sql_result)",
-            observation=f"[SQL] draft_answer_length={len(answer)}",
+            node="analytical_report_writer_node",
+            thought="技能 → Outliner LLM → Drafter LLM 三阶段（hard/SQL 双路径统一）。",
+            action=f"AnalyticalReportWriter.write(sql={'yes' if is_sql else 'no'})",
+            observation=(
+                f"skill={skill_type}, outline_source={outline_source}, "
+                f"sql={'yes' if is_sql else 'no'}, draft_length={len(answer)}"
+            ),
         )
 
     def result_validator_node(self, state: AgentState) -> AgentState:
@@ -590,22 +606,8 @@ class FundAgentWorkflow:
         )
 
     def report_writer_node(self, state: AgentState) -> AgentState:
-        answer = self.report_writer.write(
-            query=state["query"],
-            plan=state["plan"],
-            tool_result=state.get("tool_result"),
-            plan_validation=state.get("plan_validation"),
-            result_validation=state.get("result_validation"),
-            mode=state.get("mode", "mock"),
-        )
-        state = {**state, "draft_answer": answer, "next_action": "final"}
-        return _append_trace(
-            state,
-            node="report_writer_node",
-            thought="把工具结果转换成用户可读的中文结果或分析报告。",
-            action="ReportWriterAgent.write()",
-            observation=f"draft_answer_length={len(answer)}",
-        )
+        """Hard tools 路径出口（委托给 analytical_report_writer_node）。"""
+        return self.analytical_report_writer_node(state)
 
     def self_check_node(self, state: AgentState) -> AgentState:
         check = self.self_checker.check(
@@ -904,7 +906,7 @@ class FundAgentWorkflow:
                 state = self.sql_executor_node(state)
                 state = self.sql_result_validator_node(state)
                 if self.route_after_sql_result_validation(state) == "report":
-                    state = self.sql_report_writer_node(state)
+                    state = self.analytical_report_writer_node(state)
                     state = self.self_check_node(state)
                     if self.route_after_self_check(state) == "revise":
                         state = self.revise_report_node(state)
@@ -914,6 +916,12 @@ class FundAgentWorkflow:
                 if _r == "fallback_hard":           # C fallback
                     state = {**state, "sql_mode": "hard"}
                     return self.run_linear(state)
+                if _r == "sql_report":              # reflect 决定直接报告
+                    state = self.analytical_report_writer_node(state)
+                    state = self.self_check_node(state)
+                    if self.route_after_self_check(state) == "revise":
+                        state = self.revise_report_node(state)
+                    return self.save_context_node(state)
                 if _r != "sql_planner":
                     state = self.fail_node(state)
                     return self.save_context_node(state)
@@ -974,6 +982,7 @@ class FundAgentWorkflow:
         graph.add_node("result_validator_node", self.result_validator_node)
         graph.add_node("reflect_node", self.reflect_node)
         graph.add_node("report_writer_node", self.report_writer_node)
+        graph.add_node("analytical_report_writer_node", self.analytical_report_writer_node)
         graph.add_node("self_check_node", self.self_check_node)
         graph.add_node("revise_report_node", self.revise_report_node)
         graph.add_node("save_context_node", self.save_context_node)
@@ -985,7 +994,6 @@ class FundAgentWorkflow:
         graph.add_node("sql_executor_node", self.sql_executor_node)
         graph.add_node("sql_result_validator_node", self.sql_result_validator_node)
         graph.add_node("sql_reflect_node", self.sql_reflect_node)
-        graph.add_node("sql_report_writer_node", self.sql_report_writer_node)
 
         graph.add_edge(START, "load_context_node")
         graph.add_edge("load_context_node", "complexity_classifier_node")
@@ -1060,19 +1068,19 @@ class FundAgentWorkflow:
         graph.add_conditional_edges(
             "sql_result_validator_node",
             self.route_after_sql_result_validation,
-            {"report": "sql_report_writer_node", "reflect": "sql_reflect_node"},
+            {"report": "analytical_report_writer_node", "reflect": "sql_reflect_node"},
         )
         graph.add_conditional_edges(
             "sql_reflect_node",
             self.route_after_sql_reflect,
             {
                 "sql_planner": "sql_planner_node",
-                "sql_report": "sql_report_writer_node",
+                "sql_report": "analytical_report_writer_node",
                 "fail": "fail_node",
                 "fallback_hard": "planner_node",   # C fallback: generated SQL → hard tools
             },
         )
-        graph.add_edge("sql_report_writer_node", "self_check_node")
+        graph.add_edge("analytical_report_writer_node", "self_check_node")
 
         if checkpointer is not None:
             return graph.compile(checkpointer=checkpointer)

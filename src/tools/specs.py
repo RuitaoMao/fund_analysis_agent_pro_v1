@@ -205,6 +205,30 @@ TOOL_SPECS: list[ToolSpec] = [
         ],
     ),
     ToolSpec(
+        name="query_market_overview",
+        description="全市场概览查询：返回总规模、各资产类型规模分布、头部基金公司排名。适合竞争格局和市场分析类问题。",
+        when_to_use=[
+            "用户问全市场/公募基金整体规模、结构、格局。",
+            "用户问某季度/某时点的公募基金竞争格局、行业整体情况。",
+            "用户想了解整个市场的基金公司排名、头部公司。",
+            "分析时需要市场背景数据作为参照（可与其他工具组合使用）。",
+        ],
+        args_schema={
+            "date": "string|null，快照日期，如 2026-03-31；null 使用最新日期。",
+            "top_n": "integer，头部公司展示数量，默认 10，最大 20。",
+        },
+        output_description=(
+            "三张表：market_total（全市场汇总：基金总数/公司数/总规模），"
+            "size_by_asset_type（各资产类型规模和市场占比），"
+            "top_companies（头部公司规模排名和市场份额）。"
+        ),
+        examples=[
+            "一季度末公募基金规模竞争格局",
+            "全市场基金公司规模排名",
+            "各类型基金的市场规模占比",
+        ],
+    ),
+    ToolSpec(
         name="lookup_fund",
         description="按基金代码或名称关键词检索基金基础信息。",
         when_to_use=[

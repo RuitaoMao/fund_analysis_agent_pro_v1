@@ -1,200 +1,311 @@
-"""Report Writer Agent。
+"""分析报告写作器（Branch 2 全量重构 + 真正的两阶段 LLM 流水线）。
 
-Report Writer 的职责是把 ToolResult 转成用户可读的中文答案。
-mock 模式使用模板；llm 模式可调用真实 LLM。
+设计：
+- mock 模式：技能 → 大纲框架 + 数据表格，不调用 LLM。
+- llm 模式（两阶段）：
+    Stage 1 (Outliner LLM): 技能模板作为建议 → LLM 输出 JSON 大纲（ReportOutline）
+                            outliner 失败时回退到技能模板大纲
+    Stage 2 (Drafter LLM):  大纲 + 工具数据 + 市场快照上下文 → 完整中文分析报告
+
+- 市场快照（market_snapshot）作为免费上下文：
+  即使 planner 没显式调用 query_market_overview，写作器也会从预计算表里捞总规模、
+  资产类型分布、头部公司，注入到 Drafter prompt，让竞争格局类报告有市场参照。
+
+ReportWriterAgent 保留原类名，与 app.py / workflow.py 现有构造器兼容。
 """
 
 from __future__ import annotations
 
-from src.agent.schemas import AgentPlan, ToolResult, ValidationResult
+import json
+from typing import Any
+
+from src.agent.report_skills import select_skill
+from src.agent.schemas import ReportOutline, ReportSection, ToolResult
 from src.llm.client import LLMClient
-from src.llm.prompts import REPORT_SYSTEM_PROMPT
+from src.llm.prompts import DRAFTER_SYSTEM_PROMPT, OUTLINER_SYSTEM_PROMPT
+from src.utils.json_utils import extract_json_object
 from src.utils.table_utils import records_to_markdown
 
 
 class ReportWriterAgent:
-    """报告写作子智能体。"""
+    """分析报告写作子智能体（技能 + Outliner LLM + Drafter LLM 两阶段）。"""
 
-    def __init__(self, llm_client: LLMClient | None = None):
+    def __init__(self, llm_client: LLMClient | None = None, store=None):
         self.llm_client = llm_client
+        self.store = store
+        # 暴露给 workflow 节点用于 trace / 可观测性
+        self.last_skill_type: str | None = None
+        self.last_outline_source: str | None = None  # "skill" | "llm_outliner"
+
+    # ──────────────────────────────────────────────────────────────────
+    # 对外接口
+    # ──────────────────────────────────────────────────────────────────
 
     def write(
         self,
         *,
         query: str,
-        plan: AgentPlan,
         tool_result: ToolResult | None,
-        plan_validation: ValidationResult | None,
-        result_validation: ValidationResult | None,
+        generated_sql: str = "",
         mode: str = "mock",
+        # 兼容旧调用方
+        plan=None,
+        plan_validation=None,
+        result_validation=None,
     ) -> str:
-        """生成回答。"""
-        if plan.need_clarification:
-            return plan.clarification_question or "请补充您的问题。"
+        """生成分析报告。
 
+        Parameters
+        ----------
+        query           用户原始问题。
+        tool_result     工具结果（ToolResult）；None 时返回友好错误提示。
+        generated_sql   生成 SQL 路径时的 SQL 字符串，用于口径说明。
+        mode            "mock" | "llm"；mock 不调用 LLM。
+        """
         if tool_result is None:
-            issues = plan_validation.issues if plan_validation else []
-            return "当前问题无法执行。\n\n" + "\n".join(f"- {x}" for x in issues)
+            self.last_skill_type = None
+            self.last_outline_source = None
+            return "未能得到可用结果，请尝试换一种提问方式或放宽查询条件。"
+
+        skill = select_skill(query, tool_result)
+        skill_outline = skill.outline(query, tool_result)
+        self.last_skill_type = skill.skill_type
+
+        # 加载市场快照作为免费上下文（写报告时可用）
+        market_context = self._load_market_context()
 
         if mode == "mock":
-            return self._template_report(query, plan, tool_result, result_validation)
-        return self._llm_report(query, plan, tool_result, result_validation)
+            self.last_outline_source = "skill"
+            return self._mock_report(query, tool_result, skill_outline, generated_sql, result_validation)
 
-    def _llm_report(self, query: str, plan: AgentPlan, tool_result: ToolResult, result_validation: ValidationResult | None) -> str:
-        if self.llm_client is None:
-            raise RuntimeError("LLMClient 未初始化。")
-        user_prompt = (
-            f"用户问题：{query}\n\n"
-            f"Planner 计划：{plan.model_dump()}\n\n"
-            f"工具结果：{tool_result.model_dump()}\n\n"
-            f"结果校验：{result_validation.model_dump() if result_validation else None}\n\n"
-            "请生成中文回答。要求：\n"
-            "- 不要把 Python list/dict 原样贴给用户。\n"
-            "- 如有结构化结果，优先整理成 Markdown 表格。\n"
-            "- 除非用户明确要求 SQL 或计算过程，否则不要全文展示 SQL；只在口径说明中简要说明数据来自哪个表、如何聚合/筛选。\n"
-            "- 如果是 Generated SQL 结果，可以说明 SQL 已通过只读白名单校验和 dry run。\n"
-        )
-        return self.llm_client.chat(
-            role="report",
-            system_prompt=REPORT_SYSTEM_PROMPT,
-            user_prompt=user_prompt,
-            json_mode=False,
-            temperature=0.2,
-            max_tokens=1800,
-        )
+        # LLM 模式：先 Outliner → 再 Drafter
+        outline = self._outline_with_llm(query, tool_result, skill_outline)
+        return self._draft_with_llm(query, tool_result, outline, generated_sql, market_context)
 
-    def _template_report(
+    # ──────────────────────────────────────────────────────────────────
+    # 市场快照上下文
+    # ──────────────────────────────────────────────────────────────────
+
+    def _load_market_context(self) -> dict[str, Any] | None:
+        if self.store is None:
+            return None
+        try:
+            from src.data.market_snapshot import load_market_snapshot
+            return load_market_snapshot(self.store)
+        except Exception:
+            return None
+
+    # ──────────────────────────────────────────────────────────────────
+    # Stage 1: Outliner
+    # ──────────────────────────────────────────────────────────────────
+
+    def _outline_with_llm(
         self,
         query: str,
-        plan: AgentPlan,
-        result: ToolResult,
-        result_validation: ValidationResult | None,
-    ) -> str:
-        """模板报告，方便 mock 测试。"""
-        if result.tool_name == "get_top_funds_by_size":
-            table = records_to_markdown(result.tables.get("fund_size_ranking", []), max_rows=20)
-            return self._with_notes("以下为指定口径下基金规模排名：", table, result, result_validation)
+        tool_result: ToolResult,
+        skill_outline: ReportOutline,
+    ) -> ReportOutline:
+        """LLM Outliner：以技能大纲为建议，输出最终 ReportOutline。
 
-        if result.tool_name == "get_top_stocks_by_holding":
-            table = records_to_markdown(result.tables.get("stock_holding_ranking", []), max_rows=20)
-            return self._with_notes("以下为股票持仓规模排名：", table, result, result_validation)
+        失败时回退到 skill_outline，保证 Drafter 一定有大纲可用。
+        """
+        if self.llm_client is None:
+            self.last_outline_source = "skill"
+            return skill_outline
 
-        if result.tool_name == "multi_tool":
-            parts = ["## 多工具综合分析结果"]
-            for table_name, rows in result.tables.items():
-                parts.extend([f"\n### {table_name}", records_to_markdown(rows, max_rows=50)])
-            return self._with_notes("\n".join(parts), "", result, result_validation)
+        # 给 LLM 简洁的数据摘要（避免大表撑爆 outliner 的 token 预算）
+        data_summary = self._summarize_tables_for_outliner(tool_result)
+        skill_template_json = json.dumps(skill_outline.model_dump(), ensure_ascii=False, indent=2)
 
-        if result.tool_name == "get_company_total_size":
-            total = records_to_markdown(result.tables.get("company_total_size", []), max_rows=20)
-            structure = records_to_markdown(result.tables.get("asset_structure", []), max_rows=50)
-            body = (
-                "## 基金公司总规模\n\n"
-                "### 1. 公司总规模\n\n"
-                f"{total}\n\n"
-                "### 2. 资产类型拆分\n\n"
-                f"{structure}"
+        user_prompt = (
+            f"用户问题：{query}\n\n"
+            f"工具结果摘要（每张表只展示前 3 行 + 列名 + 行数）：\n{data_summary}\n\n"
+            f"默认技能模板（建议保留 70% 以上结构）：\n{skill_template_json}\n\n"
+            "请输出最终大纲 JSON。"
+        )
+
+        try:
+            raw = self.llm_client.chat(
+                role="report",
+                system_prompt=OUTLINER_SYSTEM_PROMPT,
+                user_prompt=user_prompt,
+                json_mode=True,
+                temperature=0.1,
+                max_tokens=1200,
             )
-            return self._with_notes(body, "", result, result_validation)
+            parsed = extract_json_object(raw) if raw else None
+            if not parsed:
+                raise ValueError("outliner returned empty / unparseable JSON")
 
-        if result.tool_name == "list_company_funds_by_size":
-            summary = records_to_markdown(result.tables.get("company_summary", []), max_rows=20)
-            funds = records_to_markdown(result.tables.get("company_funds", []), max_rows=50)
-            body = (
-                "## 基金公司旗下基金规模明细\n\n"
-                "### 1. 公司汇总\n\n"
-                f"{summary}\n\n"
-                "### 2. 基金代码/份额明细\n\n"
-                f"{funds}"
+            sections = [
+                ReportSection(
+                    title=str(s.get("title", "")).strip() or "未命名章节",
+                    analytical_angles=[str(a) for a in (s.get("analytical_angles") or [])],
+                )
+                for s in (parsed.get("sections") or [])
+            ]
+            if not sections:
+                raise ValueError("outliner returned no sections")
+
+            outline = ReportOutline(
+                skill_type=str(parsed.get("skill_type") or skill_outline.skill_type),
+                direct_answer=parsed.get("direct_answer") or None,
+                sections=sections,
             )
-            return self._with_notes(body, "", result, result_validation)
-
-        if result.tool_name == "get_company_size_trend":
-            table = records_to_markdown(result.tables.get("company_size_trend", []), max_rows=50)
-            return self._with_notes("## 基金公司规模变化趋势", table, result, result_validation)
-
-        if result.tool_name == "get_fund_size_history":
-            table = records_to_markdown(result.tables.get("fund_size_history", []), max_rows=50)
-            return self._with_notes("## 基金规模历史变化", table, result, result_validation)
-
-        if result.tool_name == "get_fund_holdings_detail":
-            table = records_to_markdown(result.tables.get("fund_holdings_detail", []), max_rows=50)
-            return self._with_notes("## 基金持仓明细", table, result, result_validation)
-
-        if result.tool_name == "analyze_fund_holding_concentration":
-            table = records_to_markdown(result.tables.get("fund_holding_concentration", []), max_rows=50)
-            return self._with_notes("## 基金持仓集中度分析", table, result, result_validation)
-
-        if result.tool_name == "find_funds_holding_stock":
-            table = records_to_markdown(result.tables.get("stock_holder_funds", []), max_rows=50)
-            return self._with_notes("## 持有该股票的基金列表", table, result, result_validation)
-
-        if result.tool_name == "compare_company_business_structure":
-            summary = records_to_markdown(result.tables.get("company_summary", []), max_rows=20)
-            structure = records_to_markdown(result.tables.get("asset_structure", []), max_rows=50)
-            body = (
-                "## 公司业务结构对比\n\n"
-                "### 1. 公司总规模对比\n\n"
-                f"{summary}\n\n"
-                "### 2. 各资产类型规模和占比\n\n"
-                f"{structure}\n\n"
-                "### 3. 简要结论\n\n"
-                "- 请重点关注公司总规模、资产类型占比和基金数量结构。\n"
-                "- 当前结论仅基于规模表，不代表完整投研判断。"
-            )
-            return self._with_notes(body, "", result, result_validation)
-
-        if result.tool_name == "analyze_top_performance_holdings":
-            perf = records_to_markdown(result.tables.get("top_performance_funds", []), max_rows=20)
-            holdings = records_to_markdown(result.tables.get("stock_holding_summary", []), max_rows=20)
-            body = (
-                "## 收益率前列基金及持仓分析\n\n"
-                "### 1. 收益率前列基金\n\n"
-                f"{perf}\n\n"
-                "### 2. 这些基金的主要持仓股票汇总\n\n"
-                f"{holdings}\n\n"
-                "### 3. 简要分析\n\n"
-                "- 上表展示了当前区间内收益率前列基金及其主要股票持仓。\n"
-                "- 当前数据没有行业字段，因此不做行业归因。"
-            )
-            return self._with_notes(body, "", result, result_validation)
-
-        if result.tool_name == "lookup_fund":
-            table = records_to_markdown(
-                result.tables.get("fund_lookup", result.tables.get("lookup_result", [])),
-                max_rows=20,
-            )
-            return self._with_notes("以下为基金检索结果：", table, result, result_validation)
-
-        # ── 通用工具 / Generated SQL 通用渲染 ──
-        # 对所有未匹配的工具（新通用工具、generated_sql_query 等），
-        # 把每张表渲染为 Markdown 表格，而不是原始 dict。
-        parts: list[str] = []
-        if len(result.tables) == 1:
-            rows = next(iter(result.tables.values()))
-            table = records_to_markdown(rows, max_rows=50)
-            parts.extend(["以下为查询结果：", "", table])
-        else:
-            parts.append("## 查询结果")
-            for table_name, rows in result.tables.items():
-                parts.extend([f"\n### {table_name}", records_to_markdown(rows, max_rows=50)])
-        return self._with_notes("\n".join(parts), "", result, result_validation)
+            self.last_outline_source = "llm_outliner"
+            return outline
+        except Exception:
+            # Outliner 任何失败都回退到技能大纲
+            self.last_outline_source = "skill_fallback"
+            return skill_outline
 
     @staticmethod
-    def _with_notes(title: str, table_or_empty: str, result: ToolResult, validation: ValidationResult | None) -> str:
-        parts = [title]
-        if table_or_empty:
-            parts.extend(["", table_or_empty])
-        if result.notes:
-            parts.extend(["", "### 数据口径说明"])
-            parts.extend([f"- {note}" for note in result.notes])
-        warnings = []
-        if result.warnings:
-            warnings.extend(result.warnings)
-        if validation and validation.warnings:
-            warnings.extend(validation.warnings)
+    def _summarize_tables_for_outliner(tool_result: ToolResult) -> str:
+        parts: list[str] = []
+        for table_name, rows in tool_result.tables.items():
+            n = len(rows)
+            cols = list(rows[0].keys()) if rows else []
+            preview = rows[:3]
+            parts.append(
+                f"- 表【{table_name}】 行数={n} 列={cols}\n"
+                f"  前3行：{json.dumps(preview, ensure_ascii=False, default=str)}"
+            )
+        if tool_result.notes:
+            parts.append("- notes：" + "；".join(tool_result.notes))
+        return "\n".join(parts) if parts else "（工具结果为空）"
+
+    # ──────────────────────────────────────────────────────────────────
+    # Stage 2: Drafter
+    # ──────────────────────────────────────────────────────────────────
+
+    def _draft_with_llm(
+        self,
+        query: str,
+        tool_result: ToolResult,
+        outline: ReportOutline,
+        generated_sql: str,
+        market_context: dict[str, Any] | None,
+    ) -> str:
+        if self.llm_client is None:
+            raise RuntimeError("LLMClient 未初始化，无法调用 Drafter LLM。")
+
+        tables_text = self._render_tables(tool_result)
+        outline_text = self._render_outline(outline)
+        sql_note = (
+            f"\n\n**SQL 查询（已通过只读校验和 dry run）：**\n```sql\n{generated_sql}\n```"
+            if generated_sql
+            else ""
+        )
+        market_text = self._render_market_context(market_context)
+
+        user_prompt = (
+            f"用户问题：{query}\n\n"
+            f"查询结果数据：\n{tables_text}"
+            f"{sql_note}\n\n"
+            f"{market_text}"
+            f"报告框架（请严格按此结构撰写）：\n{outline_text}\n\n"
+            "请撰写完整的中文分析报告。要有实质性分析洞察，不要只是数据的机械复述。"
+        )
+
+        return self.llm_client.chat(
+            role="report",
+            system_prompt=DRAFTER_SYSTEM_PROMPT,
+            user_prompt=user_prompt,
+            json_mode=False,
+            temperature=0.3,
+            max_tokens=3500,
+        )
+
+    # ──────────────────────────────────────────────────────────────────
+    # Mock 模式（不调用 LLM）
+    # ──────────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _mock_report(
+        query: str,
+        tool_result: ToolResult,
+        outline: ReportOutline,
+        generated_sql: str,
+        result_validation=None,
+    ) -> str:
+        """Mock 报告：大纲框架 + 原始数据表格，不调用 LLM。"""
+        parts: list[str] = []
+
+        if outline.direct_answer:
+            parts.append(f"**直接回答：** {outline.direct_answer}")
+
+        if outline.sections:
+            parts.append("\n---\n")
+            parts.append(f"**报告框架（技能：{outline.skill_type}）**")
+            for i, section in enumerate(outline.sections, 1):
+                parts.append(f"\n## {i}. {section.title}")
+                if section.analytical_angles:
+                    for angle in section.analytical_angles:
+                        parts.append(f"- {angle}")
+
+        if tool_result.tables:
+            parts.append("\n---\n")
+            parts.append("## 查询数据")
+            for table_name, rows in tool_result.tables.items():
+                parts.append(f"\n### {table_name}")
+                parts.append(records_to_markdown(rows, max_rows=50))
+
+        if generated_sql:
+            parts.append(f"\n**SQL 口径**（已通过只读校验和 dry run）：\n```sql\n{generated_sql}\n```")
+
+        if tool_result.notes:
+            parts.append("\n---\n**数据口径**")
+            parts.extend(f"- {note}" for note in tool_result.notes)
+
+        warnings: list[str] = list(tool_result.warnings)
+        if result_validation and result_validation.warnings:
+            warnings.extend(result_validation.warnings)
         warnings = list(dict.fromkeys(warnings))
         if warnings:
-            parts.extend(["", "### 注意事项"])
-            parts.extend([f"- {w}" for w in warnings])
+            parts.append("\n**注意事项**")
+            parts.extend(f"- {w}" for w in warnings)
+
         return "\n".join(parts)
+
+    # ──────────────────────────────────────────────────────────────────
+    # 渲染辅助
+    # ──────────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _render_tables(tool_result: ToolResult) -> str:
+        """把所有数据表渲染成 Markdown，附数据口径。"""
+        parts: list[str] = []
+        for table_name, rows in tool_result.tables.items():
+            parts.append(f"【{table_name}】")
+            parts.append(records_to_markdown(rows, max_rows=50))
+        if tool_result.notes:
+            parts.append("（数据口径：" + "；".join(tool_result.notes) + "）")
+        if tool_result.warnings:
+            parts.append("（数据警告：" + "；".join(tool_result.warnings) + "）")
+        return "\n".join(parts)
+
+    @staticmethod
+    def _render_outline(outline: ReportOutline) -> str:
+        parts: list[str] = []
+        if outline.direct_answer:
+            parts.append(f"0. **直接回答**（必须放报告第一行粗体）：{outline.direct_answer}")
+        for i, section in enumerate(outline.sections, 1):
+            parts.append(f"{i}. ## {section.title}")
+            for angle in section.analytical_angles:
+                parts.append(f"   - {angle}")
+        return "\n".join(parts)
+
+    @staticmethod
+    def _render_market_context(market_context: dict[str, Any] | None) -> str:
+        """把市场快照渲染成 Drafter 可读的上下文段落（仅作参照，不替代主表）。"""
+        if not market_context:
+            return ""
+        parts: list[str] = ["**【市场参照（预计算快照，仅供横向对比，不替代主查询结果）】**"]
+        if total := market_context.get("market_total"):
+            parts.append("市场总览：" + json.dumps(total, ensure_ascii=False, default=str))
+        if asset_dist := market_context.get("size_by_asset_type"):
+            parts.append("资产类型分布：" + json.dumps(asset_dist[:6], ensure_ascii=False, default=str))
+        if top := market_context.get("top_companies"):
+            parts.append("头部公司参照：" + json.dumps(top[:10], ensure_ascii=False, default=str))
+        parts.append("")  # 末尾空行
+        return "\n".join(parts) + "\n"

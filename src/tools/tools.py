@@ -820,6 +820,89 @@ def query_performance_holdings(store: SQLiteStore, args: dict) -> ToolResult:
 # Tool 8: lookup_fund
 # ──────────────────────────────────────────────────────────────────────────
 
+# ──────────────────────────────────────────────────────────────────────────
+# Tool 9: query_market_overview
+# ──────────────────────────────────────────────────────────────────────────
+
+def query_market_overview(store: SQLiteStore, args: dict) -> ToolResult:
+    """全市场概览：总规模、各资产类型分布、头部基金公司排名。
+
+    用于竞争格局、市场分析类问题的数据基础，也可作为公司分析的市场参照。
+    """
+    date = args.get("date") or store.max_date("fund_size")
+    top_n = min(int(args.get("top_n") or 10), 20)
+
+    params_d: dict = {"_date": date}
+
+    # 1. 全市场汇总
+    df_total = store.query_df(
+        """
+        SELECT :_date AS 数据日期,
+               COUNT(DISTINCT fund_code) AS 基金总数,
+               COUNT(DISTINCT fund_company) AS 基金公司数,
+               ROUND(SUM(fund_size), 2) AS 全市场总规模_亿
+        FROM fund_size WHERE date = :_date
+        """,
+        params_d,
+    )
+
+    # 2. 按资产类型分布
+    df_asset = store.query_df(
+        """
+        SELECT asset_type AS 资产类型,
+               COUNT(DISTINCT fund_code) AS 基金数量,
+               ROUND(SUM(fund_size), 2) AS 规模_亿,
+               ROUND(
+                   SUM(fund_size) / NULLIF(
+                       (SELECT SUM(fund_size) FROM fund_size WHERE date = :_date), 0
+                   ) * 100, 1
+               ) AS 市场占比_pct
+        FROM fund_size WHERE date = :_date
+        GROUP BY asset_type
+        ORDER BY SUM(fund_size) DESC
+        """,
+        params_d,
+    )
+
+    # 3. 头部基金公司
+    df_top = store.query_df(
+        """
+        SELECT fund_company AS 基金公司,
+               COUNT(DISTINCT fund_code) AS 基金数量,
+               ROUND(SUM(fund_size), 2) AS 规模_亿,
+               ROUND(
+                   SUM(fund_size) / NULLIF(
+                       (SELECT SUM(fund_size) FROM fund_size WHERE date = :_date), 0
+                   ) * 100, 2
+               ) AS 市场份额_pct
+        FROM fund_size WHERE date = :_date
+        GROUP BY fund_company
+        ORDER BY SUM(fund_size) DESC LIMIT :_top_n
+        """,
+        {**params_d, "_top_n": top_n},
+    )
+
+    return ToolResult(
+        tool_name="query_market_overview",
+        intent="market_overview",
+        tables={
+            "market_total": df_to_records(df_total),
+            "size_by_asset_type": df_to_records(df_asset),
+            "top_companies": df_to_records(df_top),
+        },
+        notes=[
+            f"数据日期：{date}",
+            f"头部公司展示 TOP {top_n}。",
+            "规模单位：亿元；市场占比已做整体归一化。",
+        ],
+        metadata={"date": date, "top_n": top_n},
+    )
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Tool 8: lookup_fund
+# ──────────────────────────────────────────────────────────────────────────
+
 def lookup_fund(store: SQLiteStore, args: dict) -> ToolResult:
     """按关键词（代码或名称）检索基金基础信息。"""
     keyword = str(args.get("keyword") or "").strip()

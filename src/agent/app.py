@@ -96,7 +96,7 @@ class FundAnalysisAgent:
             plan_validator=PlanValidator(self.registry, self.store),
             executor=ToolExecutorAgent(self.registry, self.store),
             result_validator=ResultValidator(),
-            report_writer=ReportWriterAgent(self.llm_client),
+            report_writer=ReportWriterAgent(self.llm_client, store=self.store),
             self_checker=SelfCheckAgent(),
             memory=MemoryStore(self.store),
             sql_agent=self.sql_agent,
