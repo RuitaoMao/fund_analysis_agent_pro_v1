@@ -1,78 +1,123 @@
-# 基金数据分析 AI Agent：Production-oriented Teaching Project
+# fund_analysis_agent_pro
 
-这个项目是一个**供学习的生产级架构示例**，用于完成“基金数据分析 AI Agent”案例。
-它不是最终提交版，但代码结构按真实工程项目拆分，方便你学习 LangGraph Agent 项目的模块化设计。
+基金数据分析 AI Agent 项目，基于本地基金数据构建面向中文问题的垂类数据分析系统。项目支持用户用自然语言查询基金规模、持仓、业绩、基金公司和多表组合问题，并生成结构化分析结果或 HTML 报告。
 
-## 支持的示例问题
+## 项目特点
 
-- 1季度末规模最大的10只主动权益基金是谁
-- 1季度末全市场持仓规模最大的股票是哪只
-- 对比分析易方达和华夏基金的业务结构
-- 筛选1季度收益率前10基金并分析其持仓情况
-- 这些基金主要持有哪些股票？（依赖上一轮 memory）
+- 数据源来自本地 Excel：`规模.xlsx`、`持仓.xlsx`、`业绩.xlsx`
+- 使用 SQLite 作为本地结构化数据层，所有真实计算在本地完成
+- 使用 LangGraph 编排 Agent workflow
+- 支持 Hard Tools 与 LLM Generated SQL 两种分析路径
+- 支持多轮对话上下文，能够处理“这些基金”“同样口径”等追问
+- 支持 FastAPI / Streamlit / CLI 交互方式
+- 支持 HTML 报告导出和批量评测
 
-## 技术栈
+## 核心设计
 
-- Python
-- LangGraph：Agent 工作流编排
-- SQLite：本地结构化数据层
-- pandas + openpyxl：Excel 读取与清洗
-- Pydantic：Planner 输出、校验结果、自检结果的 schema
-- SQL-backed tools：工具内部使用 SQL 查询
-- Tool Registry：工具统一注册与说明
-- Plan Validator / Result Validator / Self-check：质量控制
-- Memory Store：轻量多轮上下文
-- pytest / evaluation：自动化测试与评估
+本项目的基本原则是：LLM 负责理解问题、规划步骤和组织表达，本地工具与 SQL 负责查询、计算和校验。
+
+Agent workflow 采用 ReAct-style 设计，主要节点包括：
+
+```text
+plan -> validate -> act -> observe -> reflect -> report -> self-check
+```
+
+其中：
+
+- `plan`：将中文问题转换为结构化分析计划
+- `validate`：校验工具名、参数、SQL 安全性和结果可靠性
+- `act`：调用 SQL-backed tools 或执行受控 SQL
+- `observe`：读取工具或 SQL 返回的结构化结果
+- `reflect`：根据校验结果决定继续执行、重试、追问或安全退出
+- `report`：基于结构化结果生成中文分析报告
+- `self-check`：检查回答是否忠实于数据、是否遗漏口径或存在不当表达
+
+## 两种分析模式
+
+### Hard Tools
+
+LLM 负责理解用户问题并选择工具，实际计算由本地 SQL-backed tools 完成。该模式适合高频、标准化、可控性要求高的问题。
+
+### Generated SQL
+
+LLM 根据受控 schema 生成只读 SQL，本地系统执行白名单校验、dry run、执行和结果校验。该模式适合长尾、多表组合和探索式分析问题。
 
 ## 快速开始
 
-```bash
+```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 copy .env.example .env
 ```
 
-项目包里已经包含一个预构建的 SQLite 数据库 `data/processed/fund_agent.db`，所以通常可以直接运行。
-如果你替换了 Excel 数据，才需要重建 SQLite 数据库：
+项目默认使用本地 SQLite 数据库：
 
-```bash
-.\.venv\Scripts\python.exe main.py --rebuild-db --mode mock --trace "1季度末规模最大的10只主动权益基金是谁"
+```text
+data/processed/fund_agent.db
 ```
 
-之后可以直接运行：
+如需从 Excel 重建数据库：
 
-```bash
-.\.venv\Scripts\python.exe main.py --mode mock --trace "对比分析易方达和华夏基金的业务结构"
+```powershell
+.\.venv\Scripts\python.exe main.py --rebuild-db --mode llm --trace "易方达目前旗下所有基金的总规模是多少"
 ```
 
-交互模式：
+## 运行方式
 
-```bash
-.\.venv\Scripts\python.exe main.py --mode mock --interactive
+CLI：
+
+```powershell
+.\.venv\Scripts\python.exe main.py --mode llm --sql-mode generated --trace "规模前50的主动权益基金中，同时持有贵州茅台和宁德时代的有哪些"
 ```
 
-## 推荐阅读顺序
+FastAPI：
 
-1. `main.py`：程序入口
-2. `src/config.py`：配置管理
-3. `src/agent/state.py`：LangGraph state
-4. `src/agent/workflow.py`：LangGraph nodes / edges
-5. `src/agent/schemas.py`：Pydantic schema
-6. `src/tools/specs.py` + `src/tools/registry.py`：tool specs 和工具注册
-7. `src/agent/planner.py`：自然语言到 plan
-8. `src/agent/plan_validator.py`：plan 校验
-9. `src/agent/executor.py`：工具执行
-10. `src/agent/result_validator.py`：工具结果校验
-11. `src/agent/report_writer.py`：报告生成
-12. `src/agent/self_check.py`：最终回答自检
-13. `src/agent/memory.py`：多轮上下文
-14. `src/data/sqlite_store.py`：SQLite 数据层
+```powershell
+.\.venv\Scripts\python.exe app_fastapi.py
+```
 
-## 重要设计原则
+Streamlit：
 
-LLM 不直接计算基金数据，也不直接自由写 SQL。LLM 只负责：
+```powershell
+.\.venv\Scripts\streamlit.exe run app_streamlit.py
+```
 
-1. Planner：理解用户问题，选择工具和参数。
-2. Report Writer：基于工具结果写报告。
+## 批量评测
 
-所有真实数值计算都由 SQL-backed tools 完成。
+评测脚本会读取 `evaluation/batch_questions.yaml`，通过 FastAPI TestClient 批量调用接口，并生成 HTML 汇总报告。
+
+```powershell
+.\.venv\Scripts\python.exe evaluation\run_batch_html_reports.py
+```
+
+只跑 Generated SQL：
+
+```powershell
+.\.venv\Scripts\python.exe evaluation\run_batch_html_reports.py --sql-modes generated
+```
+
+只跑指定题目：
+
+```powershell
+.\.venv\Scripts\python.exe evaluation\run_batch_html_reports.py --ids q001,q016 --sql-modes generated
+```
+
+输出目录：
+
+```text
+outputs/evaluations/html_batch_<timestamp>/
+```
+
+其中 `index.html` 是评测总览，`states/` 保存每题完整 Agent state，便于调试 planner、SQL、trace 和 errors。
+
+## 技术栈
+
+- Python
+- LangGraph
+- FastAPI / Streamlit
+- SQLite
+- pandas / openpyxl
+- Pydantic
+- LLM API
+- HTML report generation
+- pytest / batch evaluation
