@@ -501,17 +501,20 @@ class FundAgentWorkflow:
     def analytical_report_writer_node(self, state: AgentState) -> AgentState:
         """统一分析报告写作节点（Branch 2）。
 
-        同时服务 hard tools 路径和 generated SQL 路径：
+        服务 hard tools 路径和 generated SQL 路径：
         - hard 路径：tool_result 来自工具执行器，generated_sql 为空。
         - sql 路径：tool_result 来自 SQL 执行器，generated_sql 含 SQL 字符串。
 
-        两条路径都通过 report_skills 选择技能 → 生成大纲 → Drafter LLM 撰写报告。
-        mock 模式：只渲染数据表格 + 大纲框架，不调用 LLM。
+        三阶段流水线（llm 模式）：
+        1. 技能选择 → 默认大纲（report_skills，规则驱动）
+        2. Outliner LLM → 调整大纲（OUTLINER_SYSTEM_PROMPT，失败回退到技能大纲）
+        3. Drafter LLM → 撰写完整中文分析报告（DRAFTER_SYSTEM_PROMPT）
+
+        mock 模式：只用技能大纲 + 数据表格，不调用 LLM。
         """
         result = state.get("tool_result")
         generated_sql = state.get("generated_sql", "")
 
-        # mock 模式下 generated SQL 路径的历史兼容：保留原 generated_sql_answer 模板
         if result is None:
             answer = "未能得到可用结果，请尝试换一种提问方式或放宽查询条件。"
         else:
@@ -524,13 +527,18 @@ class FundAgentWorkflow:
             )
 
         state = {**state, "draft_answer": answer, "next_action": "final"}
+        skill_type = getattr(self.report_writer, "last_skill_type", "?") or "?"
+        outline_source = getattr(self.report_writer, "last_outline_source", "?") or "?"
         is_sql = bool(generated_sql)
         return _append_trace(
             state,
             node="analytical_report_writer_node",
-            thought="技能选择 → 报告大纲 → Drafter LLM 撰写深度分析报告（hard/SQL 双路径统一）。",
+            thought="技能 → Outliner LLM → Drafter LLM 三阶段（hard/SQL 双路径统一）。",
             action=f"AnalyticalReportWriter.write(sql={'yes' if is_sql else 'no'})",
-            observation=f"skill={getattr(getattr(self.report_writer, '_last_skill', None), 'skill_type', '?')}, draft_length={len(answer)}",
+            observation=(
+                f"skill={skill_type}, outline_source={outline_source}, "
+                f"sql={'yes' if is_sql else 'no'}, draft_length={len(answer)}"
+            ),
         )
 
     def result_validator_node(self, state: AgentState) -> AgentState:

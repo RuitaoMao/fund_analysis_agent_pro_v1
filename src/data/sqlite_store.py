@@ -123,6 +123,18 @@ class SQLiteStore:
                 conn.close()
 
         self.clear_cache()
+
+        # 在主表写入后重建市场快照（free context for analytical reports）。
+        # 局部 import 避免数据层和 market_snapshot 形成循环依赖。
+        try:
+            from src.data.market_snapshot import rebuild_market_snapshot
+            snapshot_rows = rebuild_market_snapshot(self)
+            row_counts["market_snapshot"] = snapshot_rows
+        except Exception as exc:
+            # 快照失败不影响主流程，记入 row_counts 以便诊断。
+            row_counts["market_snapshot"] = -1
+            row_counts["market_snapshot_error"] = str(exc)[:120]  # type: ignore[assignment]
+
         return row_counts
 
     def query_df(self, sql: str, params: tuple[Any, ...] | dict[str, Any] = ()) -> pd.DataFrame:

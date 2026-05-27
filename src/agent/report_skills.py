@@ -11,12 +11,26 @@ from __future__ import annotations
 
 import re
 
-from src.agent.schemas import ReportOutline, ReportSection, ToolResult
+from src.agent.schemas import QueryProfile, ReportOutline, ReportSection, ToolResult
 
 
 # ──────────────────────────────────────────────────────────────────────────
 # 基类
 # ──────────────────────────────────────────────────────────────────────────
+
+# 技能 → 复杂度映射（用于 query_profile）
+_COMPLEXITY: dict[str, str] = {
+    "competitive_landscape": "complex",
+    "company_comparison": "complex",
+    "company_profile": "moderate",
+    "performance_analysis": "moderate",
+    "holdings_analysis": "moderate",
+    "stock_holder_analysis": "moderate",
+    "screening_result": "moderate",
+    "simple_lookup": "simple",
+    "generic": "simple",
+}
+
 
 class BaseReportSkill:
     """报告技能基类。"""
@@ -28,6 +42,24 @@ class BaseReportSkill:
 
     def outline(self, query: str, tool_result: ToolResult) -> ReportOutline:
         raise NotImplementedError
+
+    def query_profile(self, query: str, tool_result: ToolResult) -> QueryProfile:
+        """生成 QueryProfile 用于遥测/可观测性（默认从 tool_result.metadata 提取实体）。"""
+        meta = tool_result.metadata or {}
+        entities: list[str] = []
+        for key in ("companies", "fund_codes"):
+            v = meta.get(key)
+            if v:
+                entities.extend([str(x) for x in (v if isinstance(v, list) else [v])])
+        for key in ("stock_keyword", "fund_company", "asset_type"):
+            v = meta.get(key)
+            if v:
+                entities.append(str(v))
+        return QueryProfile(
+            question_type=self.skill_type,
+            complexity=_COMPLEXITY.get(self.skill_type, "moderate"),  # type: ignore[arg-type]
+            primary_entities=entities,
+        )
 
     @staticmethod
     def _has_table(tool_result: ToolResult, *keys: str) -> bool:
@@ -673,10 +705,10 @@ _SKILLS: list[BaseReportSkill] = [
     CompetitiveLandscapeSkill(),
     CompanyComparisonSkill(),
     CompanyProfileSkill(),
+    ScreeningResultSkill(),    # 必须早于 PerformanceAnalysisSkill：screen_funds 是更具体的工具
     PerformanceAnalysisSkill(),
     HoldingsAnalysisSkill(),
     StockHolderSkill(),
-    ScreeningResultSkill(),
     SimpleLookupSkill(),
     GenericRankingSkill(),   # 兜底，必须放最后
 ]
