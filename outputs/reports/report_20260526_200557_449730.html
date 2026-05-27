@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Fund Agent Report</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbeafe;
+      --bg: #f8fbff;
+      --card: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      padding: 28px 40px;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+    .meta {
+      color: #e0f2fe;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 0 20px 48px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+    }
+    h2 {
+      color: #1e40af;
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.55;
+    }
+    .answer-markdown {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+    .answer-markdown h1,
+    .answer-markdown h2,
+    .answer-markdown h3,
+    .answer-markdown h4 {
+      color: #1e40af;
+      margin: 18px 0 10px;
+      line-height: 1.35;
+    }
+    .answer-markdown h1 { font-size: 22px; }
+    .answer-markdown h2 { font-size: 20px; }
+    .answer-markdown h3 { font-size: 17px; }
+    .answer-markdown h4 { font-size: 15px; }
+    .answer-markdown p {
+      margin: 10px 0;
+    }
+    .answer-markdown ul,
+    .answer-markdown ol {
+      margin: 8px 0 12px 22px;
+      padding: 0;
+    }
+    .answer-markdown li {
+      margin: 5px 0;
+    }
+    .answer-markdown strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .answer-markdown code {
+      background: #e0f2fe;
+      color: #075985;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "SFMono-Regular", monospace;
+    }
+    .answer-markdown table {
+      min-width: 760px;
+      margin: 14px 0;
+      background: white;
+    }
+    .answer-markdown th {
+      white-space: nowrap;
+    }
+    .answer-markdown td {
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      background: var(--blue-soft);
+      color: #1e3a8a;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+    }
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    .trace-item {
+      border-left: 3px solid var(--blue);
+      background: #f8fafc;
+      padding: 10px 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .trace-node {
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 4px;
+    }
+    .repair-list {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+    .repair-list li {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>基金数据分析 Agent 报告</h1>
+    <div class="meta">mode=llm · sql_mode=hard · session=eval-20260526-200454-q003-hard</div>
+  </header>
+  <main>
+    <section>
+      <h2>用户问题</h2>
+      <pre>全市场基金规模前10的基金公司是哪些，每家管理了多少亿</pre>
+    </section>
+    <section>
+      <h2>最终回答</h2>
+      <div class="answer-markdown"><p>好的，根据工具查询结果，为您整理全市场基金公司规模排名前10的信息如下：</p>
+<h3>全市场基金公司规模排名 (截至2026-03-31)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">排名</th>
+<th style="text-align: left;">基金公司</th>
+<th style="text-align: left;">管理基金数量</th>
+<th style="text-align: left;">资产管理规模 (合计，亿元)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">易方达</td>
+<td style="text-align: left;">503</td>
+<td style="text-align: left;">24,954.48</td>
+</tr>
+<tr>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">华夏</td>
+<td style="text-align: left;">537</td>
+<td style="text-align: left;">20,894.67</td>
+</tr>
+<tr>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">广发</td>
+<td style="text-align: left;">467</td>
+<td style="text-align: left;">16,739.07</td>
+</tr>
+<tr>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">南方</td>
+<td style="text-align: left;">429</td>
+<td style="text-align: left;">15,053.14</td>
+</tr>
+<tr>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">富国</td>
+<td style="text-align: left;">440</td>
+<td style="text-align: left;">13,814.27</td>
+</tr>
+<tr>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">天弘</td>
+<td style="text-align: left;">248</td>
+<td style="text-align: left;">12,755.27</td>
+</tr>
+<tr>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">汇添富</td>
+<td style="text-align: left;">404</td>
+<td style="text-align: left;">11,620.03</td>
+</tr>
+<tr>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">博时</td>
+<td style="text-align: left;">402</td>
+<td style="text-align: left;">11,509.68</td>
+</tr>
+<tr>
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">鹏华</td>
+<td style="text-align: left;">392</td>
+<td style="text-align: left;">11,186.15</td>
+</tr>
+<tr>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">嘉实</td>
+<td style="text-align: left;">380</td>
+<td style="text-align: left;">10,735.38</td>
+</tr>
+</tbody>
+</table>
+<p><strong>数据口径说明：</strong>
+*   <strong>数据日期</strong>：2026年3月31日。
+*   <strong>统计范围</strong>：全市场所有基金公司。
+*   <strong>规模说明</strong>：资产规模包含各公司管理的所有资产类型，单位为亿元人民币。
+*   <strong>数据来源</strong>：查询自 <code>fund_size</code> 表。</p></div>
+    </section>
+    <section>
+      <h2>结果表</h2>
+      <h3>company_ranking</h3><table><thead><tr><th>基金公司</th><th>基金数量</th><th>合计规模_亿</th></tr></thead><tbody><tr><td>易方达</td><td>503</td><td>24954.48</td></tr><tr><td>华夏</td><td>537</td><td>20894.67</td></tr><tr><td>广发</td><td>467</td><td>16739.07</td></tr><tr><td>南方</td><td>429</td><td>15053.14</td></tr><tr><td>富国</td><td>440</td><td>13814.27</td></tr><tr><td>天弘</td><td>248</td><td>12755.27</td></tr><tr><td>汇添富</td><td>404</td><td>11620.03</td></tr><tr><td>博时</td><td>402</td><td>11509.68</td></tr><tr><td>鹏华</td><td>392</td><td>11186.15</td></tr><tr><td>嘉实</td><td>380</td><td>10735.38</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>调用工具 / SQL</h2>
+      <pre>[
+  {
+    &quot;tool_name&quot;: &quot;query_company_size&quot;,
+    &quot;args&quot;: {
+      &quot;top_n&quot;: 10,
+      &quot;companies&quot;: null,
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;asset_type&quot;: null,
+      &quot;include_trend&quot;: false
+    },
+    &quot;metadata&quot;: {
+      &quot;companies&quot;: [],
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;asset_type&quot;: null,
+      &quot;include_trend&quot;: false
+    },
+    &quot;warnings&quot;: []
+  }
+]</pre>
+    </section>
+    
+    <section>
+      <h2>Trace</h2>
+      
+        <div class="trace-item">
+          <div class="trace-node">load_context_node</div>
+          <div><b>Action:</b> load_memory(session_id=eval-20260526-200454-q003-hard)</div>
+          <div><b>Observation:</b> memory keys=[&#x27;recent_turns&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">complexity_classifier_node</div>
+          <div><b>Action:</b> classify_complexity</div>
+          <div><b>Observation:</b> explicit=hard, signals=[&#x27;嵌套排名:规模前&#x27;], auto=generated, final=hard</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">mode_router_node</div>
+          <div><b>Action:</b> route_by_sql_mode</div>
+          <div><b>Observation:</b> sql_mode=hard, branch=hard</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">planner_node</div>
+          <div><b>Action:</b> PlannerAgent.plan()</div>
+          <div><b>Observation:</b>  intent=unknown, tool=query_company_size, args={&#x27;top_n&#x27;: 10}, tool_calls=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">tool_router_node</div>
+          <div><b>Action:</b> ToolRouter.route()</div>
+          <div><b>Observation:</b> categories=[&#x27;size&#x27;], planned_tools=[&#x27;query_company_size&#x27;], allowed_tools_count=2</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">plan_validator_node</div>
+          <div><b>Action:</b> PlanValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=execute, issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">executor_node</div>
+          <div><b>Action:</b> ToolExecutor.execute(query_company_size)</div>
+          <div><b>Observation:</b> [TOOL] tool=query_company_size, tables=[&#x27;company_ranking&#x27;], notes=4, warnings=0</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">result_validator_node</div>
+          <div><b>Action:</b> ResultValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=report, warnings=[], issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">reflect_node</div>
+          <div><b>Action:</b> reflect_and_route</div>
+          <div><b>Observation:</b> next_action=report, retry_count=0, max_steps=3</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">report_writer_node</div>
+          <div><b>Action:</b> ReportWriterAgent.write()</div>
+          <div><b>Observation:</b> draft_answer_length=568</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">self_check_node</div>
+          <div><b>Action:</b> SelfCheckAgent.check()</div>
+          <div><b>Observation:</b> passed=True, next_action=final, issues=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">save_context_node</div>
+          <div><b>Action:</b> save_memory_and_finalize</div>
+          <div><b>Observation:</b> final_answer_length=568</div>
+        </div>
+        
+    </section>
+  </main>
+</body>
+</html>

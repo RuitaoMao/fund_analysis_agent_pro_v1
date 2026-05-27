@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Fund Agent Report</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbeafe;
+      --bg: #f8fbff;
+      --card: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      padding: 28px 40px;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+    .meta {
+      color: #e0f2fe;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 0 20px 48px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+    }
+    h2 {
+      color: #1e40af;
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.55;
+    }
+    .answer-markdown {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+    .answer-markdown h1,
+    .answer-markdown h2,
+    .answer-markdown h3,
+    .answer-markdown h4 {
+      color: #1e40af;
+      margin: 18px 0 10px;
+      line-height: 1.35;
+    }
+    .answer-markdown h1 { font-size: 22px; }
+    .answer-markdown h2 { font-size: 20px; }
+    .answer-markdown h3 { font-size: 17px; }
+    .answer-markdown h4 { font-size: 15px; }
+    .answer-markdown p {
+      margin: 10px 0;
+    }
+    .answer-markdown ul,
+    .answer-markdown ol {
+      margin: 8px 0 12px 22px;
+      padding: 0;
+    }
+    .answer-markdown li {
+      margin: 5px 0;
+    }
+    .answer-markdown strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .answer-markdown code {
+      background: #e0f2fe;
+      color: #075985;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "SFMono-Regular", monospace;
+    }
+    .answer-markdown table {
+      min-width: 760px;
+      margin: 14px 0;
+      background: white;
+    }
+    .answer-markdown th {
+      white-space: nowrap;
+    }
+    .answer-markdown td {
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      background: var(--blue-soft);
+      color: #1e3a8a;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+    }
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    .trace-item {
+      border-left: 3px solid var(--blue);
+      background: #f8fafc;
+      padding: 10px 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .trace-node {
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 4px;
+    }
+    .repair-list {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+    .repair-list li {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>基金数据分析 Agent 报告</h1>
+    <div class="meta">mode=llm · sql_mode=hard · session=ui-ae566028</div>
+  </header>
+  <main>
+    <section>
+      <h2>用户问题</h2>
+      <pre>一季度基金公司规模的格局进行分析</pre>
+    </section>
+    <section>
+      <h2>最终回答</h2>
+      <div class="answer-markdown"><p>好的，这是根据截至 2026 年一季度的基金规模数据，为您整理的基金公司格局分析。</p>
+<h3>一季度基金公司规模格局分析</h3>
+<p><strong>数据口径说明：</strong> 本报告统计口径为全市场所有基金公司，按资产类型分类的基金净资产规模。数据日期为 <strong>2026 年 3 月 31 日</strong>，取规模排名前 20 的公司进行分析。数据来源为 <code>company_asset_type_ranking</code> 表。</p>
+<hr>
+<h3>核心发现：现金管理业务主导格局，权益赛道头部效应显著</h3>
+<p>从一季度数据看，公募基金公司规模排名的核心推力是<strong>现金管理类（主要是货币基金）</strong>和<strong>被动权益类（主要是ETF及联接基金）</strong>业务。前 20 大公司中，仅依靠非现金管理业务上榜的仅有少数几家，其余均以庞大的货币基金规模为基础。</p>
+<h4>1. 主要规模梯队</h4>
+<p>整体来看，头部公司已形成清晰的规模梯队（货币与非货业务合并计算）：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">梯队</th>
+<th style="text-align: left;">规模门槛 (亿元)</th>
+<th style="text-align: left;">代表公司及主要驱动力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>超一线</strong></td>
+<td style="text-align: left;">15,000 以上</td>
+<td style="text-align: left;">易方达（现金管理+被动权益双轮驱动）、华夏（被动权益+现金管理双轮驱动）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>一线龙头</strong></td>
+<td style="text-align: left;">7,000 - 8,200</td>
+<td style="text-align: left;">建信、天弘、南方，均为现金管理业务驱动</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>准一线</strong></td>
+<td style="text-align: left;">6,600 左右</td>
+<td style="text-align: left;">广发，现金管理业务驱动</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>二线头部</strong></td>
+<td style="text-align: left;">4,300 - 5,500</td>
+<td style="text-align: left;">鹏华、博时、富国、汇添富、万家、兴证全球、工银瑞信、平安等，主要为现金管理业务驱动，以及华泰柏瑞（被动权益驱动）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>格局解读：</strong>
+-   <strong>双轮驱动成就超级龙头：</strong> 易方达和华夏是仅有的两家同时在“现金管理”和“被动权益”两个最核心赛道上均位居前列的公司，合计规模遥遥领先，构成了行业的第一梯队。这种结构使其规模基础更为稳固和多元化。
+-   <strong>货币基金为王的“腰部”力量：</strong> “一线”和“二线头部”梯队几乎完全由现金管理（货币基金）规模定义。天弘基金凭借余额宝，博时、南方、建信等银行系基金公司凭借强大的渠道优势，均在货币基金领域积累了巨量规模，构成其总规模的绝对主体。
+-   <strong>细分赛道的专业玩家：</strong> 华泰柏瑞是前 20 名中极为特殊的案例，其8500亿+的规模几乎完全归功于被动权益产品（主要是沪深300ETF等旗舰ETF），证明了在高速增长的指数基金赛道，依靠单品突围同样可以跻身头部格局。</p>
+<h4>2. 前 20 大公司资产规模与结构详情</h4>
+<p>下表详细列出了规模排名前 20 的公司及其业务结构：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">排名</th>
+<th style="text-align: left;">基金公司</th>
+<th style="text-align: left;">主要资产类型</th>
+<th style="text-align: right;">规模 (亿元人民币)</th>
+<th style="text-align: right;">份额数量 (只)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">易方达</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">8,435.08</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">建信</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">8,164.01</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">华夏</td>
+<td style="text-align: left;">被动权益</td>
+<td style="text-align: right;">7,964.26</td>
+<td style="text-align: right;">215</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">易方达</td>
+<td style="text-align: left;">被动权益</td>
+<td style="text-align: right;">7,876.65</td>
+<td style="text-align: right;">213</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">天弘</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">7,699.70</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">华夏</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">7,656.59</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">南方</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">7,162.96</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">广发</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">6,619.13</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: left;">鹏华</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">5,304.59</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">博时</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">4,857.74</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td style="text-align: left;">富国</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">4,750.61</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td style="text-align: left;">汇添富</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">4,746.51</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td style="text-align: center;">13</td>
+<td style="text-align: left;">万家</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">4,682.53</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td style="text-align: center;">14</td>
+<td style="text-align: left;">兴证全球</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">4,553.86</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;">15</td>
+<td style="text-align: left;">工银瑞信</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">4,476.63</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td style="text-align: center;">16</td>
+<td style="text-align: left;">平安</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">4,412.84</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td style="text-align: center;">17</td>
+<td style="text-align: left;">华泰柏瑞</td>
+<td style="text-align: left;">被动权益</td>
+<td style="text-align: right;">4,318.44</td>
+<td style="text-align: right;">86</td>
+</tr>
+<tr>
+<td style="text-align: center;">18</td>
+<td style="text-align: left;">中银</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">4,300.86</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td style="text-align: center;">19</td>
+<td style="text-align: left;">银华</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">3,799.59</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td style="text-align: center;">20</td>
+<td style="text-align: left;">招商</td>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: right;">3,685.88</td>
+<td style="text-align: right;">9</td>
+</tr>
+</tbody>
+</table>
+<p><em>注：仅列出各公司在前20名中的代表性业务线，不代表其全部资产类型。</em></p>
+<h3>总结</h3>
+<p>2026 年一季度的基金公司规模格局，本质上是由货币基金的存量优势和被动权益基金的增量动能共同塑造的。头部公司中，能同时驾驭这两股力量的企业（如易方达、华夏）占据了绝对领先地位，而绝大多数公司则高度依赖货币基金来维持其在规模排行榜上的位置。华泰柏瑞则代表了一条通过专注被动权益赛道实现规模跃升的路径。</p></div>
+    </section>
+    <section>
+      <h2>结果表</h2>
+      <h3>company_asset_type_ranking</h3><table><thead><tr><th>日期</th><th>基金公司</th><th>资产类型</th><th>基金规模</th><th>份额数量</th></tr></thead><tbody><tr><td>2026-03-31</td><td>易方达</td><td>现金管理</td><td>8435.08</td><td>10</td></tr><tr><td>2026-03-31</td><td>建信</td><td>现金管理</td><td>8164.01</td><td>6</td></tr><tr><td>2026-03-31</td><td>华夏</td><td>被动权益</td><td>7964.26</td><td>215</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>被动权益</td><td>7876.65</td><td>213</td></tr><tr><td>2026-03-31</td><td>天弘</td><td>现金管理</td><td>7699.7</td><td>4</td></tr><tr><td>2026-03-31</td><td>华夏</td><td>现金管理</td><td>7656.59</td><td>13</td></tr><tr><td>2026-03-31</td><td>南方</td><td>现金管理</td><td>7162.96</td><td>8</td></tr><tr><td>2026-03-31</td><td>广发</td><td>现金管理</td><td>6619.13</td><td>8</td></tr><tr><td>2026-03-31</td><td>鹏华</td><td>现金管理</td><td>5304.59</td><td>11</td></tr><tr><td>2026-03-31</td><td>博时</td><td>现金管理</td><td>4857.74</td><td>11</td></tr><tr><td>2026-03-31</td><td>富国</td><td>现金管理</td><td>4750.61</td><td>4</td></tr><tr><td>2026-03-31</td><td>汇添富</td><td>现金管理</td><td>4746.51</td><td>8</td></tr><tr><td>2026-03-31</td><td>万家</td><td>现金管理</td><td>4682.53</td><td>5</td></tr><tr><td>2026-03-31</td><td>兴证全球</td><td>现金管理</td><td>4553.86</td><td>3</td></tr><tr><td>2026-03-31</td><td>工银瑞信</td><td>现金管理</td><td>4476.63</td><td>7</td></tr><tr><td>2026-03-31</td><td>平安</td><td>现金管理</td><td>4412.84</td><td>5</td></tr><tr><td>2026-03-31</td><td>华泰柏瑞</td><td>被动权益</td><td>4318.44</td><td>86</td></tr><tr><td>2026-03-31</td><td>中银</td><td>现金管理</td><td>4300.86</td><td>6</td></tr><tr><td>2026-03-31</td><td>银华</td><td>现金管理</td><td>3799.59</td><td>7</td></tr><tr><td>2026-03-31</td><td>招商</td><td>现金管理</td><td>3685.88</td><td>9</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>调用工具 / SQL</h2>
+      <pre>[
+  {
+    &quot;tool_name&quot;: &quot;rank_companies_by_asset_type_size&quot;,
+    &quot;args&quot;: {
+      &quot;top_n&quot;: 20,
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;asset_type&quot;: null
+    },
+    &quot;metadata&quot;: {
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;asset_type&quot;: null,
+      &quot;top_n&quot;: 20
+    },
+    &quot;warnings&quot;: []
+  }
+]</pre>
+    </section>
+    
+    <section>
+      <h2>Trace</h2>
+      
+        <div class="trace-item">
+          <div class="trace-node">load_context_node</div>
+          <div><b>Action:</b> load_memory(session_id=ui-ae566028)</div>
+          <div><b>Observation:</b> memory keys=[&#x27;recent_turns&#x27;, &#x27;long_memory_summaries&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">mode_router_node</div>
+          <div><b>Action:</b> route_by_sql_mode</div>
+          <div><b>Observation:</b> sql_mode=hard, branch=hard</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">planner_node</div>
+          <div><b>Action:</b> PlannerAgent.plan()</div>
+          <div><b>Observation:</b> intent=company_asset_type_ranking, tool=rank_companies_by_asset_type_size, args={&#x27;date&#x27;: None, &#x27;asset_type&#x27;: None, &#x27;top_n&#x27;: 20}, tool_calls=[{&#x27;tool_name&#x27;: &#x27;rank_companies_by_asset_type_size&#x27;, &#x27;args&#x27;: {&#x27;date&#x27;: None, &#x27;asset_type&#x27;: None, &#x27;top_n&#x27;: 20}, &#x27;step_id&#x27;: &#x27;step1&#x27;}]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">tool_router_node</div>
+          <div><b>Action:</b> ToolRouter.route()</div>
+          <div><b>Observation:</b> categories=[&#x27;fund_size&#x27;, &#x27;company_analysis&#x27;], planned_tools=[&#x27;rank_companies_by_asset_type_size&#x27;], allowed_tools_count=16</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">plan_validator_node</div>
+          <div><b>Action:</b> PlanValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=execute, warnings=[&#x27;date 未指定，已使用最新日期 2026-03-31。&#x27;], issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">executor_node</div>
+          <div><b>Action:</b> ToolExecutor.execute(rank_companies_by_asset_type_size)</div>
+          <div><b>Observation:</b> [TOOL] tool=rank_companies_by_asset_type_size, tables=[&#x27;company_asset_type_ranking&#x27;], notes=2, warnings=0</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">result_validator_node</div>
+          <div><b>Action:</b> ResultValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=report, warnings=[], issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">reflect_node</div>
+          <div><b>Action:</b> reflect_and_route</div>
+          <div><b>Observation:</b> next_action=report, retry_count=0, max_steps=3</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">report_writer_node</div>
+          <div><b>Action:</b> ReportWriterAgent.write()</div>
+          <div><b>Observation:</b> draft_answer_length=2069</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">self_check_node</div>
+          <div><b>Action:</b> SelfCheckAgent.check()</div>
+          <div><b>Observation:</b> passed=True, next_action=final, issues=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">save_context_node</div>
+          <div><b>Action:</b> save_memory_and_finalize</div>
+          <div><b>Observation:</b> final_answer_length=2069</div>
+        </div>
+        
+    </section>
+  </main>
+</body>
+</html>

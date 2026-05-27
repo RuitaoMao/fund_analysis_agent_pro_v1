@@ -1,0 +1,226 @@
+{
+  "query": "如果我问的问题不是很明确你会追问我么",
+  "session_id": "default",
+  "mode": "mock",
+  "plan": {
+    "intent": "generated_sql_query",
+    "tool_name": "generated_sql_query",
+    "args": {
+      "sql": "SELECT\n            date AS 日期,\n            fund_code AS 基金代码,\n            fund_name AS 基金名称,\n            fund_company AS 基金公司,\n            asset_type AS 资产类型,\n            ROUND(fund_size, 2) AS 基金规模\n        FROM fund_size\n        WHERE date = (SELECT MAX(date) FROM fund_size)\n        ORDER BY fund_size DESC\n        LIMIT 10",
+      "tables": [
+        "fund_size"
+      ]
+    },
+    "tool_calls": [],
+    "answer_type": "report",
+    "need_clarification": false,
+    "clarification_question": null,
+    "rationale": "使用最新规模日期按基金规模降序返回前10。"
+  },
+  "plan_validation": null,
+  "tool_result": {
+    "tool_name": "generated_sql_query",
+    "intent": "generated_sql_query",
+    "tables": {
+      "generated_sql_result": [
+        {
+          "日期": "2026-03-31",
+          "基金代码": "000198",
+          "基金名称": "天弘余额宝",
+          "基金公司": "天弘",
+          "资产类型": "现金管理",
+          "基金规模": 7081.52
+        },
+        {
+          "日期": "2026-03-31",
+          "基金代码": "000686",
+          "基金名称": "建信嘉薪宝A",
+          "基金公司": "建信",
+          "资产类型": "现金管理",
+          "基金规模": 3966.21
+        },
+        {
+          "日期": "2026-03-31",
+          "基金代码": "000343",
+          "基金名称": "华夏财富宝A",
+          "基金公司": "华夏",
+          "资产类型": "现金管理",
+          "基金规模": 3216.52
+        },
+        {
+          "日期": "2026-03-31",
+          "基金代码": "000359",
+          "基金名称": "易方达易理财A",
+          "基金公司": "易方达",
+          "资产类型": "现金管理",
+          "基金规模": 3172.86
+        },
+        {
+          "日期": "2026-03-31",
+          "基金代码": "000493",
+          "基金名称": "南方现金通A",
+          "基金公司": "南方",
+          "资产类型": "现金管理",
+          "基金规模": 2577.41
+        },
+        {
+          "日期": "2026-03-31",
+          "基金代码": "000638",
+          "基金名称": "富国富钱包A",
+          "基金公司": "富国",
+          "资产类型": "现金管理",
+          "基金规模": 2477.4
+        },
+        {
+          "日期": "2026-03-31",
+          "基金代码": "000569",
+          "基金名称": "鹏华增值宝",
+          "基金公司": "鹏华",
+          "资产类型": "现金管理",
+          "基金规模": 2297.89
+        },
+        {
+          "日期": "2026-03-31",
+          "基金代码": "000397",
+          "基金名称": "汇添富全额宝A",
+          "基金公司": "汇添富",
+          "资产类型": "现金管理",
+          "基金规模": 2291.08
+        },
+        {
+          "日期": "2026-03-31",
+          "基金代码": "004717",
+          "基金名称": "万家天添宝货币A",
+          "基金公司": "万家",
+          "资产类型": "现金管理",
+          "基金规模": 2226.17
+        },
+        {
+          "日期": "2026-03-31",
+          "基金代码": "000379",
+          "基金名称": "平安日增利A",
+          "基金公司": "平安",
+          "资产类型": "现金管理",
+          "基金规模": 2187.89
+        }
+      ]
+    },
+    "notes": [
+      "未匹配到更具体的 mock SQL 规则，默认查询最新规模前10基金。",
+      "使用最新规模日期按基金规模降序返回前10。",
+      "SQL 由 LLM/规则生成，并经过只读白名单校验和 dry run。"
+    ],
+    "warnings": [],
+    "metadata": {
+      "sql": "SELECT\n            date AS 日期,\n            fund_code AS 基金代码,\n            fund_name AS 基金名称,\n            fund_company AS 基金公司,\n            asset_type AS 资产类型,\n            ROUND(fund_size, 2) AS 基金规模\n        FROM fund_size\n        WHERE date = (SELECT MAX(date) FROM fund_size)\n        ORDER BY fund_size DESC\n        LIMIT 10",
+      "tables": [
+        "fund_size"
+      ],
+      "expected_columns": [
+        "基金代码",
+        "基金名称",
+        "基金规模"
+      ]
+    }
+  },
+  "result_validation": null,
+  "self_check": {
+    "passed": true,
+    "issues": [],
+    "suggested_fix": null
+  },
+  "tool_history": [
+    {
+      "tool_name": "generated_sql_query",
+      "args": {
+        "sql": "SELECT\n            date AS 日期,\n            fund_code AS 基金代码,\n            fund_name AS 基金名称,\n            fund_company AS 基金公司,\n            asset_type AS 资产类型,\n            ROUND(fund_size, 2) AS 基金规模\n        FROM fund_size\n        WHERE date = (SELECT MAX(date) FROM fund_size)\n        ORDER BY fund_size DESC\n        LIMIT 10"
+      },
+      "metadata": {
+        "sql": "SELECT\n            date AS 日期,\n            fund_code AS 基金代码,\n            fund_name AS 基金名称,\n            fund_company AS 基金公司,\n            asset_type AS 资产类型,\n            ROUND(fund_size, 2) AS 基金规模\n        FROM fund_size\n        WHERE date = (SELECT MAX(date) FROM fund_size)\n        ORDER BY fund_size DESC\n        LIMIT 10",
+        "tables": [
+          "fund_size"
+        ],
+        "expected_columns": [
+          "基金代码",
+          "基金名称",
+          "基金规模"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    "load_context_node: memory keys=['last_query', 'last_intent', 'last_tool_name', 'last_args', 'last_date', 'last_asset_type', 'last_fund_codes', 'last_stock_codes', 'last_companies', 'last_result_summary', 'recent_turns', 'long_memory_summaries']",
+    "mode_router_node: sql_mode=generated, branch=generated",
+    "sql_planner_node: [SQL] intent=default_size_ranking, tables=['fund_size'], sql_preview=SELECT\n            date AS 日期,\n            fund_code AS 基金代码,\n            fund_name AS 基金名称,\n            fund_company AS 基金公司,\n            asset_type AS 资产类型,\n ",
+    "sql_validator_node: [SQL] passed=True, errors=[], next_action=execute",
+    "sql_dry_run_node: [SQL] dry_run_passed=True",
+    "sql_executor_node: [SQL][TOOL] rows=10, columns=['日期', '基金代码', '基金名称', '基金公司', '资产类型', '基金规模']",
+    "sql_result_validator_node: [SQL] rows=10, issues=[], next_action=report",
+    "sql_report_writer_node: [SQL] draft_answer_length=1559",
+    "self_check_node: passed=True, next_action=final, issues=[]",
+    "save_context_node: final_answer_length=1559"
+  ],
+  "trace": [
+    {
+      "node": "load_context_node",
+      "thought": "读取会话级上下文，用于解析这些基金、刚才、同样口径等指代。",
+      "action": "load_memory(session_id=default)",
+      "observation": "memory keys=['last_query', 'last_intent', 'last_tool_name', 'last_args', 'last_date', 'last_asset_type', 'last_fund_codes', 'last_stock_codes', 'last_companies', 'last_result_summary', 'recent_turns', 'long_memory_summaries']"
+    },
+    {
+      "node": "mode_router_node",
+      "thought": "根据用户选择的查询引擎，把任务路由到专家工具分支或 LLM 生成 SQL 分支。",
+      "action": "route_by_sql_mode",
+      "observation": "sql_mode=generated, branch=generated"
+    },
+    {
+      "node": "sql_planner_node",
+      "thought": "让 LLM/规则根据用户问题和 schema 生成受控只读 SQL。",
+      "action": "GeneratedSQLAgent.plan_sql()",
+      "observation": "[SQL] intent=default_size_ranking, tables=['fund_size'], sql_preview=SELECT\n            date AS 日期,\n            fund_code AS 基金代码,\n            fund_name AS 基金名称,\n            fund_company AS 基金公司,\n            asset_type AS 资产类型,\n "
+    },
+    {
+      "node": "sql_validator_node",
+      "thought": "检查 SQL 是否只读、是否只访问白名单表、是否有 LIMIT 且不会越权。",
+      "action": "GeneratedSQLAgent.validate_sql()",
+      "observation": "[SQL] passed=True, errors=[], next_action=execute"
+    },
+    {
+      "node": "sql_dry_run_node",
+      "thought": "正式执行前先让 SQLite 解析查询计划，提前发现字段名、表名、语法错误。",
+      "action": "EXPLAIN QUERY PLAN generated_sql",
+      "observation": "[SQL] dry_run_passed=True"
+    },
+    {
+      "node": "sql_executor_node",
+      "thought": "执行已通过校验和 dry run 的只读 SQL。",
+      "action": "SQLiteStore.query_df(generated_sql)",
+      "observation": "[SQL][TOOL] rows=10, columns=['日期', '基金代码', '基金名称', '基金公司', '资产类型', '基金规模']"
+    },
+    {
+      "node": "sql_result_validator_node",
+      "thought": "检查生成 SQL 的结果是否为空，以及是否足够进入报告阶段。",
+      "action": "validate_generated_sql_result",
+      "observation": "[SQL] rows=10, issues=[], next_action=report"
+    },
+    {
+      "node": "sql_report_writer_node",
+      "thought": "把生成 SQL、查询结果和数据口径说明整理成用户可读输出。",
+      "action": "generated_sql_answer()",
+      "observation": "[SQL] draft_answer_length=1559"
+    },
+    {
+      "node": "self_check_node",
+      "thought": "检查最终回答是否回答原问题、忠实于工具结果、说明口径且避免投资建议。",
+      "action": "SelfCheckAgent.check()",
+      "observation": "passed=True, next_action=final, issues=[]"
+    },
+    {
+      "node": "save_context_node",
+      "thought": "保存结构化上下文，支持下一轮追问。",
+      "action": "save_memory_and_finalize",
+      "observation": "final_answer_length=1559"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,231 @@
+{
+  "query": "规模top100基金中本年以来收益最高的10只是哪些",
+  "session_id": "demo-llm-3",
+  "mode": "llm",
+  "plan": {
+    "intent": "generated_sql_query",
+    "tool_name": "generated_sql_query",
+    "args": {
+      "sql": "WITH top100 AS ( SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) ORDER BY fund_size DESC LIMIT 100 ) SELECT t.fund_code AS 基金代码, t.fund_name AS 基金名称, t.fund_company AS 基金公司, ROUND(t.fund_size, 2) AS 基金规模_亿元, ROUND(p.portfolio_return * 100, 2) AS 本年收益率_pct FROM top100 t JOIN fund_performance p ON t.fund_code = p.fund_code WHERE p.period = '本年以来' ORDER BY p.portfolio_return DESC LIMIT 10",
+      "tables": [
+        "fund_size",
+        "fund_performance"
+      ]
+    },
+    "tool_calls": [],
+    "answer_type": "report",
+    "need_clarification": false,
+    "clarification_question": null,
+    "rationale": "从最新规模日期取前100大基金，再关联本年以来业绩，按组合收益率降序取前10"
+  },
+  "plan_validation": null,
+  "tool_result": {
+    "tool_name": "generated_sql_query",
+    "intent": "generated_sql_query",
+    "tables": {
+      "generated_sql_result": [
+        {
+          "基金代码": "518880",
+          "基金名称": "华安黄金ETF",
+          "基金公司": "华安",
+          "基金规模_亿元": 1138.16,
+          "本年收益率_pct": 4.34
+        },
+        {
+          "基金代码": "510500",
+          "基金名称": "南方中证500ETF",
+          "基金公司": "南方",
+          "基金规模_亿元": 724.77,
+          "本年收益率_pct": 1.95
+        },
+        {
+          "基金代码": "000385",
+          "基金名称": "景顺长城景颐双利A",
+          "基金公司": "景顺长城",
+          "基金规模_亿元": 614.77,
+          "本年收益率_pct": 1.08
+        },
+        {
+          "基金代码": "511360",
+          "基金名称": "海富通中证短融ETF",
+          "基金公司": "海富通",
+          "基金规模_亿元": 909.09,
+          "本年收益率_pct": 0.38
+        },
+        {
+          "基金代码": "004137",
+          "基金名称": "博时合惠B",
+          "基金公司": "博时",
+          "基金规模_亿元": 1436.77,
+          "本年收益率_pct": 0.35
+        },
+        {
+          "基金代码": "000602",
+          "基金名称": "富国安益A",
+          "基金公司": "富国",
+          "基金规模_亿元": 1266.6,
+          "本年收益率_pct": 0.35
+        },
+        {
+          "基金代码": "004776",
+          "基金名称": "鹏华金元宝",
+          "基金公司": "鹏华",
+          "基金规模_亿元": 836.29,
+          "本年收益率_pct": 0.35
+        },
+        {
+          "基金代码": "000759",
+          "基金名称": "平安财富宝A",
+          "基金公司": "平安",
+          "基金规模_亿元": 1504.94,
+          "本年收益率_pct": 0.35
+        },
+        {
+          "基金代码": "003391",
+          "基金名称": "建信天添益A",
+          "基金公司": "建信",
+          "基金规模_亿元": 568.26,
+          "本年收益率_pct": 0.35
+        },
+        {
+          "基金代码": "004545",
+          "基金名称": "永赢天天利A",
+          "基金公司": "永赢",
+          "基金规模_亿元": 744.09,
+          "本年收益率_pct": 0.35
+        }
+      ]
+    },
+    "notes": [
+      "规模日期取最新：date = (SELECT MAX(date) FROM fund_size)",
+      "业绩区间默认为'本年以来'",
+      "从最新规模日期取前100大基金，再关联本年以来业绩，按组合收益率降序取前10",
+      "SQL 由 LLM/规则生成，并经过只读白名单校验和 dry run。"
+    ],
+    "warnings": [],
+    "metadata": {
+      "sql": "WITH top100 AS ( SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) ORDER BY fund_size DESC LIMIT 100 ) SELECT t.fund_code AS 基金代码, t.fund_name AS 基金名称, t.fund_company AS 基金公司, ROUND(t.fund_size, 2) AS 基金规模_亿元, ROUND(p.portfolio_return * 100, 2) AS 本年收益率_pct FROM top100 t JOIN fund_performance p ON t.fund_code = p.fund_code WHERE p.period = '本年以来' ORDER BY p.portfolio_return DESC LIMIT 10",
+      "tables": [
+        "fund_size",
+        "fund_performance"
+      ],
+      "expected_columns": [
+        "基金代码",
+        "基金名称",
+        "基金公司",
+        "基金规模_亿元",
+        "本年收益率_pct"
+      ]
+    }
+  },
+  "result_validation": null,
+  "self_check": {
+    "passed": true,
+    "issues": [],
+    "suggested_fix": null
+  },
+  "tool_history": [
+    {
+      "tool_name": "generated_sql_query",
+      "args": {
+        "sql": "WITH top100 AS ( SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) ORDER BY fund_size DESC LIMIT 100 ) SELECT t.fund_code AS 基金代码, t.fund_name AS 基金名称, t.fund_company AS 基金公司, ROUND(t.fund_size, 2) AS 基金规模_亿元, ROUND(p.portfolio_return * 100, 2) AS 本年收益率_pct FROM top100 t JOIN fund_performance p ON t.fund_code = p.fund_code WHERE p.period = '本年以来' ORDER BY p.portfolio_return DESC LIMIT 10"
+      },
+      "metadata": {
+        "sql": "WITH top100 AS ( SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) ORDER BY fund_size DESC LIMIT 100 ) SELECT t.fund_code AS 基金代码, t.fund_name AS 基金名称, t.fund_company AS 基金公司, ROUND(t.fund_size, 2) AS 基金规模_亿元, ROUND(p.portfolio_return * 100, 2) AS 本年收益率_pct FROM top100 t JOIN fund_performance p ON t.fund_code = p.fund_code WHERE p.period = '本年以来' ORDER BY p.portfolio_return DESC LIMIT 10",
+        "tables": [
+          "fund_size",
+          "fund_performance"
+        ],
+        "expected_columns": [
+          "基金代码",
+          "基金名称",
+          "基金公司",
+          "基金规模_亿元",
+          "本年收益率_pct"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    "load_context_node: memory keys=['recent_turns', 'long_memory_summaries']",
+    "complexity_classifier_node: explicit=generated, signals=['嵌套排名:规模top', '2域联合'], auto=generated, final=generated",
+    "mode_router_node: sql_mode=generated, branch=generated",
+    "sql_planner_node: [SQL] intent=Find top 10 funds by year-to-date return among the top 100 largest funds, tables=['fund_size', 'fund_performance'], sql_preview=WITH top100 AS ( SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) ORDER BY fund_size DESC LIMI",
+    "sql_validator_node: [SQL] passed=True, errors=[], next_action=execute",
+    "sql_dry_run_node: [SQL] dry_run_passed=True",
+    "sql_executor_node: [SQL][TOOL] rows=10, columns=['基金代码', '基金名称', '基金公司', '基金规模_亿元', '本年收益率_pct']",
+    "sql_result_validator_node: [SQL] rows=10, issues=[], next_action=report",
+    "sql_report_writer_node: [SQL] draft_answer_length=1248",
+    "self_check_node: passed=True, next_action=final, issues=[]",
+    "save_context_node: final_answer_length=1248"
+  ],
+  "trace": [
+    {
+      "node": "load_context_node",
+      "thought": "读取会话级上下文，用于解析这些基金、刚才、同样口径等指代。",
+      "action": "load_memory(session_id=demo-llm-3)",
+      "observation": "memory keys=['recent_turns', 'long_memory_summaries']"
+    },
+    {
+      "node": "complexity_classifier_node",
+      "thought": "按规则识别查询复杂度；auto 模式默认走 generated SQL，显式指定则尊重用户选择。",
+      "action": "classify_complexity",
+      "observation": "explicit=generated, signals=['嵌套排名:规模top', '2域联合'], auto=generated, final=generated"
+    },
+    {
+      "node": "mode_router_node",
+      "thought": "根据用户选择的查询引擎，把任务路由到专家工具分支或 LLM 生成 SQL 分支。",
+      "action": "route_by_sql_mode",
+      "observation": "sql_mode=generated, branch=generated"
+    },
+    {
+      "node": "sql_planner_node",
+      "thought": "让 LLM/规则根据用户问题和 schema 生成受控只读 SQL。",
+      "action": "GeneratedSQLAgent.plan_sql()",
+      "observation": "[SQL] intent=Find top 10 funds by year-to-date return among the top 100 largest funds, tables=['fund_size', 'fund_performance'], sql_preview=WITH top100 AS ( SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) ORDER BY fund_size DESC LIMI"
+    },
+    {
+      "node": "sql_validator_node",
+      "thought": "检查 SQL 是否只读、是否只访问白名单表、是否有 LIMIT 且不会越权。",
+      "action": "GeneratedSQLAgent.validate_sql()",
+      "observation": "[SQL] passed=True, errors=[], next_action=execute"
+    },
+    {
+      "node": "sql_dry_run_node",
+      "thought": "正式执行前先让 SQLite 解析查询计划，提前发现字段名、表名、语法错误。",
+      "action": "EXPLAIN QUERY PLAN generated_sql",
+      "observation": "[SQL] dry_run_passed=True"
+    },
+    {
+      "node": "sql_executor_node",
+      "thought": "执行已通过校验和 dry run 的只读 SQL。",
+      "action": "SQLiteStore.query_df(generated_sql)",
+      "observation": "[SQL][TOOL] rows=10, columns=['基金代码', '基金名称', '基金公司', '基金规模_亿元', '本年收益率_pct']"
+    },
+    {
+      "node": "sql_result_validator_node",
+      "thought": "检查生成 SQL 的结果。执行失败→重试；结果为空→告知用户没有满足条件的数据；有结果→报告。",
+      "action": "validate_generated_sql_result",
+      "observation": "[SQL] rows=10, issues=[], next_action=report"
+    },
+    {
+      "node": "sql_report_writer_node",
+      "thought": "把生成 SQL、查询结果和数据口径说明整理成用户可读输出。",
+      "action": "ReportWriterAgent.write(generated_sql_result)",
+      "observation": "[SQL] draft_answer_length=1248"
+    },
+    {
+      "node": "self_check_node",
+      "thought": "检查最终回答是否回答原问题、忠实于工具结果、说明口径且避免投资建议。",
+      "action": "SelfCheckAgent.check()",
+      "observation": "passed=True, next_action=final, issues=[]"
+    },
+    {
+      "node": "save_context_node",
+      "thought": "保存结构化上下文，支持下一轮追问。",
+      "action": "save_memory_and_finalize",
+      "observation": "final_answer_length=1248"
+    }
+  ],
+  "errors": []
+}

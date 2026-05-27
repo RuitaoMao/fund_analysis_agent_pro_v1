@@ -1,0 +1,69 @@
+{
+  "query": "规模最大的前一百只基金里，持仓贵州茅台最多的十只基金是谁",
+  "session_id": "eval-cq_003-generated-1779823808193",
+  "mode": "llm",
+  "plan": {
+    "intent": "unknown",
+    "tool_name": "none",
+    "args": {},
+    "tool_calls": [],
+    "answer_type": "clarification",
+    "need_clarification": true,
+    "clarification_question": "这个问题暂时无法转换成可执行的数据查询。请补充您想分析的对象，例如基金公司、基金、股票、时间、规模、持仓或业绩口径。",
+    "rationale": "Generated SQL planner failed: SQL planner 未返回合法 JSON：Expecting value: line 1 column 1 (char 0); raw_preview="
+  },
+  "plan_validation": null,
+  "tool_result": null,
+  "result_validation": null,
+  "self_check": null,
+  "tool_history": [],
+  "observations": [
+    "load_context_node: memory keys=['recent_turns']",
+    "complexity_classifier_node: explicit=generated, signals=[], auto=hard, final=generated",
+    "mode_router_node: sql_mode=generated, branch=generated",
+    "sql_planner_node: [REACT-CORRECTION] sql_plan_error=SQL planner 未返回合法 JSON：Expecting value: line 1 column 1 (char 0); raw_preview=; next_action=clarify",
+    "clarification_node: 这个问题暂时无法转换成可执行的数据查询。请补充您想分析的对象，例如基金公司、基金、股票、时间、规模、持仓或业绩口径。",
+    "save_context_node: final_answer_length=58"
+  ],
+  "trace": [
+    {
+      "node": "load_context_node",
+      "thought": "读取会话级上下文，用于解析这些基金、刚才、同样口径等指代。",
+      "action": "load_memory(session_id=eval-cq_003-generated-1779823808193)",
+      "observation": "memory keys=['recent_turns']"
+    },
+    {
+      "node": "complexity_classifier_node",
+      "thought": "按规则识别查询复杂度，若用户没指定 sql_mode，则自动选择引擎。",
+      "action": "classify_complexity",
+      "observation": "explicit=generated, signals=[], auto=hard, final=generated"
+    },
+    {
+      "node": "mode_router_node",
+      "thought": "根据用户选择的查询引擎，把任务路由到专家工具分支或 LLM 生成 SQL 分支。",
+      "action": "route_by_sql_mode",
+      "observation": "sql_mode=generated, branch=generated"
+    },
+    {
+      "node": "sql_planner_node",
+      "thought": "SQL planner 未能产出可解析计划，转为用户澄清而不是继续执行 SQL。",
+      "action": "GeneratedSQLAgent.plan_sql()",
+      "observation": "[REACT-CORRECTION] sql_plan_error=SQL planner 未返回合法 JSON：Expecting value: line 1 column 1 (char 0); raw_preview=; next_action=clarify"
+    },
+    {
+      "node": "clarification_node",
+      "thought": "LangGraph interrupt 不可用或被取消，回退到一次性返回追问。",
+      "action": "return_clarification",
+      "observation": "这个问题暂时无法转换成可执行的数据查询。请补充您想分析的对象，例如基金公司、基金、股票、时间、规模、持仓或业绩口径。"
+    },
+    {
+      "node": "save_context_node",
+      "thought": "保存结构化上下文，支持下一轮追问。",
+      "action": "save_memory_and_finalize",
+      "observation": "final_answer_length=58"
+    }
+  ],
+  "errors": [
+    "SQL planner 未返回合法 JSON：Expecting value: line 1 column 1 (char 0); raw_preview="
+  ]
+}

@@ -1,0 +1,219 @@
+{
+  "query": "规模前100基金中本年以来超额收益最高的10只",
+  "session_id": "eval-20260526-190952-q018-generated",
+  "mode": "llm",
+  "plan": {
+    "intent": "generated_sql_query",
+    "tool_name": "generated_sql_query",
+    "args": {
+      "sql": "WITH top100 AS (\n    SELECT fund_code FROM fund_size\n    WHERE date=(SELECT MAX(date) FROM fund_size)\n    ORDER BY fund_size DESC LIMIT 100\n)\nSELECT p.fund_code, p.fund_name,\n       ROUND(p.excess_return*100,2) AS 超额收益率_pct,\n       ROUND(p.portfolio_return*100,2) AS 组合收益率_pct\nFROM fund_performance p\nWHERE p.fund_code IN (SELECT fund_code FROM top100)\n  AND p.period='本年以来'\nORDER BY p.excess_return DESC LIMIT 10;",
+      "tables": [
+        "fund_size",
+        "fund_performance"
+      ]
+    },
+    "tool_calls": [],
+    "answer_type": "report",
+    "need_clarification": false,
+    "clarification_question": null,
+    "rationale": "先按最新基金规模降序取前100名基金代码，再关联本年以来业绩并按超额收益降序取前10名"
+  },
+  "plan_validation": null,
+  "tool_result": {
+    "tool_name": "generated_sql_query",
+    "intent": "generated_sql_query",
+    "tables": {
+      "generated_sql_result": [
+        {
+          "fund_code": "004137",
+          "fund_name": "博时合惠货币(B类)",
+          "超额收益率_pct": 0.27,
+          "组合收益率_pct": 0.35
+        },
+        {
+          "fund_code": "000602",
+          "fund_name": "富国安益货币(A类)",
+          "超额收益率_pct": 0.26,
+          "组合收益率_pct": 0.35
+        },
+        {
+          "fund_code": "004776",
+          "fund_name": "鹏华金元宝货币",
+          "超额收益率_pct": 0.26,
+          "组合收益率_pct": 0.35
+        },
+        {
+          "fund_code": "940037",
+          "fund_name": "华泰紫金货币增利货币(C类)",
+          "超额收益率_pct": 0.24,
+          "组合收益率_pct": 0.33
+        },
+        {
+          "fund_code": "000748",
+          "fund_name": "广发活期宝货币(A类)",
+          "超额收益率_pct": 0.22,
+          "组合收益率_pct": 0.3
+        },
+        {
+          "fund_code": "163802",
+          "fund_name": "中银货币(A类)",
+          "超额收益率_pct": 0.21,
+          "组合收益率_pct": 0.3
+        },
+        {
+          "fund_code": "001666",
+          "fund_name": "鹏华添利宝货币(A类)",
+          "超额收益率_pct": 0.21,
+          "组合收益率_pct": 0.3
+        },
+        {
+          "fund_code": "510310",
+          "fund_name": "易方达沪深300ETF发起式",
+          "超额收益率_pct": 0.21,
+          "组合收益率_pct": -3.68
+        },
+        {
+          "fund_code": "001527",
+          "fund_name": "鑫元安鑫宝货币(B类)",
+          "超额收益率_pct": 0.21,
+          "组合收益率_pct": 0.3
+        },
+        {
+          "fund_code": "000730",
+          "fund_name": "博时现金宝货币(A类)",
+          "超额收益率_pct": 0.21,
+          "组合收益率_pct": 0.29
+        }
+      ]
+    },
+    "notes": [
+      "默认基金规模日期为最新日期（SELECT MAX(date) FROM fund_size）",
+      "默认业绩区间为'本年以来'",
+      "先按最新基金规模降序取前100名基金代码，再关联本年以来业绩并按超额收益降序取前10名",
+      "SQL 由 LLM/规则生成，并经过只读白名单校验和 dry run。"
+    ],
+    "warnings": [],
+    "metadata": {
+      "sql": "WITH top100 AS (\n    SELECT fund_code FROM fund_size\n    WHERE date=(SELECT MAX(date) FROM fund_size)\n    ORDER BY fund_size DESC LIMIT 100\n)\nSELECT p.fund_code, p.fund_name,\n       ROUND(p.excess_return*100,2) AS 超额收益率_pct,\n       ROUND(p.portfolio_return*100,2) AS 组合收益率_pct\nFROM fund_performance p\nWHERE p.fund_code IN (SELECT fund_code FROM top100)\n  AND p.period='本年以来'\nORDER BY p.excess_return DESC LIMIT 10;",
+      "tables": [
+        "fund_size",
+        "fund_performance"
+      ],
+      "expected_columns": [
+        "基金代码",
+        "基金名称",
+        "超额收益率_pct",
+        "组合收益率_pct"
+      ]
+    }
+  },
+  "result_validation": null,
+  "self_check": {
+    "passed": true,
+    "issues": [],
+    "suggested_fix": null
+  },
+  "tool_history": [
+    {
+      "tool_name": "generated_sql_query",
+      "args": {
+        "sql": "WITH top100 AS (\n    SELECT fund_code FROM fund_size\n    WHERE date=(SELECT MAX(date) FROM fund_size)\n    ORDER BY fund_size DESC LIMIT 100\n)\nSELECT p.fund_code, p.fund_name,\n       ROUND(p.excess_return*100,2) AS 超额收益率_pct,\n       ROUND(p.portfolio_return*100,2) AS 组合收益率_pct\nFROM fund_performance p\nWHERE p.fund_code IN (SELECT fund_code FROM top100)\n  AND p.period='本年以来'\nORDER BY p.excess_return DESC LIMIT 10;"
+      },
+      "metadata": {
+        "sql": "WITH top100 AS (\n    SELECT fund_code FROM fund_size\n    WHERE date=(SELECT MAX(date) FROM fund_size)\n    ORDER BY fund_size DESC LIMIT 100\n)\nSELECT p.fund_code, p.fund_name,\n       ROUND(p.excess_return*100,2) AS 超额收益率_pct,\n       ROUND(p.portfolio_return*100,2) AS 组合收益率_pct\nFROM fund_performance p\nWHERE p.fund_code IN (SELECT fund_code FROM top100)\n  AND p.period='本年以来'\nORDER BY p.excess_return DESC LIMIT 10;",
+        "tables": [
+          "fund_size",
+          "fund_performance"
+        ],
+        "expected_columns": [
+          "基金代码",
+          "基金名称",
+          "超额收益率_pct",
+          "组合收益率_pct"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    "load_context_node: memory keys=['recent_turns']",
+    "complexity_classifier_node: explicit=generated, signals=['嵌套排名:规模前', '2域联合'], auto=generated, final=generated",
+    "mode_router_node: sql_mode=generated, branch=generated",
+    "sql_planner_node: [SQL] intent=Top 10 funds by this year's excess return among the top 100 by fund size, tables=['fund_size', 'fund_performance'], sql_preview=WITH top100 AS (\n    SELECT fund_code FROM fund_size\n    WHERE date=(SELECT MAX(date) FROM fund_size)\n    ORDER BY fund_size DESC LIMIT 100\n)\nSELECT p.fund_code",
+    "sql_validator_node: [SQL] passed=True, errors=[], next_action=execute",
+    "sql_dry_run_node: [SQL] dry_run_passed=True",
+    "sql_executor_node: [SQL][TOOL] rows=10, columns=['fund_code', 'fund_name', '超额收益率_pct', '组合收益率_pct']",
+    "sql_result_validator_node: [SQL] rows=10, issues=[], next_action=report",
+    "sql_report_writer_node: [SQL] draft_answer_length=858",
+    "self_check_node: passed=True, next_action=final, issues=[]",
+    "save_context_node: final_answer_length=858"
+  ],
+  "trace": [
+    {
+      "node": "load_context_node",
+      "thought": "读取会话级上下文，用于解析这些基金、刚才、同样口径等指代。",
+      "action": "load_memory(session_id=eval-20260526-190952-q018-generated)",
+      "observation": "memory keys=['recent_turns']"
+    },
+    {
+      "node": "complexity_classifier_node",
+      "thought": "按规则识别查询复杂度；auto 模式默认走 generated SQL，显式指定则尊重用户选择。",
+      "action": "classify_complexity",
+      "observation": "explicit=generated, signals=['嵌套排名:规模前', '2域联合'], auto=generated, final=generated"
+    },
+    {
+      "node": "mode_router_node",
+      "thought": "根据用户选择的查询引擎，把任务路由到专家工具分支或 LLM 生成 SQL 分支。",
+      "action": "route_by_sql_mode",
+      "observation": "sql_mode=generated, branch=generated"
+    },
+    {
+      "node": "sql_planner_node",
+      "thought": "让 LLM/规则根据用户问题和 schema 生成受控只读 SQL。",
+      "action": "GeneratedSQLAgent.plan_sql()",
+      "observation": "[SQL] intent=Top 10 funds by this year's excess return among the top 100 by fund size, tables=['fund_size', 'fund_performance'], sql_preview=WITH top100 AS (\n    SELECT fund_code FROM fund_size\n    WHERE date=(SELECT MAX(date) FROM fund_size)\n    ORDER BY fund_size DESC LIMIT 100\n)\nSELECT p.fund_code"
+    },
+    {
+      "node": "sql_validator_node",
+      "thought": "检查 SQL 是否只读、是否只访问白名单表、是否有 LIMIT 且不会越权。",
+      "action": "GeneratedSQLAgent.validate_sql()",
+      "observation": "[SQL] passed=True, errors=[], next_action=execute"
+    },
+    {
+      "node": "sql_dry_run_node",
+      "thought": "正式执行前先让 SQLite 解析查询计划，提前发现字段名、表名、语法错误。",
+      "action": "EXPLAIN QUERY PLAN generated_sql",
+      "observation": "[SQL] dry_run_passed=True"
+    },
+    {
+      "node": "sql_executor_node",
+      "thought": "执行已通过校验和 dry run 的只读 SQL。",
+      "action": "SQLiteStore.query_df(generated_sql)",
+      "observation": "[SQL][TOOL] rows=10, columns=['fund_code', 'fund_name', '超额收益率_pct', '组合收益率_pct']"
+    },
+    {
+      "node": "sql_result_validator_node",
+      "thought": "检查生成 SQL 的结果。执行失败→重试；结果为空→告知用户没有满足条件的数据；有结果→报告。",
+      "action": "validate_generated_sql_result",
+      "observation": "[SQL] rows=10, issues=[], next_action=report"
+    },
+    {
+      "node": "sql_report_writer_node",
+      "thought": "把生成 SQL、查询结果和数据口径说明整理成用户可读输出。",
+      "action": "ReportWriterAgent.write(generated_sql_result)",
+      "observation": "[SQL] draft_answer_length=858"
+    },
+    {
+      "node": "self_check_node",
+      "thought": "检查最终回答是否回答原问题、忠实于工具结果、说明口径且避免投资建议。",
+      "action": "SelfCheckAgent.check()",
+      "observation": "passed=True, next_action=final, issues=[]"
+    },
+    {
+      "node": "save_context_node",
+      "thought": "保存结构化上下文，支持下一轮追问。",
+      "action": "save_memory_and_finalize",
+      "observation": "final_answer_length=858"
+    }
+  ],
+  "errors": []
+}

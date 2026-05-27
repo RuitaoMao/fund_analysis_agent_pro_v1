@@ -1,0 +1,1409 @@
+{
+  "query": "债券型呢？",
+  "session_id": "ui-3b049e6c",
+  "mode": "llm",
+  "plan": {
+    "intent": "generated_sql_query",
+    "tool_name": "generated_sql_query",
+    "args": {
+      "sql": "SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) AND wind_level1 LIKE '%债券%' LIMIT 200",
+      "tables": [
+        "fund_size"
+      ]
+    },
+    "tool_calls": [],
+    "answer_type": "report",
+    "need_clarification": false,
+    "clarification_question": null,
+    "rationale": "查询债券型基金在最新日期下的规模数据，wind_level1字段模糊匹配'债券'"
+  },
+  "plan_validation": null,
+  "tool_result": {
+    "tool_name": "generated_sql_query",
+    "intent": "generated_sql_query",
+    "tables": {
+      "generated_sql_result": [
+        {
+          "fund_code": "019372",
+          "fund_name": "大成元丰多利A",
+          "fund_company": "大成",
+          "fund_size": 98.3003499565
+        },
+        {
+          "fund_code": "019380",
+          "fund_name": "景顺长城景盛双益A",
+          "fund_company": "景顺长城",
+          "fund_size": 6.5773847883
+        },
+        {
+          "fund_code": "019417",
+          "fund_name": "中欧磐固A",
+          "fund_company": "中欧",
+          "fund_size": 105.0247813859
+        },
+        {
+          "fund_code": "019424",
+          "fund_name": "财通资管双鑫一年持有A",
+          "fund_company": "财通证券资管",
+          "fund_size": 0.4983595143
+        },
+        {
+          "fund_code": "015434",
+          "fund_name": "金元顺安鼎泰A",
+          "fund_company": "金元顺安",
+          "fund_size": 0.5705615904
+        },
+        {
+          "fund_code": "020575",
+          "fund_name": "华泰柏瑞安诚6个月持有A",
+          "fund_company": "华泰柏瑞",
+          "fund_size": 1.8394195141
+        },
+        {
+          "fund_code": "020598",
+          "fund_name": "格林聚利增强一个月持有A",
+          "fund_company": "格林",
+          "fund_size": 0.4613636948
+        },
+        {
+          "fund_code": "023485",
+          "fund_name": "创金合信文丰A",
+          "fund_company": "创金合信",
+          "fund_size": 1.6258289506
+        },
+        {
+          "fund_code": "023487",
+          "fund_name": "西部利得裕丰回报A",
+          "fund_company": "西部利得",
+          "fund_size": 1.9925305167
+        },
+        {
+          "fund_code": "023672",
+          "fund_name": "东方红裕丰回报A",
+          "fund_company": "东证资管",
+          "fund_size": 3.3044302465
+        },
+        {
+          "fund_code": "023692",
+          "fund_name": "诺德安悦",
+          "fund_company": "诺德",
+          "fund_size": 11.8254088701
+        },
+        {
+          "fund_code": "024945",
+          "fund_name": "国联稳健鑫益A",
+          "fund_company": "国联",
+          "fund_size": 0.9849082749
+        },
+        {
+          "fund_code": "024958",
+          "fund_name": "富国稳健添荣A",
+          "fund_company": "富国",
+          "fund_size": 16.139761084
+        },
+        {
+          "fund_code": "024995",
+          "fund_name": "汇添富稳颐优选A",
+          "fund_company": "汇添富",
+          "fund_size": 15.9530063451
+        },
+        {
+          "fund_code": "025000",
+          "fund_name": "国泰海通稳健泰裕A",
+          "fund_company": "国泰海通资管",
+          "fund_size": 6.9406211959
+        },
+        {
+          "fund_code": "025039",
+          "fund_name": "东方红汇明A",
+          "fund_company": "东证资管",
+          "fund_size": 4.4358577941
+        },
+        {
+          "fund_code": "025092",
+          "fund_name": "天弘匠心回报A",
+          "fund_company": "天弘",
+          "fund_size": 8.2206190724
+        },
+        {
+          "fund_code": "025101",
+          "fund_name": "信澳鑫诚3个月持有A",
+          "fund_company": "信达澳亚",
+          "fund_size": 0.9995551136
+        },
+        {
+          "fund_code": "003680",
+          "fund_name": "华润元大润泰双鑫A",
+          "fund_company": "华润元大",
+          "fund_size": 2.0136703144
+        },
+        {
+          "fund_code": "005461",
+          "fund_name": "南方希元可转债A",
+          "fund_company": "南方",
+          "fund_size": 24.1610811569
+        },
+        {
+          "fund_code": "210014",
+          "fund_name": "金鹰元丰A",
+          "fund_company": "金鹰",
+          "fund_size": 34.8047125261
+        },
+        {
+          "fund_code": "213007",
+          "fund_name": "宝盈增强收益AB",
+          "fund_company": "宝盈",
+          "fund_size": 1.5345311036
+        },
+        {
+          "fund_code": "217008",
+          "fund_name": "招商安本增利C",
+          "fund_company": "招商",
+          "fund_size": 345.5517686651
+        },
+        {
+          "fund_code": "217018",
+          "fund_name": "招商安瑞进取A",
+          "fund_company": "招商",
+          "fund_size": 45.8967986951
+        },
+        {
+          "fund_code": "217023",
+          "fund_name": "招商信用增强A",
+          "fund_company": "招商",
+          "fund_size": 299.6113805023
+        },
+        {
+          "fund_code": "217024",
+          "fund_name": "招商安盈A",
+          "fund_company": "招商",
+          "fund_size": 64.9412255204
+        },
+        {
+          "fund_code": "660009",
+          "fund_name": "农银汇理增强收益A",
+          "fund_company": "农银汇理",
+          "fund_size": 0.606034573
+        },
+        {
+          "fund_code": "675011",
+          "fund_name": "西部利得稳健双利A",
+          "fund_company": "西部利得",
+          "fund_size": 5.0178289188
+        },
+        {
+          "fund_code": "675081",
+          "fund_name": "西部利得祥盈A",
+          "fund_company": "西部利得",
+          "fund_size": 19.5661625984
+        },
+        {
+          "fund_code": "675121",
+          "fund_name": "西部利得汇逸A",
+          "fund_company": "西部利得",
+          "fund_size": 17.0055235422
+        },
+        {
+          "fund_code": "690002",
+          "fund_name": "民生加银增强收益A",
+          "fund_company": "民生加银",
+          "fund_size": 55.0888776743
+        },
+        {
+          "fund_code": "006896",
+          "fund_name": "新华聚利A",
+          "fund_company": "新华",
+          "fund_size": 10.5857875303
+        },
+        {
+          "fund_code": "006839",
+          "fund_name": "安信聚利增强A",
+          "fund_company": "安信",
+          "fund_size": 232.4876976452
+        },
+        {
+          "fund_code": "013063",
+          "fund_name": "广发集益一年持有A",
+          "fund_company": "广发",
+          "fund_size": 1.0836131472
+        },
+        {
+          "fund_code": "013097",
+          "fund_name": "财通资管双盈A",
+          "fund_company": "财通证券资管",
+          "fund_size": 5.583937876
+        },
+        {
+          "fund_code": "013257",
+          "fund_name": "南方通元6个月持有A",
+          "fund_company": "南方",
+          "fund_size": 1.3757687296
+        },
+        {
+          "fund_code": "013614",
+          "fund_name": "泰信鑫瑞A",
+          "fund_company": "泰信",
+          "fund_size": 0.4413969778
+        },
+        {
+          "fund_code": "013628",
+          "fund_name": "广发集悦A",
+          "fund_company": "广发",
+          "fund_size": 43.5331471144
+        },
+        {
+          "fund_code": "013650",
+          "fund_name": "华安乾煜A",
+          "fund_company": "华安",
+          "fund_size": 165.953357969
+        },
+        {
+          "fund_code": "015716",
+          "fund_name": "华夏稳享增利6个月滚动A",
+          "fund_company": "华夏",
+          "fund_size": 352.1636484664
+        },
+        {
+          "fund_code": "015727",
+          "fund_name": "中泰双利A",
+          "fund_company": "中泰资管",
+          "fund_size": 4.9113429385
+        },
+        {
+          "fund_code": "015805",
+          "fund_name": "景顺长城景颐尊利A",
+          "fund_company": "景顺长城",
+          "fund_size": 99.2556778809
+        },
+        {
+          "fund_code": "015898",
+          "fund_name": "大成元合双利A",
+          "fund_company": "大成",
+          "fund_size": 2.2438640046
+        },
+        {
+          "fund_code": "015908",
+          "fund_name": "方正富邦鸿远A",
+          "fund_company": "方正富邦",
+          "fund_size": 6.9482871053
+        },
+        {
+          "fund_code": "015978",
+          "fund_name": "安信恒鑫增强A",
+          "fund_company": "安信",
+          "fund_size": 6.7600391802
+        },
+        {
+          "fund_code": "017809",
+          "fund_name": "湘财鑫享A",
+          "fund_company": "湘财",
+          "fund_size": 0.0557655498
+        },
+        {
+          "fund_code": "017975",
+          "fund_name": "路博迈护航一年持有A",
+          "fund_company": "路博迈",
+          "fund_size": 1.2840740262
+        },
+        {
+          "fund_code": "019583",
+          "fund_name": "富国稳健添辰A",
+          "fund_company": "富国",
+          "fund_size": 152.7722973297
+        },
+        {
+          "fund_code": "019681",
+          "fund_name": "尚正正享A",
+          "fund_company": "尚正",
+          "fund_size": 0.0176417259
+        },
+        {
+          "fund_code": "020933",
+          "fund_name": "南方尊享稳健增利A",
+          "fund_company": "南方",
+          "fund_size": 0.8228000286
+        },
+        {
+          "fund_code": "020993",
+          "fund_name": "红土创新添益A",
+          "fund_company": "红土创新",
+          "fund_size": 0.6499374898
+        },
+        {
+          "fund_code": "021196",
+          "fund_name": "信澳鑫泰6个月持有A",
+          "fund_company": "信达澳亚",
+          "fund_size": 0.1730795497
+        },
+        {
+          "fund_code": "021241",
+          "fund_name": "永赢逸享A",
+          "fund_company": "永赢",
+          "fund_size": 25.8366266148
+        },
+        {
+          "fund_code": "021323",
+          "fund_name": "博道和裕多元稳健30天持有A",
+          "fund_company": "博道",
+          "fund_size": 0.1390797647
+        },
+        {
+          "fund_code": "021345",
+          "fund_name": "永赢汇享A",
+          "fund_company": "永赢",
+          "fund_size": 5.7327657436
+        },
+        {
+          "fund_code": "021423",
+          "fund_name": "易方达悦丰稳健A",
+          "fund_company": "易方达",
+          "fund_size": 56.4040105583
+        },
+        {
+          "fund_code": "023787",
+          "fund_name": "国联稳健增益A",
+          "fund_company": "国联",
+          "fund_size": 1.4261900571
+        },
+        {
+          "fund_code": "023804",
+          "fund_name": "汇安聚利A",
+          "fund_company": "汇安",
+          "fund_size": 2.4476101518
+        },
+        {
+          "fund_code": "023809",
+          "fund_name": "泓德裕惠A",
+          "fund_company": "泓德",
+          "fund_size": 0.5597899492
+        },
+        {
+          "fund_code": "025142",
+          "fund_name": "华富富泽六个月持有A",
+          "fund_company": "华富",
+          "fund_size": 1.3205702509
+        },
+        {
+          "fund_code": "025144",
+          "fund_name": "华富安颐九个月持有A",
+          "fund_company": "华富",
+          "fund_size": 1.1503605214
+        },
+        {
+          "fund_code": "025152",
+          "fund_name": "华富安康三个月持有A",
+          "fund_company": "华富",
+          "fund_size": 1.1314831546
+        },
+        {
+          "fund_code": "025154",
+          "fund_name": "华富安和A",
+          "fund_company": "华富",
+          "fund_size": 1.6819625884
+        },
+        {
+          "fund_code": "025156",
+          "fund_name": "华泰保兴兴元180天封闭A",
+          "fund_company": "华泰保兴",
+          "fund_size": 3.5034580523
+        },
+        {
+          "fund_code": "025251",
+          "fund_name": "天弘稳利回报A",
+          "fund_company": "天弘",
+          "fund_size": 7.8760464087
+        },
+        {
+          "fund_code": "025260",
+          "fund_name": "华安沣泰A",
+          "fund_company": "华安",
+          "fund_size": 4.4234891353
+        },
+        {
+          "fund_code": "025266",
+          "fund_name": "国泰稳健添利A",
+          "fund_company": "国泰",
+          "fund_size": 6.2274802936
+        },
+        {
+          "fund_code": "025270",
+          "fund_name": "浦银安盛稳健双利A",
+          "fund_company": "浦银安盛",
+          "fund_size": 10.1794100015
+        },
+        {
+          "fund_code": "025272",
+          "fund_name": "中金恒宁A",
+          "fund_company": "中金",
+          "fund_size": 8.8907367565
+        },
+        {
+          "fund_code": "025281",
+          "fund_name": "富国稳健双景A",
+          "fund_company": "富国",
+          "fund_size": 5.2920317065
+        },
+        {
+          "fund_code": "025283",
+          "fund_name": "大成元享臻利A",
+          "fund_company": "大成",
+          "fund_size": 5.377117891
+        },
+        {
+          "fund_code": "025285",
+          "fund_name": "京管泰富京信A",
+          "fund_company": "北京京管泰富",
+          "fund_size": 1.1829835485
+        },
+        {
+          "fund_code": "025289",
+          "fund_name": "建信丰泽A",
+          "fund_company": "建信",
+          "fund_size": 9.1624871019
+        },
+        {
+          "fund_code": "025305",
+          "fund_name": "中欧优利A",
+          "fund_company": "中欧",
+          "fund_size": 7.3026102656
+        },
+        {
+          "fund_code": "025321",
+          "fund_name": "兴银裕安增利A",
+          "fund_company": "兴银",
+          "fund_size": 1.2041808077
+        },
+        {
+          "fund_code": "233012",
+          "fund_name": "大摩多元收益A",
+          "fund_company": "摩根士丹利",
+          "fund_size": 1.0139205228
+        },
+        {
+          "fund_code": "240012",
+          "fund_name": "华宝增强收益A",
+          "fund_company": "华宝",
+          "fund_size": 42.9419427212
+        },
+        {
+          "fund_code": "240018",
+          "fund_name": "华宝可转债A",
+          "fund_company": "华宝",
+          "fund_size": 30.2423772859
+        },
+        {
+          "fund_code": "253060",
+          "fund_name": "国联安信心增长A",
+          "fund_company": "国联安",
+          "fund_size": 21.3818183268
+        },
+        {
+          "fund_code": "710301",
+          "fund_name": "富安达增强收益A",
+          "fund_company": "富安达",
+          "fund_size": 40.215202788
+        },
+        {
+          "fund_code": "720002",
+          "fund_name": "财通可转债A",
+          "fund_company": "财通",
+          "fund_size": 0.8680283082
+        },
+        {
+          "fund_code": "720003",
+          "fund_name": "财通收益增强A",
+          "fund_company": "财通",
+          "fund_size": 44.9681085544
+        },
+        {
+          "fund_code": "008529",
+          "fund_name": "汇安信利A",
+          "fund_company": "汇安",
+          "fund_size": 0.9322382126
+        },
+        {
+          "fund_code": "008475",
+          "fund_name": "招商民安增益A",
+          "fund_company": "招商",
+          "fund_size": 14.9034880739
+        },
+        {
+          "fund_code": "010165",
+          "fund_name": "太平丰和一年定开",
+          "fund_company": "太平",
+          "fund_size": 38.1675800465
+        },
+        {
+          "fund_code": "009752",
+          "fund_name": "大摩灵动优选A",
+          "fund_company": "摩根士丹利",
+          "fund_size": 2.9963214059
+        },
+        {
+          "fund_code": "008035",
+          "fund_name": "蜂巢恒利A",
+          "fund_company": "蜂巢",
+          "fund_size": 5.3125246109
+        },
+        {
+          "fund_code": "010249",
+          "fund_name": "国金惠诚A",
+          "fund_company": "国金",
+          "fund_size": 29.7673267979
+        },
+        {
+          "fund_code": "010260",
+          "fund_name": "海富通策略收益A",
+          "fund_company": "海富通",
+          "fund_size": 0.2293351628
+        },
+        {
+          "fund_code": "013204",
+          "fund_name": "恒生前海恒源天利A",
+          "fund_company": "恒生前海",
+          "fund_size": 40.1568840104
+        },
+        {
+          "fund_code": "013211",
+          "fund_name": "华富安盈一年持有A",
+          "fund_company": "华富",
+          "fund_size": 2.2955232921
+        },
+        {
+          "fund_code": "013411",
+          "fund_name": "嘉实方舟6个月滚动持有A",
+          "fund_company": "嘉实",
+          "fund_size": 0.8878590994
+        },
+        {
+          "fund_code": "016003",
+          "fund_name": "广发集远A",
+          "fund_company": "广发",
+          "fund_size": 19.9425445656
+        },
+        {
+          "fund_code": "016005",
+          "fund_name": "红土创新添利A",
+          "fund_company": "红土创新",
+          "fund_size": 0.5864646559
+        },
+        {
+          "fund_code": "016124",
+          "fund_name": "汇泉安盈回报A",
+          "fund_company": "汇泉",
+          "fund_size": 0.594400466
+        },
+        {
+          "fund_code": "016142",
+          "fund_name": "华安沣悦A",
+          "fund_company": "华安",
+          "fund_size": 6.209912903
+        },
+        {
+          "fund_code": "016161",
+          "fund_name": "天弘永利优享A",
+          "fund_company": "天弘",
+          "fund_size": 6.1694425932
+        },
+        {
+          "fund_code": "016610",
+          "fund_name": "富国稳健添盈A",
+          "fund_company": "富国",
+          "fund_size": 5.9253662768
+        },
+        {
+          "fund_code": "016618",
+          "fund_name": "国融添益增强A",
+          "fund_company": "国融",
+          "fund_size": 1.7535254927
+        },
+        {
+          "fund_code": "020042",
+          "fund_name": "施罗德恒享A",
+          "fund_company": "施罗德",
+          "fund_size": 3.473448409
+        },
+        {
+          "fund_code": "020069",
+          "fund_name": "恒生前海恒源臻利A",
+          "fund_company": "恒生前海",
+          "fund_size": 0.0776321611
+        },
+        {
+          "fund_code": "021548",
+          "fund_name": "富国稳健双鑫A",
+          "fund_company": "富国",
+          "fund_size": 3.6515880624
+        },
+        {
+          "fund_code": "021554",
+          "fund_name": "兴业恒悦180天持有A",
+          "fund_company": "兴业",
+          "fund_size": 99.2692855342
+        },
+        {
+          "fund_code": "021684",
+          "fund_name": "兴全丰德A",
+          "fund_company": "兴证全球",
+          "fund_size": 94.666088601
+        },
+        {
+          "fund_code": "023994",
+          "fund_name": "中信保诚汇利A",
+          "fund_company": "中信保诚",
+          "fund_size": 1.2238041393
+        },
+        {
+          "fund_code": "024095",
+          "fund_name": "国寿安保尊兴增强回报A",
+          "fund_company": "国寿安保",
+          "fund_size": 1.0817920463
+        },
+        {
+          "fund_code": "024110",
+          "fund_name": "融通增元A",
+          "fund_company": "融通",
+          "fund_size": 0.6207665415
+        },
+        {
+          "fund_code": "024132",
+          "fund_name": "鹏扬合利A",
+          "fund_company": "鹏扬",
+          "fund_size": 1.6457768473
+        },
+        {
+          "fund_code": "025621",
+          "fund_name": "国泰海通鑫诚六个月持有A",
+          "fund_company": "国泰海通资管",
+          "fund_size": 0.8064540888
+        },
+        {
+          "fund_code": "025623",
+          "fund_name": "国泰海通鑫选三个月持有A",
+          "fund_company": "国泰海通资管",
+          "fund_size": 7.4118540622
+        },
+        {
+          "fund_code": "025625",
+          "fund_name": "国泰海通鑫逸A",
+          "fund_company": "国泰海通资管",
+          "fund_size": 0.9603279353
+        },
+        {
+          "fund_code": "025627",
+          "fund_name": "国泰海通鑫悦A",
+          "fund_company": "国泰海通资管",
+          "fund_size": 15.9458104112
+        },
+        {
+          "fund_code": "020019",
+          "fund_name": "国泰双利债券A",
+          "fund_company": "国泰",
+          "fund_size": 56.5230140586
+        },
+        {
+          "fund_code": "020033",
+          "fund_name": "国泰民安增利A",
+          "fund_company": "国泰",
+          "fund_size": 4.9054757053
+        },
+        {
+          "fund_code": "040012",
+          "fund_name": "华安强化收益A",
+          "fund_company": "华安",
+          "fund_size": 27.4458578177
+        },
+        {
+          "fund_code": "040022",
+          "fund_name": "华安可转债A",
+          "fund_company": "华安",
+          "fund_size": 26.1642491571
+        },
+        {
+          "fund_code": "040036",
+          "fund_name": "华安安心收益A",
+          "fund_company": "华安",
+          "fund_size": 0.5143807444
+        },
+        {
+          "fund_code": "050011",
+          "fund_name": "博时信用债券A",
+          "fund_company": "博时",
+          "fund_size": 65.5682135288
+        },
+        {
+          "fund_code": "290003",
+          "fund_name": "泰信双息双利C",
+          "fund_company": "泰信",
+          "fund_size": 9.225017213
+        },
+        {
+          "fund_code": "310508",
+          "fund_name": "申万菱信稳益宝A",
+          "fund_company": "申万菱信",
+          "fund_size": 2.1590297008
+        },
+        {
+          "fund_code": "310518",
+          "fund_name": "申万菱信可转债A",
+          "fund_company": "申万菱信",
+          "fund_size": 0.475769662
+        },
+        {
+          "fund_code": "006466",
+          "fund_name": "浦银安盛双债增强A",
+          "fund_company": "浦银安盛",
+          "fund_size": 47.2595976897
+        },
+        {
+          "fund_code": "007128",
+          "fund_name": "天弘增强回报A",
+          "fund_company": "天弘",
+          "fund_size": 63.4590748176
+        },
+        {
+          "fund_code": "008469",
+          "fund_name": "朱雀安鑫回报A",
+          "fund_company": "朱雀",
+          "fund_size": 2.22694264
+        },
+        {
+          "fund_code": "009358",
+          "fund_name": "兴业稳健双利一年A",
+          "fund_company": "兴业",
+          "fund_size": 0.5772125096
+        },
+        {
+          "fund_code": "007683",
+          "fund_name": "华商转债精选A",
+          "fund_company": "华商",
+          "fund_size": 0.5277735661
+        },
+        {
+          "fund_code": "010011",
+          "fund_name": "景顺长城景颐招利6个月持有A",
+          "fund_company": "景顺长城",
+          "fund_size": 137.2034954424
+        },
+        {
+          "fund_code": "011091",
+          "fund_name": "工银双玺6个月持有A",
+          "fund_company": "工银瑞信",
+          "fund_size": 31.0540872967
+        },
+        {
+          "fund_code": "011109",
+          "fund_name": "南方晖元6个月持有A",
+          "fund_company": "南方",
+          "fund_size": 52.6967777279
+        },
+        {
+          "fund_code": "011280",
+          "fund_name": "华宝双债增强A",
+          "fund_company": "华宝",
+          "fund_size": 13.0690352319
+        },
+        {
+          "fund_code": "011298",
+          "fund_name": "易方达悦安一年持有A",
+          "fund_company": "易方达",
+          "fund_size": 2.7994801476
+        },
+        {
+          "fund_code": "011327",
+          "fund_name": "太平丰盈一年定开",
+          "fund_company": "太平",
+          "fund_size": 36.2974005934
+        },
+        {
+          "fund_code": "014397",
+          "fund_name": "中银恒悦180天持有A",
+          "fund_company": "中银",
+          "fund_size": 27.3870079367
+        },
+        {
+          "fund_code": "014399",
+          "fund_name": "中银民利一年持有A",
+          "fund_company": "中银",
+          "fund_size": 2.545472092
+        },
+        {
+          "fund_code": "014492",
+          "fund_name": "浙商汇金兴利增强A",
+          "fund_company": "浙商证券资管",
+          "fund_size": 1.2977113124
+        },
+        {
+          "fund_code": "016327",
+          "fund_name": "农银汇理双利回报A",
+          "fund_company": "农银汇理",
+          "fund_size": 3.335263348
+        },
+        {
+          "fund_code": "016513",
+          "fund_name": "招商安嘉",
+          "fund_company": "招商",
+          "fund_size": 1.5196009509
+        },
+        {
+          "fund_code": "017045",
+          "fund_name": "达诚腾益A",
+          "fund_company": "达诚",
+          "fund_size": 1.401253264
+        },
+        {
+          "fund_code": "017121",
+          "fund_name": "南方贤元一年持有A",
+          "fund_company": "南方",
+          "fund_size": 1.9099636072
+        },
+        {
+          "fund_code": "017134",
+          "fund_name": "博道和祥多元稳健A",
+          "fund_company": "博道",
+          "fund_size": 0.3537638977
+        },
+        {
+          "fund_code": "020181",
+          "fund_name": "长城智盈添益A",
+          "fund_company": "长城",
+          "fund_size": 3.1964409883
+        },
+        {
+          "fund_code": "020209",
+          "fund_name": "明亚稳利3个月持有A",
+          "fund_company": "明亚",
+          "fund_size": 0.8681512029
+        },
+        {
+          "fund_code": "022094",
+          "fund_name": "恒生前海恒源昭利A",
+          "fund_company": "恒生前海",
+          "fund_size": 2.3936434538
+        },
+        {
+          "fund_code": "024216",
+          "fund_name": "汇泉安瑞回报A",
+          "fund_company": "汇泉",
+          "fund_size": 0.0018112354
+        },
+        {
+          "fund_code": "002412",
+          "fund_name": "华富安福A",
+          "fund_company": "华富",
+          "fund_size": 1.0873586377
+        },
+        {
+          "fund_code": "002459",
+          "fund_name": "华夏鼎利A",
+          "fund_company": "华夏",
+          "fund_size": 135.420551894
+        },
+        {
+          "fund_code": "004025",
+          "fund_name": "融通收益增强A",
+          "fund_company": "融通",
+          "fund_size": 11.1983573381
+        },
+        {
+          "fund_code": "004063",
+          "fund_name": "华夏恒融",
+          "fund_company": "华夏",
+          "fund_size": 3.7251808863
+        },
+        {
+          "fund_code": "050016",
+          "fund_name": "博时宏观回报AB",
+          "fund_company": "博时",
+          "fund_size": 1.4172752319
+        },
+        {
+          "fund_code": "050019",
+          "fund_name": "博时转债增强A",
+          "fund_company": "博时",
+          "fund_size": 32.6627237969
+        },
+        {
+          "fund_code": "050023",
+          "fund_name": "博时天颐A",
+          "fund_company": "博时",
+          "fund_size": 21.1854237199
+        },
+        {
+          "fund_code": "070015",
+          "fund_name": "嘉实多元收益A",
+          "fund_company": "嘉实",
+          "fund_size": 10.3796665333
+        },
+        {
+          "fund_code": "070020",
+          "fund_name": "嘉实稳固收益C",
+          "fund_company": "嘉实",
+          "fund_size": 30.6677328119
+        },
+        {
+          "fund_code": "080003",
+          "fund_name": "长盛积极配置A",
+          "fund_company": "长盛",
+          "fund_size": 0.2817571344
+        },
+        {
+          "fund_code": "320008",
+          "fund_name": "诺安增利A",
+          "fund_company": "诺安",
+          "fund_size": 0.1742641592
+        },
+        {
+          "fund_code": "320021",
+          "fund_name": "诺安双利A",
+          "fund_company": "诺安",
+          "fund_size": 25.0966999349
+        },
+        {
+          "fund_code": "350006",
+          "fund_name": "天治稳健双盈",
+          "fund_company": "天治",
+          "fund_size": 0.4645112155
+        },
+        {
+          "fund_code": "360013",
+          "fund_name": "光大添益A",
+          "fund_company": "光大",
+          "fund_size": 73.669918038
+        },
+        {
+          "fund_code": "372010",
+          "fund_name": "摩根强化回报A",
+          "fund_company": "摩根",
+          "fund_size": 27.6884779181
+        },
+        {
+          "fund_code": "005793",
+          "fund_name": "华富可转债A",
+          "fund_company": "华富",
+          "fund_size": 4.662903047
+        },
+        {
+          "fund_code": "005843",
+          "fund_name": "金元顺安沣泉A",
+          "fund_company": "金元顺安",
+          "fund_size": 22.1063805967
+        },
+        {
+          "fund_code": "006738",
+          "fund_name": "工银添慧A",
+          "fund_company": "工银瑞信",
+          "fund_size": 5.4730435829
+        },
+        {
+          "fund_code": "004647",
+          "fund_name": "新华鼎利A",
+          "fund_company": "新华",
+          "fund_size": 0.9757109794
+        },
+        {
+          "fund_code": "008791",
+          "fund_name": "招商安华A",
+          "fund_company": "招商",
+          "fund_size": 63.137952234
+        },
+        {
+          "fund_code": "008556",
+          "fund_name": "易方达裕富A",
+          "fund_company": "易方达",
+          "fund_size": 172.1774155737
+        },
+        {
+          "fund_code": "010118",
+          "fund_name": "天弘多元收益A",
+          "fund_company": "天弘",
+          "fund_size": 96.876687409
+        },
+        {
+          "fund_code": "011492",
+          "fund_name": "华泰紫金丰睿A",
+          "fund_company": "华泰证券资管",
+          "fund_size": 1.4614551694
+        },
+        {
+          "fund_code": "011653",
+          "fund_name": "国泰鑫享稳健6个月滚动持有A",
+          "fund_company": "国泰",
+          "fund_size": 10.5653264224
+        },
+        {
+          "fund_code": "011656",
+          "fund_name": "天弘京津冀主题A",
+          "fund_company": "天弘",
+          "fund_size": 14.5371834804
+        },
+        {
+          "fund_code": "014671",
+          "fund_name": "富国裕利A",
+          "fund_company": "富国",
+          "fund_size": 189.0759203834
+        },
+        {
+          "fund_code": "014716",
+          "fund_name": "东兴兴源A",
+          "fund_company": "东兴",
+          "fund_size": 2.0728261799
+        },
+        {
+          "fund_code": "017498",
+          "fund_name": "淳厚添益增强A",
+          "fund_company": "淳厚",
+          "fund_size": 1.2446049728
+        },
+        {
+          "fund_code": "017622",
+          "fund_name": "同泰恒盛A",
+          "fund_company": "同泰",
+          "fund_size": 4.8257870923
+        },
+        {
+          "fund_code": "018644",
+          "fund_name": "金鹰悦享A",
+          "fund_company": "金鹰",
+          "fund_size": 0.7471855817
+        },
+        {
+          "fund_code": "018765",
+          "fund_name": "汇添富稳丰回报A",
+          "fund_company": "汇添富",
+          "fund_size": 0.1103695524
+        },
+        {
+          "fund_code": "018767",
+          "fund_name": "汇添富稳乐回报A",
+          "fund_company": "汇添富",
+          "fund_size": 1.1485397333
+        },
+        {
+          "fund_code": "021517",
+          "fund_name": "兴华兴利A",
+          "fund_company": "兴华",
+          "fund_size": 0.4855935332
+        },
+        {
+          "fund_code": "002474",
+          "fund_name": "中邮睿信增强A",
+          "fund_company": "中邮创业",
+          "fund_size": 203.6856679034
+        },
+        {
+          "fund_code": "002501",
+          "fund_name": "银华远景A",
+          "fund_company": "银华",
+          "fund_size": 20.8765221634
+        },
+        {
+          "fund_code": "002521",
+          "fund_name": "永赢双利A",
+          "fund_company": "永赢",
+          "fund_size": 13.4107660828
+        },
+        {
+          "fund_code": "004093",
+          "fund_name": "金元顺安桉盛A",
+          "fund_company": "金元顺安",
+          "fund_size": 3.3325836577
+        },
+        {
+          "fund_code": "090017",
+          "fund_name": "大成可转债增强A",
+          "fund_company": "大成",
+          "fund_size": 0.9542507294
+        },
+        {
+          "fund_code": "100035",
+          "fund_name": "富国优化增强A",
+          "fund_company": "富国",
+          "fund_size": 151.1267610026
+        },
+        {
+          "fund_code": "100051",
+          "fund_name": "富国可转债A",
+          "fund_company": "富国",
+          "fund_size": 25.2762834315
+        },
+        {
+          "fund_code": "110007",
+          "fund_name": "易方达稳健收益A",
+          "fund_company": "易方达",
+          "fund_size": 370.9215633655
+        },
+        {
+          "fund_code": "380009",
+          "fund_name": "中银稳健添利A",
+          "fund_company": "中银",
+          "fund_size": 85.6898370499
+        },
+        {
+          "fund_code": "395011",
+          "fund_name": "中海增强收益A",
+          "fund_company": "中海",
+          "fund_size": 0.9554238428
+        },
+        {
+          "fund_code": "400016",
+          "fund_name": "东方强化收益A",
+          "fund_company": "东方",
+          "fund_size": 6.5761223197
+        },
+        {
+          "fund_code": "400027",
+          "fund_name": "东方双债添利A",
+          "fund_company": "东方",
+          "fund_size": 10.6679130039
+        },
+        {
+          "fund_code": "420002",
+          "fund_name": "天弘永利债券A",
+          "fund_company": "天弘",
+          "fund_size": 162.7275748415
+        },
+        {
+          "fund_code": "420008",
+          "fund_name": "天弘增益回报A",
+          "fund_company": "天弘",
+          "fund_size": 11.4976012057
+        },
+        {
+          "fund_code": "005886",
+          "fund_name": "华夏鼎沛A",
+          "fund_company": "华夏",
+          "fund_size": 1.1720041997
+        },
+        {
+          "fund_code": "005908",
+          "fund_name": "华泰保兴尊利A",
+          "fund_company": "华泰保兴",
+          "fund_size": 69.3288907064
+        },
+        {
+          "fund_code": "007316",
+          "fund_name": "交银可转债A",
+          "fund_company": "交银",
+          "fund_size": 1.5957180993
+        },
+        {
+          "fund_code": "010430",
+          "fund_name": "招商安阳A",
+          "fund_company": "招商",
+          "fund_size": 9.5260144158
+        },
+        {
+          "fund_code": "011864",
+          "fund_name": "博时恒泰A",
+          "fund_company": "博时",
+          "fund_size": 42.4056678595
+        },
+        {
+          "fund_code": "011897",
+          "fund_name": "长城悦享回报A",
+          "fund_company": "长城",
+          "fund_size": 2.6242023641
+        },
+        {
+          "fund_code": "011942",
+          "fund_name": "建信泓利一年持有",
+          "fund_company": "建信",
+          "fund_size": 0.8278350913
+        },
+        {
+          "fund_code": "014887",
+          "fund_name": "招商安福1年定开",
+          "fund_company": "招商",
+          "fund_size": 40.0561429465
+        },
+        {
+          "fund_code": "015141",
+          "fund_name": "华泰紫金周周购6个月滚动A",
+          "fund_company": "华泰证券资管",
+          "fund_size": 2.0113812855
+        }
+      ]
+    },
+    "notes": [
+      "债券型基金由wind_level1字段中类似'债券型'的值标识",
+      "使用fund_size表中最新的date",
+      "查询债券型基金在最新日期下的规模数据，wind_level1字段模糊匹配'债券'",
+      "SQL 由 LLM/规则生成，并经过只读白名单校验和 dry run。"
+    ],
+    "warnings": [],
+    "metadata": {
+      "sql": "SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) AND wind_level1 LIKE '%债券%' LIMIT 200",
+      "tables": [
+        "fund_size"
+      ],
+      "expected_columns": [
+        "基金代码",
+        "基金名称",
+        "基金公司",
+        "基金规模(亿)"
+      ]
+    }
+  },
+  "result_validation": null,
+  "self_check": {
+    "passed": true,
+    "issues": [],
+    "suggested_fix": null
+  },
+  "tool_history": [
+    {
+      "tool_name": "generated_sql_query",
+      "args": {
+        "sql": "SELECT fund_code AS 基金代码, fund_name AS 基金名称, fund_company AS 基金公司, fund_size AS 基金规模 FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) AND wind_level1 = '债券型' ORDER BY fund_size DESC LIMIT 200;"
+      },
+      "metadata": {
+        "sql": "SELECT fund_code AS 基金代码, fund_name AS 基金名称, fund_company AS 基金公司, fund_size AS 基金规模 FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) AND wind_level1 = '债券型' ORDER BY fund_size DESC LIMIT 200;",
+        "tables": [
+          "fund_size"
+        ],
+        "expected_columns": [
+          "基金代码",
+          "基金名称",
+          "基金公司",
+          "基金规模"
+        ]
+      }
+    },
+    {
+      "tool_name": "generated_sql_query",
+      "args": {
+        "sql": "SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) AND wind_level1 LIKE '%债券%' LIMIT 200"
+      },
+      "metadata": {
+        "sql": "SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) AND wind_level1 LIKE '%债券%' LIMIT 200",
+        "tables": [
+          "fund_size"
+        ],
+        "expected_columns": [
+          "基金代码",
+          "基金名称",
+          "基金公司",
+          "基金规模(亿)"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    "load_context_node: memory keys=['last_query', 'last_intent', 'last_tool_name', 'last_args', 'last_date', 'last_asset_type', 'last_fund_codes', 'last_stock_codes', 'last_companies', 'last_result_summary', 'last_metadata', 'recent_turns', 'long_memory_summaries']",
+    "mode_router_node: sql_mode=generated, branch=generated",
+    "sql_planner_node: [SQL] intent=Query the latest fund size for bond funds, tables=['fund_size'], sql_preview=SELECT fund_code AS 基金代码, fund_name AS 基金名称, fund_company AS 基金公司, fund_size AS 基金规模 FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) AND wind_leve",
+    "sql_validator_node: [SQL] passed=True, errors=[], next_action=execute",
+    "sql_dry_run_node: [SQL] dry_run_passed=True",
+    "sql_executor_node: [SQL][TOOL] rows=0, columns=['基金代码', '基金名称', '基金公司', '基金规模']",
+    "sql_result_validator_node: [REACT-CORRECTION] rows=0, issues=['生成 SQL 执行结果为空。'], next_action=replan",
+    "sql_reflect_node: [REACT-CORRECTION] next_action=replan, sql_retry_count=1, max_steps=3",
+    "sql_planner_node: [SQL] intent=Retrieve latest fund size for bond funds, tables=['fund_size'], sql_preview=SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) AND wind_level1 LIKE '%债券%' LIMIT 200",
+    "sql_validator_node: [SQL] passed=True, errors=[], next_action=execute",
+    "sql_dry_run_node: [SQL] dry_run_passed=True",
+    "sql_executor_node: [SQL][TOOL] rows=200, columns=['fund_code', 'fund_name', 'fund_company', 'fund_size']",
+    "sql_result_validator_node: [SQL] rows=200, issues=[], next_action=report",
+    "sql_report_writer_node: [SQL] draft_answer_length=1401",
+    "self_check_node: passed=True, next_action=final, issues=[]",
+    "save_context_node: final_answer_length=1401"
+  ],
+  "trace": [
+    {
+      "node": "load_context_node",
+      "thought": "读取会话级上下文，用于解析这些基金、刚才、同样口径等指代。",
+      "action": "load_memory(session_id=ui-3b049e6c)",
+      "observation": "memory keys=['last_query', 'last_intent', 'last_tool_name', 'last_args', 'last_date', 'last_asset_type', 'last_fund_codes', 'last_stock_codes', 'last_companies', 'last_result_summary', 'last_metadata', 'recent_turns', 'long_memory_summaries']"
+    },
+    {
+      "node": "mode_router_node",
+      "thought": "根据用户选择的查询引擎，把任务路由到专家工具分支或 LLM 生成 SQL 分支。",
+      "action": "route_by_sql_mode",
+      "observation": "sql_mode=generated, branch=generated"
+    },
+    {
+      "node": "sql_planner_node",
+      "thought": "让 LLM/规则根据用户问题和 schema 生成受控只读 SQL。",
+      "action": "GeneratedSQLAgent.plan_sql()",
+      "observation": "[SQL] intent=Query the latest fund size for bond funds, tables=['fund_size'], sql_preview=SELECT fund_code AS 基金代码, fund_name AS 基金名称, fund_company AS 基金公司, fund_size AS 基金规模 FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) AND wind_leve"
+    },
+    {
+      "node": "sql_validator_node",
+      "thought": "检查 SQL 是否只读、是否只访问白名单表、是否有 LIMIT 且不会越权。",
+      "action": "GeneratedSQLAgent.validate_sql()",
+      "observation": "[SQL] passed=True, errors=[], next_action=execute"
+    },
+    {
+      "node": "sql_dry_run_node",
+      "thought": "正式执行前先让 SQLite 解析查询计划，提前发现字段名、表名、语法错误。",
+      "action": "EXPLAIN QUERY PLAN generated_sql",
+      "observation": "[SQL] dry_run_passed=True"
+    },
+    {
+      "node": "sql_executor_node",
+      "thought": "执行已通过校验和 dry run 的只读 SQL。",
+      "action": "SQLiteStore.query_df(generated_sql)",
+      "observation": "[SQL][TOOL] rows=0, columns=['基金代码', '基金名称', '基金公司', '基金规模']"
+    },
+    {
+      "node": "sql_result_validator_node",
+      "thought": "检查生成 SQL 的结果是否为空，以及是否足够进入报告阶段。",
+      "action": "validate_generated_sql_result",
+      "observation": "[REACT-CORRECTION] rows=0, issues=['生成 SQL 执行结果为空。'], next_action=replan"
+    },
+    {
+      "node": "sql_reflect_node",
+      "thought": "根据 SQL 校验、dry run 或结果观察决定是否让 LLM 重新生成 SQL。",
+      "action": "reflect_sql_branch",
+      "observation": "[REACT-CORRECTION] next_action=replan, sql_retry_count=1, max_steps=3"
+    },
+    {
+      "node": "sql_planner_node",
+      "thought": "让 LLM/规则根据用户问题和 schema 生成受控只读 SQL。",
+      "action": "GeneratedSQLAgent.plan_sql()",
+      "observation": "[SQL] intent=Retrieve latest fund size for bond funds, tables=['fund_size'], sql_preview=SELECT fund_code, fund_name, fund_company, fund_size FROM fund_size WHERE date = (SELECT MAX(date) FROM fund_size) AND wind_level1 LIKE '%债券%' LIMIT 200"
+    },
+    {
+      "node": "sql_validator_node",
+      "thought": "检查 SQL 是否只读、是否只访问白名单表、是否有 LIMIT 且不会越权。",
+      "action": "GeneratedSQLAgent.validate_sql()",
+      "observation": "[SQL] passed=True, errors=[], next_action=execute"
+    },
+    {
+      "node": "sql_dry_run_node",
+      "thought": "正式执行前先让 SQLite 解析查询计划，提前发现字段名、表名、语法错误。",
+      "action": "EXPLAIN QUERY PLAN generated_sql",
+      "observation": "[SQL] dry_run_passed=True"
+    },
+    {
+      "node": "sql_executor_node",
+      "thought": "执行已通过校验和 dry run 的只读 SQL。",
+      "action": "SQLiteStore.query_df(generated_sql)",
+      "observation": "[SQL][TOOL] rows=200, columns=['fund_code', 'fund_name', 'fund_company', 'fund_size']"
+    },
+    {
+      "node": "sql_result_validator_node",
+      "thought": "检查生成 SQL 的结果是否为空，以及是否足够进入报告阶段。",
+      "action": "validate_generated_sql_result",
+      "observation": "[SQL] rows=200, issues=[], next_action=report"
+    },
+    {
+      "node": "sql_report_writer_node",
+      "thought": "把生成 SQL、查询结果和数据口径说明整理成用户可读输出。",
+      "action": "ReportWriterAgent.write(generated_sql_result)",
+      "observation": "[SQL] draft_answer_length=1401"
+    },
+    {
+      "node": "self_check_node",
+      "thought": "检查最终回答是否回答原问题、忠实于工具结果、说明口径且避免投资建议。",
+      "action": "SelfCheckAgent.check()",
+      "observation": "passed=True, next_action=final, issues=[]"
+    },
+    {
+      "node": "save_context_node",
+      "thought": "保存结构化上下文，支持下一轮追问。",
+      "action": "save_memory_and_finalize",
+      "observation": "final_answer_length=1401"
+    }
+  ],
+  "errors": []
+}

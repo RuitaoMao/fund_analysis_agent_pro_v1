@@ -1,0 +1,325 @@
+{
+  "query": "本年以来收益率最高的10只基金是哪些",
+  "session_id": "eval-20260526-190952-q005-hard",
+  "mode": "llm",
+  "sql_mode": "hard",
+  "memory_context": {
+    "recent_turns": []
+  },
+  "use_long_memory": false,
+  "max_steps": 3,
+  "plan": {
+    "intent": "performance_ranking",
+    "tool_name": "query_fund_performance",
+    "args": {
+      "period": "本年以来",
+      "top_n": 10,
+      "ascending": false
+    },
+    "tool_calls": [],
+    "answer_type": "simple",
+    "need_clarification": false,
+    "clarification_question": null,
+    "rationale": "直接使用query_fund_performance查询本年以来收益率前10基金，不指定资产类型以覆盖全市场。"
+  },
+  "tool_route": {
+    "categories": [
+      "performance"
+    ],
+    "allowed_tools": [
+      "query_fund_performance"
+    ],
+    "planned_tools": [
+      "query_fund_performance"
+    ],
+    "description": "基金业绩排名、明细、对比及公司均值排名。"
+  },
+  "plan_validation": {
+    "passed": true,
+    "issues": [],
+    "warnings": [],
+    "correction_hint": null,
+    "repaired_args": {
+      "top_n": 10,
+      "period": "本年以来",
+      "ascending": false,
+      "fund_codes": null,
+      "fund_company": null,
+      "asset_type": null,
+      "rank_by_company": false
+    },
+    "repaired_tool_calls": [
+      {
+        "tool_name": "query_fund_performance",
+        "args": {
+          "top_n": 10,
+          "period": "本年以来",
+          "ascending": false,
+          "fund_codes": null,
+          "fund_company": null,
+          "asset_type": null,
+          "rank_by_company": false
+        },
+        "step_id": null
+      }
+    ],
+    "next_action": "execute"
+  },
+  "tool_result": {
+    "tool_name": "query_fund_performance",
+    "intent": "fund_performance_query",
+    "tables": {
+      "performance_ranking": [
+        {
+          "基金代码": "161129",
+          "基金名称": "易方达原油(QDII-LOF)(A类)",
+          "业绩区间": "本年以来",
+          "组合收益率_pct": 63.23,
+          "基准收益率_pct": 75.68,
+          "超额收益_pct": -12.45,
+          "最大回撤_pct": 5.9
+        },
+        {
+          "基金代码": "016873",
+          "基金名称": "广发远见智选混合(A类)",
+          "业绩区间": "本年以来",
+          "组合收益率_pct": 58.03,
+          "基准收益率_pct": -3.21,
+          "超额收益_pct": 61.24,
+          "最大回撤_pct": 8.57
+        },
+        {
+          "基金代码": "020722",
+          "基金名称": "国寿安保数字经济股票发起式(A类)",
+          "业绩区间": "本年以来",
+          "组合收益率_pct": 45.38,
+          "基准收益率_pct": -7.39,
+          "超额收益_pct": 52.77,
+          "最大回撤_pct": 8.43
+        },
+        {
+          "基金代码": "513350",
+          "基金名称": "富国标普石油天然气勘探及生产精选行业ETF(QDII)",
+          "业绩区间": "本年以来",
+          "组合收益率_pct": 44.92,
+          "基准收益率_pct": 43.83,
+          "超额收益_pct": 1.1,
+          "最大回撤_pct": 3.17
+        },
+        {
+          "基金代码": "159518",
+          "基金名称": "嘉实标普石油天然气勘探及生产精选行业ETF(QDII)",
+          "业绩区间": "本年以来",
+          "组合收益率_pct": 44.91,
+          "基准收益率_pct": 41.59,
+          "超额收益_pct": 3.32,
+          "最大回撤_pct": 3.16
+        },
+        {
+          "基金代码": "018851",
+          "基金名称": "博时标普石油天然气勘探及生产精选行业指数发起式(QDII)(A类)",
+          "业绩区间": "本年以来",
+          "组合收益率_pct": 42.42,
+          "基准收益率_pct": 41.3,
+          "超额收益_pct": 1.12,
+          "最大回撤_pct": 3.01
+        },
+        {
+          "基金代码": "162411",
+          "基金名称": "华宝标普油气上游股票指数(QDII-LOF)(A类)",
+          "业绩区间": "本年以来",
+          "组合收益率_pct": 41.66,
+          "基准收益率_pct": 43.83,
+          "超额收益_pct": -2.16,
+          "最大回撤_pct": 2.95
+        },
+        {
+          "基金代码": "070028",
+          "基金名称": "嘉实安心货币(A类)",
+          "业绩区间": "本年以来",
+          "组合收益率_pct": 36.05,
+          "基准收益率_pct": 0.34,
+          "超额收益_pct": 35.71,
+          "最大回撤_pct": 0.0
+        },
+        {
+          "基金代码": "162719",
+          "基金名称": "广发道琼斯美国石油开发与生产指数(QDII-LOF)(A类)",
+          "业绩区间": "本年以来",
+          "组合收益率_pct": 35.13,
+          "基准收益率_pct": 35.42,
+          "超额收益_pct": -0.29,
+          "最大回撤_pct": 2.61
+        },
+        {
+          "基金代码": "159981",
+          "基金名称": "建信易盛郑商所能源化工期货ETF",
+          "业绩区间": "本年以来",
+          "组合收益率_pct": 33.89,
+          "基准收益率_pct": 33.78,
+          "超额收益_pct": 0.12,
+          "最大回撤_pct": 5.72
+        }
+      ]
+    },
+    "notes": [
+      "业绩区间：本年以来",
+      "收益率最高的前 10 只基金。",
+      "基金公司：全市场",
+      "资产类型：全类型",
+      "组合收益率/超额收益/最大回撤均已转换为百分比。"
+    ],
+    "warnings": [],
+    "metadata": {
+      "period": "本年以来",
+      "top_n": 10,
+      "fund_codes": [],
+      "fund_company": null,
+      "ascending": false,
+      "rank_by_company": false
+    }
+  },
+  "result_validation": {
+    "passed": true,
+    "issues": [],
+    "warnings": [],
+    "correction_hint": null,
+    "repaired_args": null,
+    "repaired_tool_calls": null,
+    "next_action": "report"
+  },
+  "draft_answer": "以下是本年以来（截至当前交易日）全市场收益率最高的10只基金：\n\n| 排名 | 基金代码 | 基金名称 | 组合收益率（%） | 基准收益率（%） | 超额收益（%） | 最大回撤（%） |\n|------|----------|----------|----------------|----------------|--------------|--------------|\n| 1 | 161129 | 易方达原油(QDII-LOF)(A类) | 63.23 | 75.68 | -12.45 | 5.90 |\n| 2 | 016873 | 广发远见智选混合(A类) | 58.03 | -3.21 | 61.24 | 8.57 |\n| 3 | 020722 | 国寿安保数字经济股票发起式(A类) | 45.38 | -7.39 | 52.77 | 8.43 |\n| 4 | 513350 | 富国标普石油天然气勘探及生产精选行业ETF(QDII) | 44.92 | 43.83 | 1.10 | 3.17 |\n| 5 | 159518 | 嘉实标普石油天然气勘探及生产精选行业ETF(QDII) | 44.91 | 41.59 | 3.32 | 3.16 |\n| 6 | 018851 | 博时标普石油天然气勘探及生产精选行业指数发起式(QDII)(A类) | 42.42 | 41.30 | 1.12 | 3.01 |\n| 7 | 162411 | 华宝标普油气上游股票指数(QDII-LOF)(A类) | 41.66 | 43.83 | -2.16 | 2.95 |\n| 8 | 070028 | 嘉实安心货币(A类) | 36.05 | 0.34 | 35.71 | 0.00 |\n| 9 | 162719 | 广发道琼斯美国石油开发与生产指数(QDII-LOF)(A类) | 35.13 | 35.42 | -0.29 | 2.61 |\n| 10 | 159981 | 建信易盛郑商所能源化工期货ETF | 33.89 | 33.78 | 0.12 | 5.72 |\n\n**数据口径说明**\n- **业绩区间**：本年以来（即今年第一个交易日至最新交易日）。\n- **资产类型**：全市场（不区分股票、混合、债券、货币、QDII、ETF 等类型），排名由系统按区间组合收益率降序自动选出前10名。\n- **收益率**：指“组合收益率”，即该基金自身净值增长的实际回报，已转换为百分比。\n- **基准收益率**：该基金业绩比较基准在同期的收益率。\n- **超额收益**：组合收益率 - 基准收益率，反映基金跑赢或跑输基准的幅度。\n- **最大回撤**：区间内净值从最高点到最低点的最大跌幅（%），回撤越小说明净值波动越小。\n- **数据来源**：基金业绩表现分析模块（`performance_ranking` 表），在只读账户下完成查询并通过安全校验。\n\n**主要发现**\n1. **油气资源类基金表现突出**：排名前10中有5只直接跟踪石油天然气行业指数或相关标的，受益于年内能源价格走强。\n2. **QDII基金占比较高**：至少6只产品为QDII或QDII-LOF，覆盖美国石油开发、标普油气等海外资产。\n3. **货币基金意外进入前10**：排名第8的嘉实安心货币(A类)在本区间录得36.05%的组合收益率，但请注意货币基金通常日收益极低、净值几乎无波动，该数据可能存在特殊因素（如巨额申赎导致净值异常波动、或特定分红再投资算法差异），实际持有体验与常规货币基金不符，投资者需仔细核实原因。\n4. **超额收益分化明显**：广发远见智选混合(A类)、国寿安保数字经济股票发起式(A类)的超额收益分别高达61.24%和52.77%，大幅跑赢基准；而易方达原油(QDII-LOF)(A类)等虽然绝对收益最高，但并未跑赢其自身基准（超额收益为负）。\n\n以上结果仅为历史业绩展示，不构成任何投资建议。如需限缩资产类型（如只看股票型或混合型）或更换观察区间，可以进一步细化提问。",
+  "self_check": {
+    "passed": true,
+    "issues": [],
+    "suggested_fix": null
+  },
+  "final_answer": "以下是本年以来（截至当前交易日）全市场收益率最高的10只基金：\n\n| 排名 | 基金代码 | 基金名称 | 组合收益率（%） | 基准收益率（%） | 超额收益（%） | 最大回撤（%） |\n|------|----------|----------|----------------|----------------|--------------|--------------|\n| 1 | 161129 | 易方达原油(QDII-LOF)(A类) | 63.23 | 75.68 | -12.45 | 5.90 |\n| 2 | 016873 | 广发远见智选混合(A类) | 58.03 | -3.21 | 61.24 | 8.57 |\n| 3 | 020722 | 国寿安保数字经济股票发起式(A类) | 45.38 | -7.39 | 52.77 | 8.43 |\n| 4 | 513350 | 富国标普石油天然气勘探及生产精选行业ETF(QDII) | 44.92 | 43.83 | 1.10 | 3.17 |\n| 5 | 159518 | 嘉实标普石油天然气勘探及生产精选行业ETF(QDII) | 44.91 | 41.59 | 3.32 | 3.16 |\n| 6 | 018851 | 博时标普石油天然气勘探及生产精选行业指数发起式(QDII)(A类) | 42.42 | 41.30 | 1.12 | 3.01 |\n| 7 | 162411 | 华宝标普油气上游股票指数(QDII-LOF)(A类) | 41.66 | 43.83 | -2.16 | 2.95 |\n| 8 | 070028 | 嘉实安心货币(A类) | 36.05 | 0.34 | 35.71 | 0.00 |\n| 9 | 162719 | 广发道琼斯美国石油开发与生产指数(QDII-LOF)(A类) | 35.13 | 35.42 | -0.29 | 2.61 |\n| 10 | 159981 | 建信易盛郑商所能源化工期货ETF | 33.89 | 33.78 | 0.12 | 5.72 |\n\n**数据口径说明**\n- **业绩区间**：本年以来（即今年第一个交易日至最新交易日）。\n- **资产类型**：全市场（不区分股票、混合、债券、货币、QDII、ETF 等类型），排名由系统按区间组合收益率降序自动选出前10名。\n- **收益率**：指“组合收益率”，即该基金自身净值增长的实际回报，已转换为百分比。\n- **基准收益率**：该基金业绩比较基准在同期的收益率。\n- **超额收益**：组合收益率 - 基准收益率，反映基金跑赢或跑输基准的幅度。\n- **最大回撤**：区间内净值从最高点到最低点的最大跌幅（%），回撤越小说明净值波动越小。\n- **数据来源**：基金业绩表现分析模块（`performance_ranking` 表），在只读账户下完成查询并通过安全校验。\n\n**主要发现**\n1. **油气资源类基金表现突出**：排名前10中有5只直接跟踪石油天然气行业指数或相关标的，受益于年内能源价格走强。\n2. **QDII基金占比较高**：至少6只产品为QDII或QDII-LOF，覆盖美国石油开发、标普油气等海外资产。\n3. **货币基金意外进入前10**：排名第8的嘉实安心货币(A类)在本区间录得36.05%的组合收益率，但请注意货币基金通常日收益极低、净值几乎无波动，该数据可能存在特殊因素（如巨额申赎导致净值异常波动、或特定分红再投资算法差异），实际持有体验与常规货币基金不符，投资者需仔细核实原因。\n4. **超额收益分化明显**：广发远见智选混合(A类)、国寿安保数字经济股票发起式(A类)的超额收益分别高达61.24%和52.77%，大幅跑赢基准；而易方达原油(QDII-LOF)(A类)等虽然绝对收益最高，但并未跑赢其自身基准（超额收益为负）。\n\n以上结果仅为历史业绩展示，不构成任何投资建议。如需限缩资产类型（如只看股票型或混合型）或更换观察区间，可以进一步细化提问。",
+  "trace": [
+    {
+      "node": "load_context_node",
+      "thought": "读取会话级上下文，用于解析这些基金、刚才、同样口径等指代。",
+      "action": "load_memory(session_id=eval-20260526-190952-q005-hard)",
+      "observation": "memory keys=['recent_turns']"
+    },
+    {
+      "node": "complexity_classifier_node",
+      "thought": "按规则识别查询复杂度；auto 模式默认走 generated SQL，显式指定则尊重用户选择。",
+      "action": "classify_complexity",
+      "observation": "explicit=hard, signals=[], auto=hard, final=hard"
+    },
+    {
+      "node": "mode_router_node",
+      "thought": "根据用户选择的查询引擎，把任务路由到专家工具分支或 LLM 生成 SQL 分支。",
+      "action": "route_by_sql_mode",
+      "observation": "sql_mode=hard, branch=hard"
+    },
+    {
+      "node": "planner_node",
+      "thought": "把用户问题转换成结构化工具调用计划，重规划时会读取上轮失败反馈。",
+      "action": "PlannerAgent.plan()",
+      "observation": " intent=performance_ranking, tool=query_fund_performance, args={'period': '本年以来', 'top_n': 10, 'ascending': False}, tool_calls=[]"
+    },
+    {
+      "node": "tool_router_node",
+      "thought": "根据用户问题和 planner 选择的工具，把请求路由到规模、业绩、持仓、公司或跨表分析能力簇。",
+      "action": "ToolRouter.route()",
+      "observation": "categories=['performance'], planned_tools=['query_fund_performance'], allowed_tools_count=1"
+    },
+    {
+      "node": "plan_validator_node",
+      "thought": "校验工具名、参数 schema、数据库日期/资产类型/公司名和明显语义冲突。",
+      "action": "PlanValidator.validate()",
+      "observation": "passed=True, next_action=execute, issues=[], hint=None"
+    },
+    {
+      "node": "executor_node",
+      "thought": "执行白名单 SQL-backed tool，获得确定性观察结果。",
+      "action": "ToolExecutor.execute(query_fund_performance)",
+      "observation": "[TOOL] tool=query_fund_performance, tables=['performance_ranking'], notes=5, warnings=0"
+    },
+    {
+      "node": "result_validator_node",
+      "thought": "检查工具观察结果是否为空、字段是否匹配问题、是否存在异常值或缺失基金。",
+      "action": "ResultValidator.validate()",
+      "observation": "passed=True, next_action=report, warnings=[], issues=[], hint=None"
+    },
+    {
+      "node": "reflect_node",
+      "thought": "基于 plan/result validator 的观察结果决定下一步。",
+      "action": "reflect_and_route",
+      "observation": "next_action=report, retry_count=0, max_steps=3"
+    },
+    {
+      "node": "report_writer_node",
+      "thought": "把工具结果转换成用户可读的中文结果或分析报告。",
+      "action": "ReportWriterAgent.write()",
+      "observation": "draft_answer_length=1700"
+    },
+    {
+      "node": "self_check_node",
+      "thought": "检查最终回答是否回答原问题、忠实于工具结果、说明口径且避免投资建议。",
+      "action": "SelfCheckAgent.check()",
+      "observation": "passed=True, next_action=final, issues=[]"
+    },
+    {
+      "node": "save_context_node",
+      "thought": "保存结构化上下文，支持下一轮追问。",
+      "action": "save_memory_and_finalize",
+      "observation": "final_answer_length=1700"
+    }
+  ],
+  "tool_history": [
+    {
+      "tool_name": "query_fund_performance",
+      "args": {
+        "top_n": 10,
+        "period": "本年以来",
+        "ascending": false,
+        "fund_codes": null,
+        "fund_company": null,
+        "asset_type": null,
+        "rank_by_company": false
+      },
+      "metadata": {
+        "period": "本年以来",
+        "top_n": 10,
+        "fund_codes": [],
+        "fund_company": null,
+        "ascending": false,
+        "rank_by_company": false
+      },
+      "warnings": []
+    }
+  ],
+  "observations": [
+    "load_context_node: memory keys=['recent_turns']",
+    "complexity_classifier_node: explicit=hard, signals=[], auto=hard, final=hard",
+    "mode_router_node: sql_mode=hard, branch=hard",
+    "planner_node:  intent=performance_ranking, tool=query_fund_performance, args={'period': '本年以来', 'top_n': 10, 'ascending': False}, tool_calls=[]",
+    "tool_router_node: categories=['performance'], planned_tools=['query_fund_performance'], allowed_tools_count=1",
+    "plan_validator_node: passed=True, next_action=execute, issues=[], hint=None",
+    "executor_node: [TOOL] tool=query_fund_performance, tables=['performance_ranking'], notes=5, warnings=0",
+    "result_validator_node: passed=True, next_action=report, warnings=[], issues=[], hint=None",
+    "reflect_node: next_action=report, retry_count=0, max_steps=3",
+    "report_writer_node: draft_answer_length=1700",
+    "self_check_node: passed=True, next_action=final, issues=[]",
+    "save_context_node: final_answer_length=1700"
+  ],
+  "errors": [],
+  "retry_count": 0,
+  "revision_count": 0,
+  "next_action": "final",
+  "sql_plan": null,
+  "generated_sql": null,
+  "sql_validation_errors": [],
+  "sql_retry_count": 0,
+  "hard_fallback_attempted": false,
+  "auto_routed_mode": "hard",
+  "complexity_signals": [],
+  "pending_clarification": null,
+  "used_langgraph": true,
+  "run_artifacts_dir": "D:\\financial_agent\\fund_analysis_agent_pro\\outputs\\runs\\20260526_191207_319014",
+  "html_report_path": "D:\\financial_agent\\fund_analysis_agent_pro\\outputs\\reports\\report_20260526_191207_323926.html",
+  "html_report_url": "/reports/report_20260526_191207_323926.html"
+}

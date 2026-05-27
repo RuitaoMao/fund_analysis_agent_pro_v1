@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Fund Agent Report</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbeafe;
+      --bg: #f8fbff;
+      --card: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      padding: 28px 40px;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+    .meta {
+      color: #e0f2fe;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 0 20px 48px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+    }
+    h2 {
+      color: #1e40af;
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.55;
+    }
+    .answer-markdown {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+    .answer-markdown h1,
+    .answer-markdown h2,
+    .answer-markdown h3,
+    .answer-markdown h4 {
+      color: #1e40af;
+      margin: 18px 0 10px;
+      line-height: 1.35;
+    }
+    .answer-markdown h1 { font-size: 22px; }
+    .answer-markdown h2 { font-size: 20px; }
+    .answer-markdown h3 { font-size: 17px; }
+    .answer-markdown h4 { font-size: 15px; }
+    .answer-markdown p {
+      margin: 10px 0;
+    }
+    .answer-markdown ul,
+    .answer-markdown ol {
+      margin: 8px 0 12px 22px;
+      padding: 0;
+    }
+    .answer-markdown li {
+      margin: 5px 0;
+    }
+    .answer-markdown strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .answer-markdown code {
+      background: #e0f2fe;
+      color: #075985;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "SFMono-Regular", monospace;
+    }
+    .answer-markdown table {
+      min-width: 760px;
+      margin: 14px 0;
+      background: white;
+    }
+    .answer-markdown th {
+      white-space: nowrap;
+    }
+    .answer-markdown td {
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      background: var(--blue-soft);
+      color: #1e3a8a;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+    }
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    .trace-item {
+      border-left: 3px solid var(--blue);
+      background: #f8fafc;
+      padding: 10px 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .trace-node {
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 4px;
+    }
+    .repair-list {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+    .repair-list li {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>基金数据分析 Agent 报告</h1>
+    <div class="meta">mode=llm · sql_mode=hard · session=demo-hard-3</div>
+  </header>
+  <main>
+    <section>
+      <h2>用户问题</h2>
+      <pre>易方达的基金总规模是多少</pre>
+    </section>
+    <section>
+      <h2>最终回答</h2>
+      <div class="answer-markdown"><p>好的，根据查询结果，为您整理易方达基金管理有限公司的规模信息如下。</p>
+<p><strong>数据截止日期：2026年3月31日</strong></p>
+<p>易方达基金旗下管理的公募基金资产净值合计为 <strong>24,954.48 亿元</strong>，共涵盖 <strong>503 只基金</strong>。</p>
+<p>其规模按资产类型细分如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">资产类型</th>
+<th style="text-align: left;">基金数量</th>
+<th style="text-align: left;">规模（亿元）</th>
+<th style="text-align: left;">占公司总规模比例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">现金管理</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">8,435.08</td>
+<td style="text-align: left;">33.8%</td>
+</tr>
+<tr>
+<td style="text-align: left;">被动权益</td>
+<td style="text-align: left;">213</td>
+<td style="text-align: left;">7,876.65</td>
+<td style="text-align: left;">31.6%</td>
+</tr>
+<tr>
+<td style="text-align: left;">主动权益</td>
+<td style="text-align: left;">121</td>
+<td style="text-align: left;">3,227.00</td>
+<td style="text-align: left;">12.9%</td>
+</tr>
+<tr>
+<td style="text-align: left;">纯债</td>
+<td style="text-align: left;">60</td>
+<td style="text-align: left;">3,070.87</td>
+<td style="text-align: left;">12.3%</td>
+</tr>
+<tr>
+<td style="text-align: left;">多资产投资</td>
+<td style="text-align: left;">44</td>
+<td style="text-align: left;">1,950.63</td>
+<td style="text-align: left;">7.8%</td>
+</tr>
+<tr>
+<td style="text-align: left;">FOF</td>
+<td style="text-align: left;">33</td>
+<td style="text-align: left;">234.31</td>
+<td style="text-align: left;">0.9%</td>
+</tr>
+<tr>
+<td style="text-align: left;">量化</td>
+<td style="text-align: left;">19</td>
+<td style="text-align: left;">107.80</td>
+<td style="text-align: left;">0.4%</td>
+</tr>
+<tr>
+<td style="text-align: left;">REITs</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">52.14</td>
+<td style="text-align: left;">0.2%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>合计</strong></td>
+<td style="text-align: left;"><strong>503</strong></td>
+<td style="text-align: left;"><strong>24,954.48</strong></td>
+<td style="text-align: left;"><strong>100.0%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>数据口径说明：</strong>
+*   <strong>数据来源</strong>：以上数据来源于内部 <code>fund_size</code> 表，统计口径为所有在管公募基金的资产净值。
+*   <strong>汇总方式</strong>：以“基金公司”维度进行聚合，汇总其旗下所有产品的规模，不区分成立时间或运作状态。
+*   <strong>单位</strong>：规模单位为亿元。</p></div>
+    </section>
+    <section>
+      <h2>结果表</h2>
+      <h3>company_total</h3><table><thead><tr><th>基金公司</th><th>基金数量</th><th>合计规模_亿</th></tr></thead><tbody><tr><td>易方达</td><td>503</td><td>24954.48</td></tr></tbody></table>
+<h3>company_breakdown</h3><table><thead><tr><th>基金公司</th><th>资产类型</th><th>基金数量</th><th>规模_亿</th><th>占公司比例_pct</th></tr></thead><tbody><tr><td>易方达</td><td>现金管理</td><td>10</td><td>8435.08</td><td>33.8</td></tr><tr><td>易方达</td><td>被动权益</td><td>213</td><td>7876.65</td><td>31.6</td></tr><tr><td>易方达</td><td>主动权益</td><td>121</td><td>3227.0</td><td>12.9</td></tr><tr><td>易方达</td><td>纯债</td><td>60</td><td>3070.87</td><td>12.3</td></tr><tr><td>易方达</td><td>多资产投资</td><td>44</td><td>1950.63</td><td>7.8</td></tr><tr><td>易方达</td><td>FOF</td><td>33</td><td>234.31</td><td>0.9</td></tr><tr><td>易方达</td><td>量化</td><td>19</td><td>107.8</td><td>0.4</td></tr><tr><td>易方达</td><td>REITs</td><td>3</td><td>52.14</td><td>0.2</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>调用工具 / SQL</h2>
+      <pre>[
+  {
+    &quot;tool_name&quot;: &quot;query_company_size&quot;,
+    &quot;args&quot;: {
+      &quot;top_n&quot;: 20,
+      &quot;companies&quot;: [
+        &quot;易方达&quot;
+      ],
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;asset_type&quot;: null,
+      &quot;include_trend&quot;: false
+    },
+    &quot;metadata&quot;: {
+      &quot;companies&quot;: [
+        &quot;易方达&quot;
+      ],
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;asset_type&quot;: null,
+      &quot;include_trend&quot;: false
+    },
+    &quot;warnings&quot;: []
+  }
+]</pre>
+    </section>
+    
+    <section>
+      <h2>Trace</h2>
+      
+        <div class="trace-item">
+          <div class="trace-node">load_context_node</div>
+          <div><b>Action:</b> load_memory(session_id=demo-hard-3)</div>
+          <div><b>Observation:</b> memory keys=[&#x27;recent_turns&#x27;, &#x27;long_memory_summaries&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">complexity_classifier_node</div>
+          <div><b>Action:</b> classify_complexity</div>
+          <div><b>Observation:</b> explicit=hard, signals=[], auto=hard, final=hard</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">mode_router_node</div>
+          <div><b>Action:</b> route_by_sql_mode</div>
+          <div><b>Observation:</b> sql_mode=hard, branch=hard</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">planner_node</div>
+          <div><b>Action:</b> PlannerAgent.plan()</div>
+          <div><b>Observation:</b>  intent=unknown, tool=query_company_size, args={&#x27;companies&#x27;: [&#x27;易方达&#x27;], &#x27;date&#x27;: None, &#x27;asset_type&#x27;: None, &#x27;include_trend&#x27;: False, &#x27;top_n&#x27;: 20}, tool_calls=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">tool_router_node</div>
+          <div><b>Action:</b> ToolRouter.route()</div>
+          <div><b>Observation:</b> categories=[&#x27;size&#x27;], planned_tools=[&#x27;query_company_size&#x27;], allowed_tools_count=2</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">plan_validator_node</div>
+          <div><b>Action:</b> PlanValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=execute, issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">executor_node</div>
+          <div><b>Action:</b> ToolExecutor.execute(query_company_size)</div>
+          <div><b>Observation:</b> [TOOL] tool=query_company_size, tables=[&#x27;company_total&#x27;, &#x27;company_breakdown&#x27;], notes=4, warnings=0</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">result_validator_node</div>
+          <div><b>Action:</b> ResultValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=report, warnings=[], issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">reflect_node</div>
+          <div><b>Action:</b> reflect_and_route</div>
+          <div><b>Observation:</b> next_action=report, retry_count=0, max_steps=3</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">report_writer_node</div>
+          <div><b>Action:</b> ReportWriterAgent.write()</div>
+          <div><b>Observation:</b> draft_answer_length=640</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">self_check_node</div>
+          <div><b>Action:</b> SelfCheckAgent.check()</div>
+          <div><b>Observation:</b> passed=True, next_action=final, issues=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">save_context_node</div>
+          <div><b>Action:</b> save_memory_and_finalize</div>
+          <div><b>Observation:</b> final_answer_length=640</div>
+        </div>
+        
+    </section>
+  </main>
+</body>
+</html>

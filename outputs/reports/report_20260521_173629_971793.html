@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Fund Agent Report</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbeafe;
+      --bg: #f8fbff;
+      --card: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      padding: 28px 40px;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+    .meta {
+      color: #e0f2fe;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 0 20px 48px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+    }
+    h2 {
+      color: #1e40af;
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.55;
+    }
+    .answer-markdown {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+    .answer-markdown h1,
+    .answer-markdown h2,
+    .answer-markdown h3,
+    .answer-markdown h4 {
+      color: #1e40af;
+      margin: 18px 0 10px;
+      line-height: 1.35;
+    }
+    .answer-markdown h1 { font-size: 22px; }
+    .answer-markdown h2 { font-size: 20px; }
+    .answer-markdown h3 { font-size: 17px; }
+    .answer-markdown h4 { font-size: 15px; }
+    .answer-markdown p {
+      margin: 10px 0;
+    }
+    .answer-markdown ul,
+    .answer-markdown ol {
+      margin: 8px 0 12px 22px;
+      padding: 0;
+    }
+    .answer-markdown li {
+      margin: 5px 0;
+    }
+    .answer-markdown strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .answer-markdown code {
+      background: #e0f2fe;
+      color: #075985;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "SFMono-Regular", monospace;
+    }
+    .answer-markdown table {
+      min-width: 760px;
+      margin: 14px 0;
+      background: white;
+    }
+    .answer-markdown th {
+      white-space: nowrap;
+    }
+    .answer-markdown td {
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      background: var(--blue-soft);
+      color: #1e3a8a;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+    }
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    .trace-item {
+      border-left: 3px solid var(--blue);
+      background: #f8fafc;
+      padding: 10px 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .trace-node {
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 4px;
+    }
+    .repair-list {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+    .repair-list li {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>基金数据分析 Agent 报告</h1>
+    <div class="meta">mode=llm · sql_mode=generated · session=ui-21d2d057</div>
+  </header>
+  <main>
+    <section>
+      <h2>用户问题</h2>
+      <pre>我想了解一下易方达</pre>
+    </section>
+    <section>
+      <h2>最终回答</h2>
+      <div class="answer-markdown"><p>好的，这是为您整理的易方达基金公司旗下部分产品信息分析报告。</p>
+<h3>分析概要</h3>
+<p>本次分析数据来源于最新规模日期与“本年以来”业绩区间的关联查询，共获取了易方达基金旗下的199只产品数据（已按返回行数200条限制），涵盖了FOF、REITs、主动权益、多资产投资等主要资产类型。</p>
+<hr>
+<h3>易方达基金产品总体表现一览</h3>
+<p>下表按<strong>资产类型</strong>进行了分组展示，并计算了各类型产品的最新规模与本年以来收益率的算术平均值。</p>
+<p><strong>数据口径说明：</strong>
+*   <strong>基金规模</strong>：取<code>fund_size</code>表中最新的日期数据（单位：亿元）。
+*   <strong>本年以来收益率</strong>：取自<code>fund_performance</code>表，计算区间为“本年以来”（%）。
+*   <strong>资产类型</strong>：以产品合同中载明的类型为准。
+*   查询已通过数据库只读白名单校验。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">资产类型</th>
+<th style="text-align: left;">基金数量</th>
+<th style="text-align: left;">规模合计 (亿元)</th>
+<th style="text-align: left;">规模均值 (亿元)</th>
+<th style="text-align: left;">收益率均值 (%)</th>
+<th style="text-align: left;">最高收益 (%)</th>
+<th style="text-align: left;">最低收益 (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>多资产投资</strong></td>
+<td style="text-align: left;">50</td>
+<td style="text-align: left;">2039.55</td>
+<td style="text-align: left;">40.79</td>
+<td style="text-align: left;">1.18</td>
+<td style="text-align: left;">63.23</td>
+<td style="text-align: left;">-2.65</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>主动权益</strong></td>
+<td style="text-align: left;">114</td>
+<td style="text-align: left;">3327.73</td>
+<td style="text-align: left;">29.19</td>
+<td style="text-align: left;">1.58</td>
+<td style="text-align: left;">17.07</td>
+<td style="text-align: left;">-14.94</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FOF</strong></td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">243.81</td>
+<td style="text-align: left;">7.62</td>
+<td style="text-align: left;">0.75</td>
+<td style="text-align: left;">4.17</td>
+<td style="text-align: left;">-4.66</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>REITs</strong></td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">52.14</td>
+<td style="text-align: left;">17.38</td>
+<td style="text-align: left;">0.41</td>
+<td style="text-align: left;">5.88</td>
+<td style="text-align: left;">-8.51</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>总计</strong></td>
+<td style="text-align: left;"><strong>199</strong></td>
+<td style="text-align: left;"><strong>5663.23</strong></td>
+<td style="text-align: left;"><strong>28.46</strong></td>
+<td style="text-align: left;"><strong>1.34</strong></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">-</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3>各资产类型重点产品分析</h3>
+<h4>1. 主动权益类 (规模最大，数量最多)</h4>
+<p>该类别是易方达产品线的主力，规模合计超3300亿元，但收益分化明显。部分与高端制造、资源主题及全球配置相关的基金表现相对突出，而消费、港股通、北交所等主题的产品则面临一定回撤。</p>
+<ul>
+<li>
+<p><strong>规模领先产品</strong>：</p>
+<ul>
+<li><code>易方达蓝筹精选</code>：<strong>267.93亿</strong> (本年以来 -5.17%)</li>
+<li><code>易方达上证50增强A</code>：<strong>142.50亿</strong> (本年以来 -5.89%)</li>
+<li><code>易方达消费行业</code>：<strong>126.86亿</strong> (本年以来 -9.67%)</li>
+</ul>
+</li>
+<li>
+<p><strong>收益领先产品</strong>：</p>
+<ul>
+<li><code>易方达科汇</code>：规模 13.98亿，收益率 <strong>16.53%</strong></li>
+<li><code>易方达环保主题A</code>：规模 55.59亿，收益率 <strong>16.15%</strong></li>
+<li><code>易方达先锋成长A</code>：规模 44.10亿，收益率 <strong>15.38%</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>收益靠后产品</strong>：</p>
+<ul>
+<li><code>易方达北交所精选两年定开A</code>：规模 2.90亿，收益率 <strong>-14.14%</strong></li>
+<li><code>易方达金融行业A</code>：规模 6.43亿，收益率 <strong>-14.30%</strong></li>
+<li><code>易方达标普消费品指数增强人民币A</code>：规模 4.43亿，收益率 <strong>-14.94%</strong></li>
+</ul>
+</li>
+</ul>
+<h4>2. 多资产投资类 (规模最大类别)</h4>
+<p>此类别包含众多“固收+”策略产品，整体表现出稳健特征，规模合计远超其他类型。但部分涉及原油的商品主题基金波动较大。</p>
+<ul>
+<li>
+<p><strong>规模领先产品</strong>：</p>
+<ul>
+<li><code>易方达裕祥回报A</code>：<strong>446.74亿</strong> (本年以来 0.62%)</li>
+<li><code>易方达稳健收益A</code>：<strong>370.92亿</strong> (本年以来 -0.01%)</li>
+<li><code>易方达裕丰回报A</code>：<strong>195.34亿</strong> (本年以来 1.31%)</li>
+</ul>
+</li>
+<li>
+<p><strong>收益领先产品</strong>：</p>
+<ul>
+<li><code>易方达原油A人民币</code>：规模 7.97亿，收益率 <strong>63.23%</strong> (受原油市场影响较大，表现独特)</li>
+<li><code>易方达丰和A</code>：规模 43.52亿，收益率 <strong>3.53%</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>收益靠后产品</strong>：</p>
+<ul>
+<li><code>易方达稳健添利A</code>：规模 0.53亿，收益率 <strong>-2.65%</strong></li>
+</ul>
+</li>
+</ul>
+<h4>3. FOF类 (养老及稳健策略为主)</h4>
+<p>该类别以养老目标日期和稳健持有期产品为主，整体收益率较为温和，波动相对较小。</p>
+<ul>
+<li>
+<p><strong>规模领先产品</strong>：</p>
+<ul>
+<li><code>易方达如意盈安6个月持有A</code>：<strong>58.68亿</strong> (本年以来 0.01%)</li>
+<li><code>易方达如意安诚六个月持有A</code>：<strong>36.63亿</strong> (本年以来 0.48%)</li>
+<li><code>易方达如意盈泽6个月持有A</code>：<strong>33.77亿</strong> (本年以来 -0.15%)</li>
+</ul>
+</li>
+<li>
+<p><strong>收益领先产品</strong>：</p>
+<ul>
+<li><code>易方达优势价值一年持有A</code>：规模 4.84亿，收益率 <strong>4.17%</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>收益靠后产品</strong>：</p>
+<ul>
+<li><code>易方达优势长兴三个月持有A</code>：规模 0.72亿，收益率 <strong>-4.16%</strong></li>
+</ul>
+</li>
+</ul>
+<h4>4. REITs类</h4>
+<p>目前样本内产品数量较少，均为基础设施类，表现有所分化。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">基金名称</th>
+<th style="text-align: left;">基金代码</th>
+<th style="text-align: left;">规模(亿元)</th>
+<th style="text-align: left;">本年以来(%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">易方达华威农贸市场REIT</td>
+<td style="text-align: left;">180605</td>
+<td style="text-align: left;">14.99</td>
+<td style="text-align: left;"><strong>5.88</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">易方达深高速公路REIT</td>
+<td style="text-align: left;">508033</td>
+<td style="text-align: left;">18.22</td>
+<td style="text-align: left;"><strong>3.85</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">易方达广州开发区高新产业园REIT</td>
+<td style="text-align: left;">180105</td>
+<td style="text-align: left;">18.92</td>
+<td style="text-align: left;"><strong>-8.51</strong></td>
+</tr>
+</tbody>
+</table>
+<p>如果您想进一步了解特定类型、规模区间或业绩的基金，可以继续向我提问。</p></div>
+    </section>
+    <section>
+      <h2>结果表</h2>
+      <h3>generated_sql_result</h3><table><thead><tr><th>基金代码</th><th>基金名称</th><th>基金公司</th><th>资产类型</th><th>基金规模</th><th>本年以来收益率</th></tr></thead><tbody><tr><td>006859</td><td>易方达汇诚养老2033三年A</td><td>易方达</td><td>FOF</td><td>5.1853384156</td><td>1.1</td></tr><tr><td>006860</td><td>易方达汇诚养老2038三年A</td><td>易方达</td><td>FOF</td><td>1.3236900295</td><td>0.87</td></tr><tr><td>013287</td><td>易方达优势价值一年持有A</td><td>易方达</td><td>FOF</td><td>4.8443857576</td><td>4.17</td></tr><tr><td>016650</td><td>易方达优势风华六个月持有</td><td>易方达</td><td>FOF</td><td>2.1312435338</td><td>0.43</td></tr><tr><td>016245</td><td>易方达汇康稳健养老目标一年持有A</td><td>易方达</td><td>FOF</td><td>2.6866855084</td><td>0.19</td></tr><tr><td>018513</td><td>易方达养老目标日期2045五年持有A</td><td>易方达</td><td>FOF</td><td>3.0101841251</td><td>1.97</td></tr><tr><td>018834</td><td>易方达汇享稳健养老一年持有A</td><td>易方达</td><td>FOF</td><td>2.5668382452</td><td>0.33</td></tr><tr><td>007896</td><td>易方达优选多资产三个月A</td><td>易方达</td><td>FOF</td><td>0.9712348175</td><td>-4.66</td></tr><tr><td>015261</td><td>易方达如意兴安一年持有A</td><td>易方达</td><td>FOF</td><td>0.5411767932</td><td>0.3</td></tr><tr><td>019661</td><td>易方达汇悦平衡养老目标三年持有A</td><td>易方达</td><td>FOF</td><td>2.5634241288</td><td>0.27</td></tr><tr><td>019664</td><td>易方达养老目标日期2060五年持有</td><td>易方达</td><td>FOF</td><td>0.1609834431</td><td>-0.09</td></tr><tr><td>012652</td><td>易方达优势领航六个月持有A</td><td>易方达</td><td>FOF</td><td>10.9382151531</td><td>1.8</td></tr><tr><td>161133</td><td>易方达优势回报A</td><td>易方达</td><td>FOF</td><td>2.0429015806</td><td>1.66</td></tr><tr><td>013519</td><td>易方达汇智平衡养老(FOF)A</td><td>易方达</td><td>FOF</td><td>4.4236013699</td><td>0.05</td></tr><tr><td>017228</td><td>易方达汇裕积极养老目标五年持有A</td><td>易方达</td><td>FOF</td><td>4.1480916208</td><td>2.7</td></tr><tr><td>015090</td><td>易方达优势长兴三个月持有A</td><td>易方达</td><td>FOF</td><td>0.7182218228</td><td>-4.16</td></tr><tr><td>017594</td><td>易方达稳健腾享六个月持有A</td><td>易方达</td><td>FOF</td><td>5.9992091496</td><td>0.79</td></tr><tr><td>017696</td><td>易方达养老目标日期2050五年持有A</td><td>易方达</td><td>FOF</td><td>6.7180851369</td><td>2.58</td></tr><tr><td>006292</td><td>易方达汇诚养老2043三年A</td><td>易方达</td><td>FOF</td><td>8.2547075898</td><td>-0.01</td></tr><tr><td>007247</td><td>易方达汇智稳健养老一年A</td><td>易方达</td><td>FOF</td><td>1.3987696732</td><td>-0.42</td></tr><tr><td>501222</td><td>易方达如意招享A</td><td>易方达</td><td>FOF</td><td>2.308175717</td><td>0.05</td></tr><tr><td>023006</td><td>易方达汇享保守养老目标一年持有A</td><td>易方达</td><td>FOF</td><td>10.6766134063</td><td>0.41</td></tr><tr><td>014617</td><td>易方达如意安和一年持有A</td><td>易方达</td><td>FOF</td><td>0.9738129229</td><td>0.36</td></tr><tr><td>014026</td><td>易方达优选星汇六个月持有A</td><td>易方达</td><td>FOF</td><td>1.6326633778</td><td>-0.31</td></tr><tr><td>014722</td><td>易方达汇欣平衡养老三年持有A</td><td>易方达</td><td>FOF</td><td>1.4480577075</td><td>-1.06</td></tr><tr><td>015083</td><td>易方达优势驱动一年持有A</td><td>易方达</td><td>FOF</td><td>3.6220785832</td><td>2.26</td></tr><tr><td>015087</td><td>易方达优势先锋一年持有A</td><td>易方达</td><td>FOF</td><td>0.708764532</td><td>-0.18</td></tr><tr><td>018312</td><td>易方达如意安诚六个月持有A</td><td>易方达</td><td>FOF</td><td>36.6263254439</td><td>0.48</td></tr><tr><td>018314</td><td>易方达养老目标日期2055五年持有A</td><td>易方达</td><td>FOF</td><td>3.71902523</td><td>2.91</td></tr><tr><td>009213</td><td>易方达如意安泰一年A</td><td>易方达</td><td>FOF</td><td>7.1292056539</td><td>0.66</td></tr><tr><td>025822</td><td>易方达如意盈安6个月持有A</td><td>易方达</td><td>FOF</td><td>58.6836136184</td><td>0.01</td></tr><tr><td>025921</td><td>易方达如意盈享6个月持有A</td><td>易方达</td><td>FOF</td><td>2.3823050473</td><td>-0.03</td></tr><tr><td>026598</td><td>易方达如意盈泽6个月持有A</td><td>易方达</td><td>FOF</td><td>33.7727825192</td><td>-0.15</td></tr><tr><td>180105</td><td>易方达广州开发区高新产业园REIT</td><td>易方达</td><td>REITs</td><td>18.9234254743</td><td>-8.51</td></tr><tr><td>508033</td><td>易方达深高速公路REIT</td><td>易方达</td><td>REITs</td><td>18.2238143817</td><td>3.85</td></tr><tr><td>180605</td><td>易方达华威农贸市场REIT</td><td>易方达</td><td>REITs</td><td>14.9905400243</td><td>5.88</td></tr><tr><td>019354</td><td>易方达平衡视野A1</td><td>易方达</td><td>主动权益</td><td>6.4113920012</td><td>-0.14</td></tr><tr><td>020801</td><td>易方达红利A</td><td>易方达</td><td>主动权益</td><td>1.6245084952</td><td>-0.37</td></tr><tr><td>008286</td><td>易方达研究精选</td><td>易方达</td><td>主动权益</td><td>39.6142920396</td><td>-1.25</td></tr><tr><td>013774</td><td>易方达趋势优选A</td><td>易方达</td><td>主动权益</td><td>0.4357803847</td><td>-2.91</td></tr><tr><td>017973</td><td>易方达港股通优质增长A</td><td>易方达</td><td>主动权益</td><td>29.0306629561</td><td>-7.42</td></tr><tr><td>021179</td><td>易方达产业机遇A</td><td>易方达</td><td>主动权益</td><td>1.0393281432</td><td>8.0</td></tr><tr><td>003839</td><td>易方达瑞通A</td><td>易方达</td><td>主动权益</td><td>5.071306685</td><td>0.67</td></tr><tr><td>005583</td><td>易方达港股通红利A</td><td>易方达</td><td>主动权益</td><td>44.3594020084</td><td>-3.9</td></tr><tr><td>007346</td><td>易方达科技创新A</td><td>易方达</td><td>主动权益</td><td>21.7285815737</td><td>1.31</td></tr><tr><td>003882</td><td>易方达瑞弘A</td><td>易方达</td><td>主动权益</td><td>2.1144803189</td><td>-0.66</td></tr><tr><td>003961</td><td>易方达瑞程A</td><td>易方达</td><td>主动权益</td><td>5.0445323245</td><td>3.84</td></tr><tr><td>009049</td><td>易方达高端制造A</td><td>易方达</td><td>主动权益</td><td>61.0225418882</td><td>10.81</td></tr><tr><td>501203</td><td>易方达创新未来</td><td>易方达</td><td>主动权益</td><td>25.6862821574</td><td>-5.59</td></tr><tr><td>024450</td><td>易方达成长进取A</td><td>易方达</td><td>主动权益</td><td>8.6335682861</td><td>0.66</td></tr></tbody></table><p>仅展示前 50 行，共 200 行。</p>
+    </section>
+    <section>
+      <h2>调用工具 / SQL</h2>
+      <pre>[
+  {
+    &quot;tool_name&quot;: &quot;generated_sql_query&quot;,
+    &quot;args&quot;: {
+      &quot;sql&quot;: &quot;WITH latest_date AS (SELECT MAX(date) AS date FROM fund_size) SELECT fs.fund_code AS 基金代码, fs.fund_name AS 基金名称, fs.fund_company AS 基金公司, fs.asset_type AS 资产类型, fs.fund_size AS 基金规模, ROUND(fp.portfolio_return * 100, 2) AS 本年以来收益率 FROM fund_size fs JOIN latest_date ld ON fs.date = ld.date LEFT JOIN fund_performance fp ON fs.fund_code = fp.fund_code AND fp.period = &#x27;本年以来&#x27; WHERE fs.fund_company LIKE &#x27;%易方达%&#x27; LIMIT 200;&quot;
+    },
+    &quot;metadata&quot;: {
+      &quot;sql&quot;: &quot;WITH latest_date AS (SELECT MAX(date) AS date FROM fund_size) SELECT fs.fund_code AS 基金代码, fs.fund_name AS 基金名称, fs.fund_company AS 基金公司, fs.asset_type AS 资产类型, fs.fund_size AS 基金规模, ROUND(fp.portfolio_return * 100, 2) AS 本年以来收益率 FROM fund_size fs JOIN latest_date ld ON fs.date = ld.date LEFT JOIN fund_performance fp ON fs.fund_code = fp.fund_code AND fp.period = &#x27;本年以来&#x27; WHERE fs.fund_company LIKE &#x27;%易方达%&#x27; LIMIT 200;&quot;,
+      &quot;tables&quot;: [
+        &quot;fund_size&quot;,
+        &quot;fund_performance&quot;
+      ],
+      &quot;expected_columns&quot;: [
+        &quot;基金代码&quot;,
+        &quot;基金名称&quot;,
+        &quot;基金公司&quot;,
+        &quot;资产类型&quot;,
+        &quot;基金规模&quot;,
+        &quot;本年以来收益率&quot;
+      ]
+    }
+  }
+]</pre>
+    </section>
+    
+    <section>
+      <h2>SQL 修复建议</h2>
+      <ul class="repair-list"><li>本轮 Generated SQL 已通过只读白名单校验、dry run 和结果校验；如果结果不符合预期，优先检查日期、基金公司简称、业绩区间和 LIMIT。</li><li>当前 SQL 摘要：WITH latest_date AS (SELECT MAX(date) AS date FROM fund_size) SELECT fs.fund_code AS 基金代码, fs.fund_name AS 基金名称, fs.fund_company AS 基金公司, fs.asset_type AS 资产类型, fs.fund_size AS 基金规模, ROUND(fp.portfolio_return * 100, 2) AS 本年以来收益率 FROM fund_size fs JOIN late...</li></ul>
+    </section>
+    
+    <section>
+      <h2>Trace</h2>
+      
+        <div class="trace-item">
+          <div class="trace-node">load_context_node</div>
+          <div><b>Action:</b> load_memory(session_id=ui-21d2d057)</div>
+          <div><b>Observation:</b> memory keys=[&#x27;last_query&#x27;, &#x27;last_intent&#x27;, &#x27;last_tool_name&#x27;, &#x27;last_args&#x27;, &#x27;last_date&#x27;, &#x27;last_asset_type&#x27;, &#x27;last_fund_codes&#x27;, &#x27;last_stock_codes&#x27;, &#x27;last_companies&#x27;, &#x27;last_result_summary&#x27;, &#x27;recent_turns&#x27;, &#x27;long_memory_summaries&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">mode_router_node</div>
+          <div><b>Action:</b> route_by_sql_mode</div>
+          <div><b>Observation:</b> sql_mode=generated, branch=generated</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_planner_node</div>
+          <div><b>Action:</b> GeneratedSQLAgent.plan_sql()</div>
+          <div><b>Observation:</b> [SQL] intent=Retrieve latest fund size and year-to-date performance for E Fund Management&#x27;s funds., tables=[&#x27;fund_size&#x27;, &#x27;fund_performance&#x27;], sql_preview=WITH latest_date AS (SELECT MAX(date) AS date FROM fund_size) SELECT fs.fund_code AS 基金代码, fs.fund_name AS 基金名称, fs.fund_company AS 基金公司, fs.asset_type AS 资产类型,</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_validator_node</div>
+          <div><b>Action:</b> GeneratedSQLAgent.validate_sql()</div>
+          <div><b>Observation:</b> [SQL] passed=True, errors=[], next_action=execute</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_dry_run_node</div>
+          <div><b>Action:</b> EXPLAIN QUERY PLAN generated_sql</div>
+          <div><b>Observation:</b> [SQL] dry_run_passed=True</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_executor_node</div>
+          <div><b>Action:</b> SQLiteStore.query_df(generated_sql)</div>
+          <div><b>Observation:</b> [SQL][TOOL] rows=200, columns=[&#x27;基金代码&#x27;, &#x27;基金名称&#x27;, &#x27;基金公司&#x27;, &#x27;资产类型&#x27;, &#x27;基金规模&#x27;, &#x27;本年以来收益率&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_result_validator_node</div>
+          <div><b>Action:</b> validate_generated_sql_result</div>
+          <div><b>Observation:</b> [SQL] rows=200, issues=[], next_action=report</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_report_writer_node</div>
+          <div><b>Action:</b> ReportWriterAgent.write(generated_sql_result)</div>
+          <div><b>Observation:</b> [SQL] draft_answer_length=2449</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">self_check_node</div>
+          <div><b>Action:</b> SelfCheckAgent.check()</div>
+          <div><b>Observation:</b> passed=True, next_action=final, issues=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">save_context_node</div>
+          <div><b>Action:</b> save_memory_and_finalize</div>
+          <div><b>Observation:</b> final_answer_length=2449</div>
+        </div>
+        
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Fund Agent Report</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbeafe;
+      --bg: #f8fbff;
+      --card: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      padding: 28px 40px;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+    .meta {
+      color: #e0f2fe;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 0 20px 48px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+    }
+    h2 {
+      color: #1e40af;
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.55;
+    }
+    .answer-markdown {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+    .answer-markdown h1,
+    .answer-markdown h2,
+    .answer-markdown h3,
+    .answer-markdown h4 {
+      color: #1e40af;
+      margin: 18px 0 10px;
+      line-height: 1.35;
+    }
+    .answer-markdown h1 { font-size: 22px; }
+    .answer-markdown h2 { font-size: 20px; }
+    .answer-markdown h3 { font-size: 17px; }
+    .answer-markdown h4 { font-size: 15px; }
+    .answer-markdown p {
+      margin: 10px 0;
+    }
+    .answer-markdown ul,
+    .answer-markdown ol {
+      margin: 8px 0 12px 22px;
+      padding: 0;
+    }
+    .answer-markdown li {
+      margin: 5px 0;
+    }
+    .answer-markdown strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .answer-markdown code {
+      background: #e0f2fe;
+      color: #075985;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "SFMono-Regular", monospace;
+    }
+    .answer-markdown table {
+      min-width: 760px;
+      margin: 14px 0;
+      background: white;
+    }
+    .answer-markdown th {
+      white-space: nowrap;
+    }
+    .answer-markdown td {
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      background: var(--blue-soft);
+      color: #1e3a8a;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+    }
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    .trace-item {
+      border-left: 3px solid var(--blue);
+      background: #f8fafc;
+      padding: 10px 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .trace-node {
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 4px;
+    }
+    .repair-list {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+    .repair-list li {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>基金数据分析 Agent 报告</h1>
+    <div class="meta">mode=llm · sql_mode=generated · session=web-rey585fm</div>
+  </header>
+  <main>
+    <section>
+      <h2>用户问题</h2>
+      <pre>规模top100基金中本年以来收益最高的10只</pre>
+    </section>
+    <section>
+      <h2>最终回答</h2>
+      <div class="answer-markdown"><p>好的，这是基于最新规模数据，从规模前100名的基金中，筛选出的本年以来收益率最高的10只基金。</p>
+<h3>规模TOP100基金本年以来收益前10名</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">排名</th>
+<th style="text-align: left;">基金代码</th>
+<th style="text-align: left;">基金名称</th>
+<th style="text-align: left;">基金规模（亿元）</th>
+<th style="text-align: left;">本年以来收益率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">518880</td>
+<td style="text-align: left;">华安黄金ETF</td>
+<td style="text-align: left;">1138.16</td>
+<td style="text-align: left;">4.34%</td>
+</tr>
+<tr>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">510500</td>
+<td style="text-align: left;">南方中证500ETF</td>
+<td style="text-align: left;">724.77</td>
+<td style="text-align: left;">1.95%</td>
+</tr>
+<tr>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">000385</td>
+<td style="text-align: left;">景顺长城景颐双利A</td>
+<td style="text-align: left;">614.77</td>
+<td style="text-align: left;">1.08%</td>
+</tr>
+<tr>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">511360</td>
+<td style="text-align: left;">海富通中证短融ETF</td>
+<td style="text-align: left;">909.09</td>
+<td style="text-align: left;">0.38%</td>
+</tr>
+<tr>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">004137</td>
+<td style="text-align: left;">博时合惠B</td>
+<td style="text-align: left;">1436.77</td>
+<td style="text-align: left;">0.35%</td>
+</tr>
+<tr>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">000602</td>
+<td style="text-align: left;">富国安益A</td>
+<td style="text-align: left;">1266.60</td>
+<td style="text-align: left;">0.35%</td>
+</tr>
+<tr>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">004776</td>
+<td style="text-align: left;">鹏华金元宝</td>
+<td style="text-align: left;">836.29</td>
+<td style="text-align: left;">0.35%</td>
+</tr>
+<tr>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">000759</td>
+<td style="text-align: left;">平安财富宝A</td>
+<td style="text-align: left;">1504.94</td>
+<td style="text-align: left;">0.35%</td>
+</tr>
+<tr>
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">003391</td>
+<td style="text-align: left;">建信天添益A</td>
+<td style="text-align: left;">568.26</td>
+<td style="text-align: left;">0.35%</td>
+</tr>
+<tr>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">004545</td>
+<td style="text-align: left;">永赢天天利A</td>
+<td style="text-align: left;">744.09</td>
+<td style="text-align: left;">0.35%</td>
+</tr>
+</tbody>
+</table>
+<h3>数据口径说明</h3>
+<ul>
+<li><strong>数据范围</strong>：统计对象为全市场基金按最新规模降序排列，取排名前100的基金。</li>
+<li><strong>业绩表现</strong>：显示的是这些基金在“本年以来”区间的投资回报率。</li>
+<li><strong>数据来源</strong>：数据提取自 <code>fund_size</code>（基金规模表）和 <code>fund_performance</code>（基金业绩表），相关查询已通过系统只读白名单校验。</li>
+</ul></div>
+    </section>
+    <section>
+      <h2>结果表</h2>
+      <h3>generated_sql_result</h3><table><thead><tr><th>基金代码</th><th>基金名称</th><th>基金规模_亿元</th><th>本年以来收益率</th></tr></thead><tbody><tr><td>518880</td><td>华安黄金ETF</td><td>1138.16</td><td>4.34</td></tr><tr><td>510500</td><td>南方中证500ETF</td><td>724.77</td><td>1.95</td></tr><tr><td>000385</td><td>景顺长城景颐双利A</td><td>614.77</td><td>1.08</td></tr><tr><td>511360</td><td>海富通中证短融ETF</td><td>909.09</td><td>0.38</td></tr><tr><td>004137</td><td>博时合惠B</td><td>1436.77</td><td>0.35</td></tr><tr><td>000602</td><td>富国安益A</td><td>1266.6</td><td>0.35</td></tr><tr><td>004776</td><td>鹏华金元宝</td><td>836.29</td><td>0.35</td></tr><tr><td>000759</td><td>平安财富宝A</td><td>1504.94</td><td>0.35</td></tr><tr><td>003391</td><td>建信天添益A</td><td>568.26</td><td>0.35</td></tr><tr><td>004545</td><td>永赢天天利A</td><td>744.09</td><td>0.35</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>调用工具 / SQL</h2>
+      <pre>[
+  {
+    &quot;tool_name&quot;: &quot;generated_sql_query&quot;,
+    &quot;args&quot;: {
+      &quot;sql&quot;: &quot;WITH latest_date AS (SELECT MAX(date) AS max_date FROM fund_size), size_top100 AS (SELECT fs.fund_code, fs.fund_name, fs.fund_size FROM fund_size fs JOIN latest_date ld ON fs.date = ld.max_date ORDER BY fs.fund_size DESC LIMIT 100) SELECT sp.fund_code AS \&quot;基金代码\&quot;, sp.fund_name AS \&quot;基金名称\&quot;, ROUND(sp.fund_size, 2) AS \&quot;基金规模\&quot;, ROUND(fp.portfolio_return * 100, 2) AS \&quot;本年以来收益率(%)\&quot; FROM size_top100 sp INNER JOIN fund_performance fp ON sp.fund_code = fp.fund_code AND fp.period = &#x27;本以来&#x27; ORDER BY fp.portfolio_return DESC LIMIT 10;&quot;
+    },
+    &quot;metadata&quot;: {
+      &quot;sql&quot;: &quot;WITH latest_date AS (SELECT MAX(date) AS max_date FROM fund_size), size_top100 AS (SELECT fs.fund_code, fs.fund_name, fs.fund_size FROM fund_size fs JOIN latest_date ld ON fs.date = ld.max_date ORDER BY fs.fund_size DESC LIMIT 100) SELECT sp.fund_code AS \&quot;基金代码\&quot;, sp.fund_name AS \&quot;基金名称\&quot;, ROUND(sp.fund_size, 2) AS \&quot;基金规模\&quot;, ROUND(fp.portfolio_return * 100, 2) AS \&quot;本年以来收益率(%)\&quot; FROM size_top100 sp INNER JOIN fund_performance fp ON sp.fund_code = fp.fund_code AND fp.period = &#x27;本以来&#x27; ORDER BY fp.portfolio_return DESC LIMIT 10;&quot;,
+      &quot;tables&quot;: [
+        &quot;fund_size&quot;,
+        &quot;fund_performance&quot;
+      ],
+      &quot;expected_columns&quot;: [
+        &quot;基金代码&quot;,
+        &quot;基金名称&quot;,
+        &quot;基金规模&quot;,
+        &quot;本年以来收益率(%)&quot;
+      ]
+    }
+  },
+  {
+    &quot;tool_name&quot;: &quot;generated_sql_query&quot;,
+    &quot;args&quot;: {
+      &quot;sql&quot;: &quot;WITH latest_size_date AS (SELECT MAX(date) AS max_date FROM fund_size), top100_by_size AS (SELECT fund_code, fund_name, fund_size FROM fund_size WHERE date = (SELECT max_date FROM latest_size_date) ORDER BY fund_size DESC LIMIT 100) SELECT s.fund_code AS 基金代码, s.fund_name AS 基金名称, ROUND(s.fund_size, 2) AS 基金规模_亿元, ROUND(p.portfolio_return * 100, 2) AS 本年以来收益率 FROM top100_by_size s JOIN fund_performance p ON s.fund_code = p.fund_code WHERE p.period = &#x27;本年以来&#x27; ORDER BY p.portfolio_return DESC LIMIT 10;&quot;
+    },
+    &quot;metadata&quot;: {
+      &quot;sql&quot;: &quot;WITH latest_size_date AS (SELECT MAX(date) AS max_date FROM fund_size), top100_by_size AS (SELECT fund_code, fund_name, fund_size FROM fund_size WHERE date = (SELECT max_date FROM latest_size_date) ORDER BY fund_size DESC LIMIT 100) SELECT s.fund_code AS 基金代码, s.fund_name AS 基金名称, ROUND(s.fund_size, 2) AS 基金规模_亿元, ROUND(p.portfolio_return * 100, 2) AS 本年以来收益率 FROM top100_by_size s JOIN fund_performance p ON s.fund_code = p.fund_code WHERE p.period = &#x27;本年以来&#x27; ORDER BY p.portfolio_return DESC LIMIT 10;&quot;,
+      &quot;tables&quot;: [
+        &quot;fund_size&quot;,
+        &quot;fund_performance&quot;
+      ],
+      &quot;expected_columns&quot;: [
+        &quot;基金代码&quot;,
+        &quot;基金名称&quot;,
+        &quot;基金规模_亿元&quot;,
+        &quot;本年以来收益率&quot;
+      ]
+    }
+  }
+]</pre>
+    </section>
+    
+    <section>
+      <h2>SQL 修复建议</h2>
+      <ul class="repair-list"><li>结果为空时优先放宽过滤条件：日期改用最新日期、公司名用简称匹配、基金代码统一去掉 .OF/.SH/.SZ 后缀。</li><li>本轮触发过 ReAct 纠错；下一次生成 SQL 时会把这些错误作为 previous_errors 传回 SQL Planner，让它重新规划。</li><li>当前 SQL 摘要：WITH latest_size_date AS (SELECT MAX(date) AS max_date FROM fund_size), top100_by_size AS (SELECT fund_code, fund_name, fund_size FROM fund_size WHERE date = (SELECT max_date FROM latest_size_date) ORDER BY fund_size DESC LIMIT 100) SELECT s.fund_code AS 基金...</li></ul>
+    </section>
+    
+    <section>
+      <h2>Trace</h2>
+      
+        <div class="trace-item">
+          <div class="trace-node">load_context_node</div>
+          <div><b>Action:</b> load_memory(session_id=web-rey585fm)</div>
+          <div><b>Observation:</b> memory keys=[&#x27;last_query&#x27;, &#x27;last_intent&#x27;, &#x27;last_tool_name&#x27;, &#x27;last_args&#x27;, &#x27;last_date&#x27;, &#x27;last_asset_type&#x27;, &#x27;last_fund_codes&#x27;, &#x27;last_stock_codes&#x27;, &#x27;last_companies&#x27;, &#x27;last_result_summary&#x27;, &#x27;last_metadata&#x27;, &#x27;recent_turns&#x27;, &#x27;long_memory_summaries&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">complexity_classifier_node</div>
+          <div><b>Action:</b> classify_complexity</div>
+          <div><b>Observation:</b> explicit=generated, signals=[&#x27;嵌套排名:规模top&#x27;], auto=generated, final=generated</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">mode_router_node</div>
+          <div><b>Action:</b> route_by_sql_mode</div>
+          <div><b>Observation:</b> sql_mode=generated, branch=generated</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_planner_node</div>
+          <div><b>Action:</b> GeneratedSQLAgent.plan_sql()</div>
+          <div><b>Observation:</b> [SQL] intent=Find the top 10 funds by year-to-date return among the top 100 funds by latest size, tables=[&#x27;fund_size&#x27;, &#x27;fund_performance&#x27;], sql_preview=WITH latest_date AS (SELECT MAX(date) AS max_date FROM fund_size), size_top100 AS (SELECT fs.fund_code, fs.fund_name, fs.fund_size FROM fund_size fs JOIN latest</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_validator_node</div>
+          <div><b>Action:</b> GeneratedSQLAgent.validate_sql()</div>
+          <div><b>Observation:</b> [SQL] passed=True, errors=[], next_action=execute</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_dry_run_node</div>
+          <div><b>Action:</b> EXPLAIN QUERY PLAN generated_sql</div>
+          <div><b>Observation:</b> [SQL] dry_run_passed=True</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_executor_node</div>
+          <div><b>Action:</b> SQLiteStore.query_df(generated_sql)</div>
+          <div><b>Observation:</b> [SQL][TOOL] rows=0, columns=[&#x27;基金代码&#x27;, &#x27;基金名称&#x27;, &#x27;基金规模&#x27;, &#x27;本年以来收益率(%)&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_result_validator_node</div>
+          <div><b>Action:</b> validate_generated_sql_result</div>
+          <div><b>Observation:</b> [REACT-CORRECTION] rows=0, issues=[&#x27;生成 SQL 执行结果为空。&#x27;], next_action=replan</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_reflect_node</div>
+          <div><b>Action:</b> reflect_sql_branch</div>
+          <div><b>Observation:</b> [REACT-CORRECTION] next_action=replan, sql_retry_count=1, max_steps=3</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_planner_node</div>
+          <div><b>Action:</b> GeneratedSQLAgent.plan_sql()</div>
+          <div><b>Observation:</b> [SQL] intent=Find top 10 funds with highest year-to-date return among the top 100 funds by size., tables=[&#x27;fund_size&#x27;, &#x27;fund_performance&#x27;], sql_preview=WITH latest_size_date AS (SELECT MAX(date) AS max_date FROM fund_size), top100_by_size AS (SELECT fund_code, fund_name, fund_size FROM fund_size WHERE date = (S</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_validator_node</div>
+          <div><b>Action:</b> GeneratedSQLAgent.validate_sql()</div>
+          <div><b>Observation:</b> [SQL] passed=True, errors=[], next_action=execute</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_dry_run_node</div>
+          <div><b>Action:</b> EXPLAIN QUERY PLAN generated_sql</div>
+          <div><b>Observation:</b> [SQL] dry_run_passed=True</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_executor_node</div>
+          <div><b>Action:</b> SQLiteStore.query_df(generated_sql)</div>
+          <div><b>Observation:</b> [SQL][TOOL] rows=10, columns=[&#x27;基金代码&#x27;, &#x27;基金名称&#x27;, &#x27;基金规模_亿元&#x27;, &#x27;本年以来收益率&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_result_validator_node</div>
+          <div><b>Action:</b> validate_generated_sql_result</div>
+          <div><b>Observation:</b> [SQL] rows=10, issues=[], next_action=report</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_report_writer_node</div>
+          <div><b>Action:</b> ReportWriterAgent.write(generated_sql_result)</div>
+          <div><b>Observation:</b> [SQL] draft_answer_length=749</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">self_check_node</div>
+          <div><b>Action:</b> SelfCheckAgent.check()</div>
+          <div><b>Observation:</b> passed=True, next_action=final, issues=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">save_context_node</div>
+          <div><b>Action:</b> save_memory_and_finalize</div>
+          <div><b>Observation:</b> final_answer_length=749</div>
+        </div>
+        
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Fund Agent Report</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbeafe;
+      --bg: #f8fbff;
+      --card: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      padding: 28px 40px;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+    .meta {
+      color: #e0f2fe;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 0 20px 48px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+    }
+    h2 {
+      color: #1e40af;
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.55;
+    }
+    .answer-markdown {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+    .answer-markdown h1,
+    .answer-markdown h2,
+    .answer-markdown h3,
+    .answer-markdown h4 {
+      color: #1e40af;
+      margin: 18px 0 10px;
+      line-height: 1.35;
+    }
+    .answer-markdown h1 { font-size: 22px; }
+    .answer-markdown h2 { font-size: 20px; }
+    .answer-markdown h3 { font-size: 17px; }
+    .answer-markdown h4 { font-size: 15px; }
+    .answer-markdown p {
+      margin: 10px 0;
+    }
+    .answer-markdown ul,
+    .answer-markdown ol {
+      margin: 8px 0 12px 22px;
+      padding: 0;
+    }
+    .answer-markdown li {
+      margin: 5px 0;
+    }
+    .answer-markdown strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .answer-markdown code {
+      background: #e0f2fe;
+      color: #075985;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "SFMono-Regular", monospace;
+    }
+    .answer-markdown table {
+      min-width: 760px;
+      margin: 14px 0;
+      background: white;
+    }
+    .answer-markdown th {
+      white-space: nowrap;
+    }
+    .answer-markdown td {
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      background: var(--blue-soft);
+      color: #1e3a8a;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+    }
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    .trace-item {
+      border-left: 3px solid var(--blue);
+      background: #f8fafc;
+      padding: 10px 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .trace-node {
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 4px;
+    }
+    .repair-list {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+    .repair-list li {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>基金数据分析 Agent 报告</h1>
+    <div class="meta">mode=llm · sql_mode=hard · session=ui-a982ad33</div>
+  </header>
+  <main>
+    <section>
+      <h2>用户问题</h2>
+      <pre>对比一下南方基金和易方达</pre>
+    </section>
+    <section>
+      <h2>最终回答</h2>
+      <div class="answer-markdown"><p>好的，这是南方基金和易方达截至2026年第一季度末的业务结构对比分析。</p>
+<h3>一、 总体规模与产品数量概览</h3>
+<p>从公司整体体量来看，<strong>易方达的总规模显著领先于南方基金</strong>。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">项目</th>
+<th style="text-align: left;">易方达</th>
+<th style="text-align: left;">南方基金</th>
+<th style="text-align: left;">对比分析</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>公司总规模</strong></td>
+<td style="text-align: left;">24,954.48 亿元</td>
+<td style="text-align: left;">15,053.14 亿元</td>
+<td style="text-align: left;">易方达规模约为南方基金的 <strong>1.66倍</strong>。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>基金数量</strong></td>
+<td style="text-align: left;">503 只</td>
+<td style="text-align: left;">429 只</td>
+<td style="text-align: left;">易方达产品线更为丰富，多出74只产品。</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3>二、 业务结构深度对比</h3>
+<p>两家公司的业务结构存在明显差异，这直接反映了各自的核心发展策略。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">资产类型</th>
+<th style="text-align: left;">易方达规模 (亿元)</th>
+<th style="text-align: left;">易方达占比</th>
+<th style="text-align: left;">南方规模 (亿元)</th>
+<th style="text-align: left;">南方占比</th>
+<th style="text-align: left;">核心差异点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>现金管理</strong></td>
+<td style="text-align: left;">8,435.08</td>
+<td style="text-align: left;"><strong>33.80%</strong></td>
+<td style="text-align: left;">7,162.96</td>
+<td style="text-align: left;"><strong>47.58%</strong></td>
+<td style="text-align: left;"><strong>南方基金的业务“压舱石”</strong>，是其第一大业务板块，依赖度极高。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>被动权益</strong></td>
+<td style="text-align: left;">7,876.65</td>
+<td style="text-align: left;"><strong>31.56%</strong></td>
+<td style="text-align: left;">3,380.96</td>
+<td style="text-align: left;">22.46%</td>
+<td style="text-align: left;"><strong>易方达的核心优势领域</strong>，规模是南方的2.3倍，且产品数量（213只）远超南方（139只）。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>主动权益</strong></td>
+<td style="text-align: left;">3,227.00</td>
+<td style="text-align: left;">12.93%</td>
+<td style="text-align: left;">1,037.69</td>
+<td style="text-align: left;">6.89%</td>
+<td style="text-align: left;">易方达规模是南方的3.1倍，是其重要的主动管理能力体现。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>纯债</strong></td>
+<td style="text-align: left;">3,070.87</td>
+<td style="text-align: left;">12.31%</td>
+<td style="text-align: left;">2,130.95</td>
+<td style="text-align: left;">14.16%</td>
+<td style="text-align: left;">规模和占比较为接近，均为两家公司的基石性固收业务。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>多资产投资</strong></td>
+<td style="text-align: left;">1,950.63</td>
+<td style="text-align: left;">7.82%</td>
+<td style="text-align: left;">1,067.33</td>
+<td style="text-align: left;">7.09%</td>
+<td style="text-align: left;">规模占比相当，易方达体量更大。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FOF</strong></td>
+<td style="text-align: left;">234.31</td>
+<td style="text-align: left;">0.94%</td>
+<td style="text-align: left;">142.38</td>
+<td style="text-align: left;">0.95%</td>
+<td style="text-align: left;">规模和占比均非常接近。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>REITs</strong></td>
+<td style="text-align: left;">52.14</td>
+<td style="text-align: left;">0.21%</td>
+<td style="text-align: left;">102.03</td>
+<td style="text-align: left;">0.68%</td>
+<td style="text-align: left;">南方规模更大，是易方达的近2倍，但两者都处于起步阶段。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>量化</strong></td>
+<td style="text-align: left;">107.80</td>
+<td style="text-align: left;">0.43%</td>
+<td style="text-align: left;">28.82</td>
+<td style="text-align: left;">0.19%</td>
+<td style="text-align: left;">易方达规模领先，但都对整体贡献较小。</td>
+</tr>
+</tbody>
+</table>
+<h3>三、 关键洞察总结</h3>
+<ol>
+<li>
+<p><strong>规模驱动模式不同</strong>：</p>
+<ul>
+<li><strong>易方达</strong>：呈现 <strong>“双轮驱动”</strong> 格局，<strong>被动权益（31.56%）</strong> 和 <strong>现金管理（33.80%）</strong> 并驾齐驱，同时主动权益也保持了可观的体量（12.93%）。业务结构更为均衡，在权益指数领域建立了明显的护城河。</li>
+<li><strong>南方基金</strong>：高度依赖 <strong>“现金管理”</strong> 这一单一支柱，其规模占比接近一半（47.58%）。这意味着其总规模的增长与货币、短债等产品的表现和市场需求有极高关联。</li>
+</ul>
+</li>
+<li>
+<p><strong>权益投资能力布局</strong>：</p>
+<ul>
+<li>易方达在权益领域（被动+主动）的合计规模达到 <strong>11,103.65亿元</strong>，占总规模的44.49%。</li>
+<li>南方基金在权益领域的合计规模为 <strong>4,418.65亿元</strong>，占总规模的29.35%。</li>
+<li><strong>易方达无论是在被动还是主动权益上，其绝对规模和相对占比都远超南方基金</strong>，显示出更强的权益市场影响力和投资者基础。</li>
+</ul>
+</li>
+</ol>
+<p><strong>数据口径说明</strong>
+*   数据基准日期为 <strong>2026-03-31</strong>。
+*   数据来源于公司业务结构分析，基于基金规模表中的“资产类型”字段进行汇总计算，不含费率、渠道、客户结构或收益表现等其他维度，因此不代表公司完整经营能力的评判。</p></div>
+    </section>
+    <section>
+      <h2>结果表</h2>
+      <h3>company_summary</h3><table><thead><tr><th>日期</th><th>基金公司</th><th>公司总规模</th><th>基金数量</th></tr></thead><tbody><tr><td>2026-03-31</td><td>易方达</td><td>24954.48</td><td>503</td></tr><tr><td>2026-03-31</td><td>南方</td><td>15053.14</td><td>429</td></tr></tbody></table>
+<h3>asset_structure</h3><table><thead><tr><th>日期</th><th>基金公司</th><th>资产类型</th><th>基金规模</th><th>规模占比</th><th>基金数量</th></tr></thead><tbody><tr><td>2026-03-31</td><td>南方</td><td>现金管理</td><td>7162.96</td><td>47.58</td><td>8</td></tr><tr><td>2026-03-31</td><td>南方</td><td>被动权益</td><td>3380.96</td><td>22.46</td><td>139</td></tr><tr><td>2026-03-31</td><td>南方</td><td>纯债</td><td>2130.95</td><td>14.16</td><td>82</td></tr><tr><td>2026-03-31</td><td>南方</td><td>多资产投资</td><td>1067.33</td><td>7.09</td><td>47</td></tr><tr><td>2026-03-31</td><td>南方</td><td>主动权益</td><td>1037.69</td><td>6.89</td><td>113</td></tr><tr><td>2026-03-31</td><td>南方</td><td>FOF</td><td>142.38</td><td>0.95</td><td>28</td></tr><tr><td>2026-03-31</td><td>南方</td><td>REITs</td><td>102.03</td><td>0.68</td><td>3</td></tr><tr><td>2026-03-31</td><td>南方</td><td>量化</td><td>28.82</td><td>0.19</td><td>9</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>现金管理</td><td>8435.08</td><td>33.8</td><td>10</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>被动权益</td><td>7876.65</td><td>31.56</td><td>213</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>主动权益</td><td>3227.0</td><td>12.93</td><td>121</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>纯债</td><td>3070.87</td><td>12.31</td><td>60</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>多资产投资</td><td>1950.63</td><td>7.82</td><td>44</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>FOF</td><td>234.31</td><td>0.94</td><td>33</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>量化</td><td>107.8</td><td>0.43</td><td>19</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>REITs</td><td>52.14</td><td>0.21</td><td>3</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>调用工具 / SQL</h2>
+      <pre>[
+  {
+    &quot;tool_name&quot;: &quot;compare_company_business_structure&quot;,
+    &quot;args&quot;: {
+      &quot;companies&quot;: [
+        &quot;南方&quot;,
+        &quot;易方达&quot;
+      ],
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;asset_type&quot;: null
+    },
+    &quot;metadata&quot;: {
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;companies&quot;: [
+        &quot;南方&quot;,
+        &quot;易方达&quot;
+      ],
+      &quot;asset_type&quot;: null
+    },
+    &quot;warnings&quot;: []
+  }
+]</pre>
+    </section>
+    
+    <section>
+      <h2>Trace</h2>
+      
+        <div class="trace-item">
+          <div class="trace-node">load_context_node</div>
+          <div><b>Action:</b> load_memory(session_id=ui-a982ad33)</div>
+          <div><b>Observation:</b> memory keys=[&#x27;last_query&#x27;, &#x27;last_intent&#x27;, &#x27;last_tool_name&#x27;, &#x27;last_args&#x27;, &#x27;last_date&#x27;, &#x27;last_asset_type&#x27;, &#x27;last_fund_codes&#x27;, &#x27;last_stock_codes&#x27;, &#x27;last_companies&#x27;, &#x27;last_result_summary&#x27;, &#x27;last_metadata&#x27;, &#x27;recent_turns&#x27;, &#x27;long_memory_summaries&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">mode_router_node</div>
+          <div><b>Action:</b> route_by_sql_mode</div>
+          <div><b>Observation:</b> sql_mode=hard, branch=hard</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">planner_node</div>
+          <div><b>Action:</b> PlannerAgent.plan()</div>
+          <div><b>Observation:</b> intent=company_structure_comparison, tool=compare_company_business_structure, args={&#x27;companies&#x27;: [&#x27;南方&#x27;, &#x27;易方达&#x27;], &#x27;date&#x27;: None, &#x27;asset_type&#x27;: None}, tool_calls=[{&#x27;tool_name&#x27;: &#x27;compare_company_business_structure&#x27;, &#x27;args&#x27;: {&#x27;companies&#x27;: [&#x27;南方&#x27;, &#x27;易方达&#x27;], &#x27;date&#x27;: None, &#x27;asset_type&#x27;: None}, &#x27;step_id&#x27;: &#x27;step1&#x27;}]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">tool_router_node</div>
+          <div><b>Action:</b> ToolRouter.route()</div>
+          <div><b>Observation:</b> categories=[&#x27;company_analysis&#x27;], planned_tools=[&#x27;compare_company_business_structure&#x27;], allowed_tools_count=8</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">plan_validator_node</div>
+          <div><b>Action:</b> PlanValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=execute, warnings=[&#x27;date 未指定，已使用最新日期 2026-03-31。&#x27;], issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">executor_node</div>
+          <div><b>Action:</b> ToolExecutor.execute(compare_company_business_structure)</div>
+          <div><b>Observation:</b> [TOOL] tool=compare_company_business_structure, tables=[&#x27;company_summary&#x27;, &#x27;asset_structure&#x27;], notes=4, warnings=0</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">result_validator_node</div>
+          <div><b>Action:</b> ResultValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=report, warnings=[], issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">reflect_node</div>
+          <div><b>Action:</b> reflect_and_route</div>
+          <div><b>Observation:</b> next_action=report, retry_count=0, max_steps=3</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">report_writer_node</div>
+          <div><b>Action:</b> ReportWriterAgent.write()</div>
+          <div><b>Observation:</b> draft_answer_length=1638</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">self_check_node</div>
+          <div><b>Action:</b> SelfCheckAgent.check()</div>
+          <div><b>Observation:</b> passed=True, next_action=final, issues=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">save_context_node</div>
+          <div><b>Action:</b> save_memory_and_finalize</div>
+          <div><b>Observation:</b> final_answer_length=1638</div>
+        </div>
+        
+    </section>
+  </main>
+</body>
+</html>

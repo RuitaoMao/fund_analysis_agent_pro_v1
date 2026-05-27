@@ -1,0 +1,231 @@
+{
+  "query": "本年以来最大回撤最小的主动权益基金前10只",
+  "session_id": "eval-20260526-201811-q006-generated",
+  "mode": "llm",
+  "sql_mode": "generated",
+  "memory_context": {
+    "recent_turns": []
+  },
+  "use_long_memory": false,
+  "max_steps": 3,
+  "plan": {
+    "intent": "generated_sql_query",
+    "tool_name": "generated_sql_query",
+    "args": {
+      "sql": "SELECT p.fund_code AS 基金代码, p.fund_name AS 基金名称, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code = s.fund_code WHERE s.date = (SELECT MAX(date) FROM fund_size) AND s.asset_type = '主动权益' AND p.period = '本年以来' ORDER BY p.max_drawdown ASC LIMIT 10",
+      "tables": [
+        "fund_performance",
+        "fund_size"
+      ]
+    },
+    "tool_calls": [],
+    "answer_type": "report",
+    "need_clarification": false,
+    "clarification_question": null,
+    "rationale": "关联 fund_performance 和 fund_size 表，筛选最新分类为主动权益的基金，按本年以来最大回撤升序排列取前10名。"
+  },
+  "tool_route": null,
+  "plan_validation": null,
+  "tool_result": {
+    "tool_name": "generated_sql_query",
+    "intent": "generated_sql_query",
+    "tables": {
+      "generated_sql_result": [
+        {
+          "基金代码": "025090",
+          "基金名称": "百嘉百裕成长混合发起式(A类)",
+          "最大回撤_pct": 0.0
+        },
+        {
+          "基金代码": "025785",
+          "基金名称": "中金科创优选混合发起式(A类)",
+          "最大回撤_pct": 0.0
+        },
+        {
+          "基金代码": "026442",
+          "基金名称": "国泰海通港股优势精选股票发起式(QDII)(A类)",
+          "最大回撤_pct": 0.0
+        },
+        {
+          "基金代码": "026616",
+          "基金名称": "安信均衡致远混合",
+          "最大回撤_pct": 0.0
+        },
+        {
+          "基金代码": "026644",
+          "基金名称": "易方达成长领航混合(A类)",
+          "最大回撤_pct": 0.0
+        },
+        {
+          "基金代码": "026684",
+          "基金名称": "永赢锐见成长混合(A类)",
+          "最大回撤_pct": 0.0
+        },
+        {
+          "基金代码": "026703",
+          "基金名称": "长城港股价值优选股票(QDII)(A类)",
+          "最大回撤_pct": 0.0
+        },
+        {
+          "基金代码": "026732",
+          "基金名称": "广发成长甄选混合(A类)",
+          "最大回撤_pct": 0.0
+        },
+        {
+          "基金代码": "026841",
+          "基金名称": "华安创新动能混合(A类)",
+          "最大回撤_pct": 0.0
+        },
+        {
+          "基金代码": "026850",
+          "基金名称": "泓德价值智选混合(A类)",
+          "最大回撤_pct": 0.0
+        }
+      ]
+    },
+    "notes": [
+      "使用 fund_size 最新日期确定当前基金分类",
+      "业绩期明确为'本年以来'",
+      "关联 fund_performance 和 fund_size 表，筛选最新分类为主动权益的基金，按本年以来最大回撤升序排列取前10名。",
+      "SQL 由 LLM/规则生成，并经过只读白名单校验和 dry run。"
+    ],
+    "warnings": [],
+    "metadata": {
+      "sql": "SELECT p.fund_code AS 基金代码, p.fund_name AS 基金名称, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code = s.fund_code WHERE s.date = (SELECT MAX(date) FROM fund_size) AND s.asset_type = '主动权益' AND p.period = '本年以来' ORDER BY p.max_drawdown ASC LIMIT 10",
+      "tables": [
+        "fund_performance",
+        "fund_size"
+      ],
+      "expected_columns": [
+        "基金代码",
+        "基金名称",
+        "最大回撤_pct"
+      ]
+    }
+  },
+  "result_validation": null,
+  "draft_answer": "以下是本年以来（截至最新数据日期）最大回撤最小的主动权益基金前10名。\n\n| 基金代码 | 基金名称 | 最大回撤 (%) |\n|----------|----------|----------------|\n| 025090 | 百嘉百裕成长混合发起式(A类) | 0.00 |\n| 025785 | 中金科创优选混合发起式(A类) | 0.00 |\n| 026442 | 国泰海通港股优势精选股票发起式(QDII)(A类) | 0.00 |\n| 026616 | 安信均衡致远混合 | 0.00 |\n| 026644 | 易方达成长领航混合(A类) | 0.00 |\n| 026684 | 永赢锐见成长混合(A类) | 0.00 |\n| 026703 | 长城港股价值优选股票(QDII)(A类) | 0.00 |\n| 026732 | 广发成长甄选混合(A类) | 0.00 |\n| 026841 | 华安创新动能混合(A类) | 0.00 |\n| 026850 | 泓德价值智选混合(A类) | 0.00 |\n\n**数据口径说明**\n- 时间区间：本年以来（截至数据库最新更新日期）。\n- 基金分类：主动权益类，取自基金规模表（`fund_size`）最新日期的资产类型标记。\n- 指标：最大回撤，来源于基金业绩表（`fund_performance`），单位为百分比，已四舍五入保留两位小数。\n- 筛选逻辑：在主动权益基金中，按本年以来最大回撤由小到大排序，取前10名。\n- 数据生成方式：SQL 已通过只读白名单校验并执行，结果未做任何人工修改。\n\n**请注意**：上述前10名基金的最大回撤均为0.00%，这通常意味着这些基金为本年新成立的基金，尚未经历明显的净值回撤。该结果并不代表未来表现，也不应作为投资建议。如需更全面的评估，可结合成立时长、规模、夏普比率等指标一起参考。",
+  "self_check": {
+    "passed": true,
+    "issues": [],
+    "suggested_fix": null
+  },
+  "final_answer": "以下是本年以来（截至最新数据日期）最大回撤最小的主动权益基金前10名。\n\n| 基金代码 | 基金名称 | 最大回撤 (%) |\n|----------|----------|----------------|\n| 025090 | 百嘉百裕成长混合发起式(A类) | 0.00 |\n| 025785 | 中金科创优选混合发起式(A类) | 0.00 |\n| 026442 | 国泰海通港股优势精选股票发起式(QDII)(A类) | 0.00 |\n| 026616 | 安信均衡致远混合 | 0.00 |\n| 026644 | 易方达成长领航混合(A类) | 0.00 |\n| 026684 | 永赢锐见成长混合(A类) | 0.00 |\n| 026703 | 长城港股价值优选股票(QDII)(A类) | 0.00 |\n| 026732 | 广发成长甄选混合(A类) | 0.00 |\n| 026841 | 华安创新动能混合(A类) | 0.00 |\n| 026850 | 泓德价值智选混合(A类) | 0.00 |\n\n**数据口径说明**\n- 时间区间：本年以来（截至数据库最新更新日期）。\n- 基金分类：主动权益类，取自基金规模表（`fund_size`）最新日期的资产类型标记。\n- 指标：最大回撤，来源于基金业绩表（`fund_performance`），单位为百分比，已四舍五入保留两位小数。\n- 筛选逻辑：在主动权益基金中，按本年以来最大回撤由小到大排序，取前10名。\n- 数据生成方式：SQL 已通过只读白名单校验并执行，结果未做任何人工修改。\n\n**请注意**：上述前10名基金的最大回撤均为0.00%，这通常意味着这些基金为本年新成立的基金，尚未经历明显的净值回撤。该结果并不代表未来表现，也不应作为投资建议。如需更全面的评估，可结合成立时长、规模、夏普比率等指标一起参考。",
+  "trace": [
+    {
+      "node": "load_context_node",
+      "thought": "读取会话级上下文，用于解析这些基金、刚才、同样口径等指代。",
+      "action": "load_memory(session_id=eval-20260526-201811-q006-generated)",
+      "observation": "memory keys=['recent_turns']"
+    },
+    {
+      "node": "complexity_classifier_node",
+      "thought": "按规则识别查询复杂度；auto 模式默认走 generated SQL，显式指定则尊重用户选择。",
+      "action": "classify_complexity",
+      "observation": "explicit=generated, signals=[], auto=hard, final=generated"
+    },
+    {
+      "node": "mode_router_node",
+      "thought": "根据用户选择的查询引擎，把任务路由到专家工具分支或 LLM 生成 SQL 分支。",
+      "action": "route_by_sql_mode",
+      "observation": "sql_mode=generated, branch=generated"
+    },
+    {
+      "node": "sql_planner_node",
+      "thought": "让 LLM/规则根据用户问题和 schema 生成受控只读 SQL。",
+      "action": "GeneratedSQLAgent.plan_sql()",
+      "observation": "[SQL] intent=Retrieve the top 10 active equity funds with the smallest year-to-date maximum drawdown., tables=['fund_performance', 'fund_size'], sql_preview=SELECT p.fund_code AS 基金代码, p.fund_name AS 基金名称, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code = s.fund_code W"
+    },
+    {
+      "node": "sql_validator_node",
+      "thought": "检查 SQL 是否只读、是否只访问白名单表、是否有 LIMIT 且不会越权。",
+      "action": "GeneratedSQLAgent.validate_sql()",
+      "observation": "[SQL] passed=True, errors=[], next_action=execute"
+    },
+    {
+      "node": "sql_dry_run_node",
+      "thought": "正式执行前先让 SQLite 解析查询计划，提前发现字段名、表名、语法错误。",
+      "action": "EXPLAIN QUERY PLAN generated_sql",
+      "observation": "[SQL] dry_run_passed=True"
+    },
+    {
+      "node": "sql_executor_node",
+      "thought": "执行已通过校验和 dry run 的只读 SQL。",
+      "action": "SQLiteStore.query_df(generated_sql)",
+      "observation": "[SQL][TOOL] rows=10, columns=['基金代码', '基金名称', '最大回撤_pct']"
+    },
+    {
+      "node": "sql_result_validator_node",
+      "thought": "检查生成 SQL 的结果。执行失败→重试；结果为空→告知用户没有满足条件的数据；有结果→报告。",
+      "action": "validate_generated_sql_result",
+      "observation": "[SQL] rows=10, issues=[], next_action=report"
+    },
+    {
+      "node": "sql_report_writer_node",
+      "thought": "把生成 SQL、查询结果和数据口径说明整理成用户可读输出。",
+      "action": "ReportWriterAgent.write(generated_sql_result)",
+      "observation": "[SQL] draft_answer_length=796"
+    },
+    {
+      "node": "self_check_node",
+      "thought": "检查最终回答是否回答原问题、忠实于工具结果、说明口径且避免投资建议。",
+      "action": "SelfCheckAgent.check()",
+      "observation": "passed=True, next_action=final, issues=[]"
+    },
+    {
+      "node": "save_context_node",
+      "thought": "保存结构化上下文，支持下一轮追问。",
+      "action": "save_memory_and_finalize",
+      "observation": "final_answer_length=796"
+    }
+  ],
+  "tool_history": [
+    {
+      "tool_name": "generated_sql_query",
+      "args": {
+        "sql": "SELECT p.fund_code AS 基金代码, p.fund_name AS 基金名称, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code = s.fund_code WHERE s.date = (SELECT MAX(date) FROM fund_size) AND s.asset_type = '主动权益' AND p.period = '本年以来' ORDER BY p.max_drawdown ASC LIMIT 10"
+      },
+      "metadata": {
+        "sql": "SELECT p.fund_code AS 基金代码, p.fund_name AS 基金名称, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code = s.fund_code WHERE s.date = (SELECT MAX(date) FROM fund_size) AND s.asset_type = '主动权益' AND p.period = '本年以来' ORDER BY p.max_drawdown ASC LIMIT 10",
+        "tables": [
+          "fund_performance",
+          "fund_size"
+        ],
+        "expected_columns": [
+          "基金代码",
+          "基金名称",
+          "最大回撤_pct"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    "load_context_node: memory keys=['recent_turns']",
+    "complexity_classifier_node: explicit=generated, signals=[], auto=hard, final=generated",
+    "mode_router_node: sql_mode=generated, branch=generated",
+    "sql_planner_node: [SQL] intent=Retrieve the top 10 active equity funds with the smallest year-to-date maximum drawdown., tables=['fund_performance', 'fund_size'], sql_preview=SELECT p.fund_code AS 基金代码, p.fund_name AS 基金名称, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code = s.fund_code W",
+    "sql_validator_node: [SQL] passed=True, errors=[], next_action=execute",
+    "sql_dry_run_node: [SQL] dry_run_passed=True",
+    "sql_executor_node: [SQL][TOOL] rows=10, columns=['基金代码', '基金名称', '最大回撤_pct']",
+    "sql_result_validator_node: [SQL] rows=10, issues=[], next_action=report",
+    "sql_report_writer_node: [SQL] draft_answer_length=796",
+    "self_check_node: passed=True, next_action=final, issues=[]",
+    "save_context_node: final_answer_length=796"
+  ],
+  "errors": [],
+  "retry_count": 0,
+  "revision_count": 0,
+  "next_action": "final",
+  "sql_plan": "SQLPlan(query_intent='Retrieve the top 10 active equity funds with the smallest year-to-date maximum drawdown.', tables=['fund_performance', 'fund_size'], assumptions=['使用 fund_size 最新日期确定当前基金分类', \"业绩期明确为'本年以来'\"], sql=\"SELECT p.fund_code AS 基金代码, p.fund_name AS 基金名称, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code = s.fund_code WHERE s.date = (SELECT MAX(date) FROM fund_size) AND s.asset_type = '主动权益' AND p.period = '本年以来' ORDER BY p.max_drawdown ASC LIMIT 10\", expected_columns=['基金代码', '基金名称', '最大回撤_pct'], explanation='关联 fund_performance 和 fund_size 表，筛选最新分类为主动权益的基金，按本年以来最大回撤升序排列取前10名。')",
+  "generated_sql": "SELECT p.fund_code AS 基金代码, p.fund_name AS 基金名称, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code = s.fund_code WHERE s.date = (SELECT MAX(date) FROM fund_size) AND s.asset_type = '主动权益' AND p.period = '本年以来' ORDER BY p.max_drawdown ASC LIMIT 10",
+  "sql_validation_errors": [],
+  "sql_retry_count": 0,
+  "hard_fallback_attempted": false,
+  "auto_routed_mode": "hard",
+  "complexity_signals": [],
+  "pending_clarification": null,
+  "used_langgraph": true,
+  "run_artifacts_dir": "D:\\financial_agent\\fund_analysis_agent_pro\\outputs\\runs\\20260526_202112_391062",
+  "html_report_path": "D:\\financial_agent\\fund_analysis_agent_pro\\outputs\\reports\\report_20260526_202112_393061.html",
+  "html_report_url": "/reports/report_20260526_202112_393061.html"
+}

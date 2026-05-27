@@ -1,0 +1,481 @@
+{
+  "query": "本年以来收益最高的5只主动权益基金，各自的第一大重仓股是什么",
+  "session_id": "eval-20260526-190952-q014-hard",
+  "mode": "llm",
+  "sql_mode": "hard",
+  "memory_context": {
+    "recent_turns": []
+  },
+  "use_long_memory": false,
+  "max_steps": 3,
+  "plan": {
+    "intent": "performance_holding_analysis",
+    "tool_name": "query_performance_holdings",
+    "args": {
+      "period": "本年以来",
+      "top_n": 5,
+      "asset_type": "主动权益"
+    },
+    "tool_calls": [
+      {
+        "tool_name": "query_performance_holdings",
+        "args": {
+          "period": "本年以来",
+          "top_n": 5,
+          "asset_type": "主动权益"
+        },
+        "step_id": "top_perf"
+      },
+      {
+        "tool_name": "query_fund_holdings",
+        "args": {
+          "fund_codes": {
+            "$from_step": "top_perf",
+            "table": "top_performance_funds",
+            "column": "基金代码",
+            "limit": 5
+          },
+          "top_n": 1
+        },
+        "step_id": "first_holding"
+      }
+    ],
+    "answer_type": "report",
+    "need_clarification": false,
+    "clarification_question": null,
+    "rationale": "先通过query_performance_holdings获取本年以来收益前5的主动权益基金，再对这些基金调用query_fund_holdings取第一大重仓股（top_n=1）。"
+  },
+  "tool_route": {
+    "categories": [
+      "holding",
+      "cross_analysis"
+    ],
+    "allowed_tools": [
+      "query_fund_holdings",
+      "query_performance_holdings",
+      "query_stock_holders",
+      "screen_funds"
+    ],
+    "planned_tools": [
+      "query_performance_holdings",
+      "query_fund_holdings"
+    ],
+    "description": "基金/公司持仓查询、个股持有情况、共识股识别。；多条件筛选（规模+业绩+持仓联合）以及业绩Top基金的持仓分析。"
+  },
+  "plan_validation": {
+    "passed": true,
+    "issues": [],
+    "warnings": [
+      "holding_date 未指定，已使用最新日期 2026-03-31。"
+    ],
+    "correction_hint": null,
+    "repaired_args": {
+      "top_n": 5,
+      "period": "本年以来",
+      "holding_date": "2026-03-31",
+      "asset_type": "主动权益"
+    },
+    "repaired_tool_calls": [
+      {
+        "tool_name": "query_performance_holdings",
+        "args": {
+          "top_n": 5,
+          "period": "本年以来",
+          "holding_date": "2026-03-31",
+          "asset_type": "主动权益"
+        },
+        "step_id": "top_perf"
+      },
+      {
+        "tool_name": "query_fund_holdings",
+        "args": {
+          "fund_codes": {
+            "$from_step": "top_perf",
+            "table": "top_performance_funds",
+            "column": "基金代码",
+            "limit": 5
+          },
+          "top_n": 1
+        },
+        "step_id": "first_holding"
+      }
+    ],
+    "next_action": "execute"
+  },
+  "tool_result": {
+    "tool_name": "multi_tool",
+    "intent": "performance_holding_analysis",
+    "tables": {
+      "top_performance_funds": [
+        {
+          "fund_code": "016873",
+          "fund_name": "广发远见智选混合(A类)",
+          "组合收益率_pct": 58.03
+        },
+        {
+          "fund_code": "020722",
+          "fund_name": "国寿安保数字经济股票发起式(A类)",
+          "组合收益率_pct": 45.38
+        },
+        {
+          "fund_code": "168002",
+          "fund_name": "国寿安保策略精选混合(A类)",
+          "组合收益率_pct": 32.48
+        },
+        {
+          "fund_code": "020775",
+          "fund_name": "国寿安保产业升级股票发起式(A类)",
+          "组合收益率_pct": 30.98
+        },
+        {
+          "fund_code": "009394",
+          "fund_name": "银华同力精选混合",
+          "组合收益率_pct": 30.19
+        }
+      ],
+      "top_fund_holdings": [
+        {
+          "股票代码": "000975",
+          "股票名称": "山金国际",
+          "合计持仓_亿": 0.96,
+          "持有基金数": 1,
+          "平均净值占比_pct": 9.89
+        },
+        {
+          "股票代码": "600547",
+          "股票名称": "山东黄金",
+          "合计持仓_亿": 0.96,
+          "持有基金数": 1,
+          "平均净值占比_pct": 9.88
+        },
+        {
+          "股票代码": "600988",
+          "股票名称": "赤峰黄金",
+          "合计持仓_亿": 0.95,
+          "持有基金数": 1,
+          "平均净值占比_pct": 9.84
+        },
+        {
+          "股票代码": "000603",
+          "股票名称": "盛达资源",
+          "合计持仓_亿": 0.95,
+          "持有基金数": 1,
+          "平均净值占比_pct": 9.8
+        },
+        {
+          "股票代码": "000426",
+          "股票名称": "兴业银锡",
+          "合计持仓_亿": 0.84,
+          "持有基金数": 1,
+          "平均净值占比_pct": 8.62
+        }
+      ],
+      "stock_holding_ranking": [
+        {
+          "日期": "2026-03-31",
+          "股票代码": "300750",
+          "股票名称": "宁德时代",
+          "持仓规模_亿": 2533.74,
+          "持仓基金数": 3682
+        }
+      ]
+    },
+    "notes": [
+      "[query_performance_holdings]",
+      "业绩区间：本年以来，持仓日期：2026-03-31",
+      "资产类型：主动权益",
+      "业绩前 5 只基金的持仓汇总。",
+      "持仓规模已从元换算为亿元。",
+      "[query_fund_holdings]",
+      "持仓日期：2026-03-31",
+      "全市场股票持仓规模排名。",
+      "持仓规模：已从元换算为亿元；净值占比单位为百分点（5 表示 5%）。"
+    ],
+    "warnings": [],
+    "metadata": {
+      "tool_calls": [
+        {
+          "tool_name": "query_performance_holdings",
+          "args": {
+            "top_n": 5,
+            "period": "本年以来",
+            "holding_date": "2026-03-31",
+            "asset_type": "主动权益"
+          },
+          "step_id": "top_perf"
+        },
+        {
+          "tool_name": "query_fund_holdings",
+          "args": {
+            "fund_codes": {
+              "$from_step": "top_perf",
+              "table": "top_performance_funds",
+              "column": "基金代码",
+              "limit": 5
+            },
+            "top_n": 1
+          },
+          "step_id": "first_holding"
+        }
+      ],
+      "tool_results": [
+        {
+          "tool_name": "query_performance_holdings",
+          "intent": "performance_holdings_analysis",
+          "tables": {
+            "top_performance_funds": [
+              {
+                "fund_code": "016873",
+                "fund_name": "广发远见智选混合(A类)",
+                "组合收益率_pct": 58.03
+              },
+              {
+                "fund_code": "020722",
+                "fund_name": "国寿安保数字经济股票发起式(A类)",
+                "组合收益率_pct": 45.38
+              },
+              {
+                "fund_code": "168002",
+                "fund_name": "国寿安保策略精选混合(A类)",
+                "组合收益率_pct": 32.48
+              },
+              {
+                "fund_code": "020775",
+                "fund_name": "国寿安保产业升级股票发起式(A类)",
+                "组合收益率_pct": 30.98
+              },
+              {
+                "fund_code": "009394",
+                "fund_name": "银华同力精选混合",
+                "组合收益率_pct": 30.19
+              }
+            ],
+            "top_fund_holdings": [
+              {
+                "股票代码": "000975",
+                "股票名称": "山金国际",
+                "合计持仓_亿": 0.96,
+                "持有基金数": 1,
+                "平均净值占比_pct": 9.89
+              },
+              {
+                "股票代码": "600547",
+                "股票名称": "山东黄金",
+                "合计持仓_亿": 0.96,
+                "持有基金数": 1,
+                "平均净值占比_pct": 9.88
+              },
+              {
+                "股票代码": "600988",
+                "股票名称": "赤峰黄金",
+                "合计持仓_亿": 0.95,
+                "持有基金数": 1,
+                "平均净值占比_pct": 9.84
+              },
+              {
+                "股票代码": "000603",
+                "股票名称": "盛达资源",
+                "合计持仓_亿": 0.95,
+                "持有基金数": 1,
+                "平均净值占比_pct": 9.8
+              },
+              {
+                "股票代码": "000426",
+                "股票名称": "兴业银锡",
+                "合计持仓_亿": 0.84,
+                "持有基金数": 1,
+                "平均净值占比_pct": 8.62
+              }
+            ]
+          },
+          "notes": [
+            "业绩区间：本年以来，持仓日期：2026-03-31",
+            "资产类型：主动权益",
+            "业绩前 5 只基金的持仓汇总。",
+            "持仓规模已从元换算为亿元。"
+          ],
+          "warnings": [],
+          "metadata": {
+            "period": "本年以来",
+            "top_n": 5,
+            "holding_date": "2026-03-31",
+            "asset_type": "主动权益"
+          }
+        },
+        {
+          "tool_name": "query_fund_holdings",
+          "intent": "fund_holdings_query",
+          "tables": {
+            "stock_holding_ranking": [
+              {
+                "日期": "2026-03-31",
+                "股票代码": "300750",
+                "股票名称": "宁德时代",
+                "持仓规模_亿": 2533.74,
+                "持仓基金数": 3682
+              }
+            ]
+          },
+          "notes": [
+            "持仓日期：2026-03-31",
+            "全市场股票持仓规模排名。",
+            "持仓规模：已从元换算为亿元；净值占比单位为百分点（5 表示 5%）。"
+          ],
+          "warnings": [],
+          "metadata": {
+            "date": "2026-03-31",
+            "fund_codes": [],
+            "companies": [],
+            "top_n": 1,
+            "include_concentration": false
+          }
+        }
+      ]
+    }
+  },
+  "result_validation": {
+    "passed": true,
+    "issues": [],
+    "warnings": [],
+    "correction_hint": null,
+    "repaired_args": null,
+    "repaired_tool_calls": null,
+    "next_action": "report"
+  },
+  "draft_answer": "好的，这是为您整理的分析报告。\n\n### **本年以来收益TOP5主动权益基金及第一大重仓股分析**\n\n**数据口径说明**：\n*   **业绩区间**：本年以来（截至最新交易日）。\n*   **持仓截止日期**：2026年3月31日。\n*   **基金类型**：主动权益类基金。\n*   **重仓股定义**：基于最新季度报告披露的全部持仓，按持仓市值排序，取**第一大重仓股**。\n\n以下为本年以来收益率最高的5只主动权益基金，及其第一大重仓股明细：\n\n| 排名 | 基金代码 | 基金名称 | 本年以来收益率 | 第一大重仓股 |\n| :--- | :--- | :--- | :--- | :--- |\n| 1 | 016873 | 广发远见智选混合(A类) | 58.03% | 山金国际 (000975) |\n| 2 | 020722 | 国寿安保数字经济股票发起式(A类) | 45.38% | 山东黄金 (600547) |\n| 3 | 168002 | 国寿安保策略精选混合(A类) | 32.48% | 赤峰黄金 (600988) |\n| 4 | 020775 | 国寿安保产业升级股票发起式(A类) | 30.98% | 盛达资源 (000603) |\n| 5 | 009394 | 银华同力精选混合 | 30.19% | 兴业银锡 (000426) |\n\n**小结**：\n从上述结果可以看出，本年以来表现最突出的5只主动权益基金，其第一大重仓股均高度集中在**黄金及有色金属**板块，显示相关主题的配置可能是其业绩表现优异的主要原因。",
+  "self_check": {
+    "passed": true,
+    "issues": [],
+    "suggested_fix": null
+  },
+  "final_answer": "好的，这是为您整理的分析报告。\n\n### **本年以来收益TOP5主动权益基金及第一大重仓股分析**\n\n**数据口径说明**：\n*   **业绩区间**：本年以来（截至最新交易日）。\n*   **持仓截止日期**：2026年3月31日。\n*   **基金类型**：主动权益类基金。\n*   **重仓股定义**：基于最新季度报告披露的全部持仓，按持仓市值排序，取**第一大重仓股**。\n\n以下为本年以来收益率最高的5只主动权益基金，及其第一大重仓股明细：\n\n| 排名 | 基金代码 | 基金名称 | 本年以来收益率 | 第一大重仓股 |\n| :--- | :--- | :--- | :--- | :--- |\n| 1 | 016873 | 广发远见智选混合(A类) | 58.03% | 山金国际 (000975) |\n| 2 | 020722 | 国寿安保数字经济股票发起式(A类) | 45.38% | 山东黄金 (600547) |\n| 3 | 168002 | 国寿安保策略精选混合(A类) | 32.48% | 赤峰黄金 (600988) |\n| 4 | 020775 | 国寿安保产业升级股票发起式(A类) | 30.98% | 盛达资源 (000603) |\n| 5 | 009394 | 银华同力精选混合 | 30.19% | 兴业银锡 (000426) |\n\n**小结**：\n从上述结果可以看出，本年以来表现最突出的5只主动权益基金，其第一大重仓股均高度集中在**黄金及有色金属**板块，显示相关主题的配置可能是其业绩表现优异的主要原因。",
+  "trace": [
+    {
+      "node": "load_context_node",
+      "thought": "读取会话级上下文，用于解析这些基金、刚才、同样口径等指代。",
+      "action": "load_memory(session_id=eval-20260526-190952-q014-hard)",
+      "observation": "memory keys=['recent_turns']"
+    },
+    {
+      "node": "complexity_classifier_node",
+      "thought": "按规则识别查询复杂度；auto 模式默认走 generated SQL，显式指定则尊重用户选择。",
+      "action": "classify_complexity",
+      "observation": "explicit=hard, signals=['2域联合'], auto=generated, final=hard"
+    },
+    {
+      "node": "mode_router_node",
+      "thought": "根据用户选择的查询引擎，把任务路由到专家工具分支或 LLM 生成 SQL 分支。",
+      "action": "route_by_sql_mode",
+      "observation": "sql_mode=hard, branch=hard"
+    },
+    {
+      "node": "planner_node",
+      "thought": "把用户问题转换成结构化工具调用计划，重规划时会读取上轮失败反馈。",
+      "action": "PlannerAgent.plan()",
+      "observation": " intent=performance_holding_analysis, tool=query_performance_holdings, args={'period': '本年以来', 'top_n': 5, 'asset_type': '主动权益'}, tool_calls=[{'tool_name': 'query_performance_holdings', 'args': {'period': '本年以来', 'top_n': 5, 'asset_type': '主动权益'}, 'step_id': 'top_perf'}, {'tool_name': 'query_fund_holdings', 'args': {'fund_codes': {'$from_step': 'top_perf', 'table': 'top_performance_funds', 'column': '基金代码', 'limit': 5}, 'top_n': 1}, 'step_id': 'first_holding'}]"
+    },
+    {
+      "node": "tool_router_node",
+      "thought": "根据用户问题和 planner 选择的工具，把请求路由到规模、业绩、持仓、公司或跨表分析能力簇。",
+      "action": "ToolRouter.route()",
+      "observation": "categories=['holding', 'cross_analysis'], planned_tools=['query_performance_holdings', 'query_fund_holdings'], allowed_tools_count=4"
+    },
+    {
+      "node": "plan_validator_node",
+      "thought": "校验工具名、参数 schema、数据库日期/资产类型/公司名和明显语义冲突。",
+      "action": "PlanValidator.validate()",
+      "observation": "passed=True, next_action=execute, issues=[], hint=None"
+    },
+    {
+      "node": "executor_node",
+      "thought": "执行白名单 SQL-backed tool，获得确定性观察结果。",
+      "action": "ToolExecutor.execute(multi_tool)",
+      "observation": "[TOOL] tool=multi_tool, tables=['top_performance_funds', 'top_fund_holdings', 'stock_holding_ranking'], notes=9, warnings=0"
+    },
+    {
+      "node": "result_validator_node",
+      "thought": "检查工具观察结果是否为空、字段是否匹配问题、是否存在异常值或缺失基金。",
+      "action": "ResultValidator.validate()",
+      "observation": "passed=True, next_action=report, warnings=[], issues=[], hint=None"
+    },
+    {
+      "node": "reflect_node",
+      "thought": "基于 plan/result validator 的观察结果决定下一步。",
+      "action": "reflect_and_route",
+      "observation": "next_action=report, retry_count=0, max_steps=3"
+    },
+    {
+      "node": "report_writer_node",
+      "thought": "把工具结果转换成用户可读的中文结果或分析报告。",
+      "action": "ReportWriterAgent.write()",
+      "observation": "draft_answer_length=678"
+    },
+    {
+      "node": "self_check_node",
+      "thought": "检查最终回答是否回答原问题、忠实于工具结果、说明口径且避免投资建议。",
+      "action": "SelfCheckAgent.check()",
+      "observation": "passed=True, next_action=final, issues=[]"
+    },
+    {
+      "node": "save_context_node",
+      "thought": "保存结构化上下文，支持下一轮追问。",
+      "action": "save_memory_and_finalize",
+      "observation": "final_answer_length=678"
+    }
+  ],
+  "tool_history": [
+    {
+      "tool_name": "query_performance_holdings",
+      "args": {
+        "top_n": 5,
+        "period": "本年以来",
+        "holding_date": "2026-03-31",
+        "asset_type": "主动权益"
+      }
+    },
+    {
+      "tool_name": "query_fund_holdings",
+      "args": {
+        "fund_codes": {
+          "$from_step": "top_perf",
+          "table": "top_performance_funds",
+          "column": "基金代码",
+          "limit": 5
+        },
+        "top_n": 1
+      }
+    }
+  ],
+  "observations": [
+    "load_context_node: memory keys=['recent_turns']",
+    "complexity_classifier_node: explicit=hard, signals=['2域联合'], auto=generated, final=hard",
+    "mode_router_node: sql_mode=hard, branch=hard",
+    "planner_node:  intent=performance_holding_analysis, tool=query_performance_holdings, args={'period': '本年以来', 'top_n': 5, 'asset_type': '主动权益'}, tool_calls=[{'tool_name': 'query_performance_holdings', 'args': {'period': '本年以来', 'top_n': 5, 'asset_type': '主动权益'}, 'step_id': 'top_perf'}, {'tool_name': 'query_fund_holdings', 'args': {'fund_codes': {'$from_step': 'top_perf', 'table': 'top_performance_funds', 'column': '基金代码', 'limit': 5}, 'top_n': 1}, 'step_id': 'first_holding'}]",
+    "tool_router_node: categories=['holding', 'cross_analysis'], planned_tools=['query_performance_holdings', 'query_fund_holdings'], allowed_tools_count=4",
+    "plan_validator_node: passed=True, next_action=execute, issues=[], hint=None",
+    "executor_node: [TOOL] tool=multi_tool, tables=['top_performance_funds', 'top_fund_holdings', 'stock_holding_ranking'], notes=9, warnings=0",
+    "result_validator_node: passed=True, next_action=report, warnings=[], issues=[], hint=None",
+    "reflect_node: next_action=report, retry_count=0, max_steps=3",
+    "report_writer_node: draft_answer_length=678",
+    "self_check_node: passed=True, next_action=final, issues=[]",
+    "save_context_node: final_answer_length=678"
+  ],
+  "errors": [],
+  "retry_count": 0,
+  "revision_count": 0,
+  "next_action": "final",
+  "sql_plan": null,
+  "generated_sql": null,
+  "sql_validation_errors": [],
+  "sql_retry_count": 0,
+  "hard_fallback_attempted": false,
+  "auto_routed_mode": "generated",
+  "complexity_signals": [
+    "2域联合"
+  ],
+  "pending_clarification": null,
+  "used_langgraph": true,
+  "run_artifacts_dir": "D:\\financial_agent\\fund_analysis_agent_pro\\outputs\\runs\\20260526_191737_040939",
+  "html_report_path": "D:\\financial_agent\\fund_analysis_agent_pro\\outputs\\reports\\report_20260526_191737_042941.html",
+  "html_report_url": "/reports/report_20260526_191737_042941.html"
+}

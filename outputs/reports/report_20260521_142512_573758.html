@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Fund Agent Report</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbeafe;
+      --bg: #f8fbff;
+      --card: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      padding: 28px 40px;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+    .meta {
+      color: #e0f2fe;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 0 20px 48px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+    }
+    h2 {
+      color: #1e40af;
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.55;
+    }
+    .answer-markdown {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+    .answer-markdown h1,
+    .answer-markdown h2,
+    .answer-markdown h3,
+    .answer-markdown h4 {
+      color: #1e40af;
+      margin: 18px 0 10px;
+      line-height: 1.35;
+    }
+    .answer-markdown h1 { font-size: 22px; }
+    .answer-markdown h2 { font-size: 20px; }
+    .answer-markdown h3 { font-size: 17px; }
+    .answer-markdown h4 { font-size: 15px; }
+    .answer-markdown p {
+      margin: 10px 0;
+    }
+    .answer-markdown ul,
+    .answer-markdown ol {
+      margin: 8px 0 12px 22px;
+      padding: 0;
+    }
+    .answer-markdown li {
+      margin: 5px 0;
+    }
+    .answer-markdown strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .answer-markdown code {
+      background: #e0f2fe;
+      color: #075985;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "SFMono-Regular", monospace;
+    }
+    .answer-markdown table {
+      min-width: 760px;
+      margin: 14px 0;
+      background: white;
+    }
+    .answer-markdown th {
+      white-space: nowrap;
+    }
+    .answer-markdown td {
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      background: var(--blue-soft);
+      color: #1e3a8a;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+    }
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    .trace-item {
+      border-left: 3px solid var(--blue);
+      background: #f8fafc;
+      padding: 10px 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .trace-node {
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 4px;
+    }
+    .repair-list {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+    .repair-list li {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>基金数据分析 Agent 报告</h1>
+    <div class="meta">mode=llm · sql_mode=hard · session=ui-3b049e6c</div>
+  </header>
+  <main>
+    <section>
+      <h2>用户问题</h2>
+      <pre>写一份易方达和华夏主动权益综合对比报告。</pre>
+    </section>
+    <section>
+      <h2>最终回答</h2>
+      <div class="answer-markdown"><p>好的，以下是根据现有数据为您整理的易方达与华夏基金在主动权益领域的综合对比报告。</p>
+<h3>易方达与华夏主动权益综合对比报告</h3>
+<p><strong>数据基准日</strong>：2026年3月31日（规模、持仓数据）
+<strong>业绩区间</strong>：本年以来
+<strong>资产类型</strong>：主动权益类基金
+<strong>数据来源</strong>：基于<code>build_report_evidence_pack</code>工具结果，该工具筛选了两家公司的主动权益类基金进行汇总计算。</p>
+<hr>
+<h4>一、 规模与产品线对比</h4>
+<p>易方达在主动权益领域的规模占据显著优势，两者产品线广度相当。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">对比维度</th>
+<th style="text-align: left;">易方达</th>
+<th style="text-align: left;">华夏</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>主动权益总规模 (亿元)</strong></td>
+<td style="text-align: left;">3,227.00</td>
+<td style="text-align: left;">1,442.73</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>主动权益基金数量 (只)</strong></td>
+<td style="text-align: left;">121</td>
+<td style="text-align: left;">132</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>口径说明</strong>：数据来源于公司规模汇总表，规模数据按基金规模加总得到。</li>
+</ul>
+<hr>
+<h4>二、 本年以来业绩表现</h4>
+<p>工具返回的全市场主动权益业绩排名列表中，<strong>未包含“易方达”及“华夏”两家公司的数据</strong>。</p>
+<ul>
+<li><strong>结论</strong>：在当前“本年以来”的业绩区间内，这两家公司主动权益产品的平均收益率、平均超额收益等关键指标均未能进入本次统计的行业前十名。</li>
+<li><strong>数据说明</strong>：业绩列表仅展示了在此区间内平均组合收益率排名前十的基金公司。这意味着易方达和华夏在主动权益领域的整体业绩表现未能跻身市场前列，但由于缺乏具体数值，无法进行两家公司间的直接比较。</li>
+</ul>
+<hr>
+<h4>三、 核心持仓对比：易方达前十大重仓股</h4>
+<p>由于工具结果仅提供了易方达的前十大重仓股数据，<strong>华夏基金的持仓数据缺失</strong>，因此无法进行双方持仓的直接对比。以下是易方达在主动权益基金中的重仓方向，仅供分析参考。</p>
+<ul>
+<li><strong>行业偏好</strong>：呈现出显著的“AI科技+高端白酒”双主线配置特征。</li>
+<li><strong>具体持仓</strong>：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">股票名称</th>
+<th style="text-align: left;">股票代码</th>
+<th style="text-align: left;">持仓规模 (亿元)</th>
+<th style="text-align: left;">涉及基金数量 (只)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">中际旭创</td>
+<td style="text-align: left;">300308</td>
+<td style="text-align: left;">114.37</td>
+<td style="text-align: left;">47</td>
+</tr>
+<tr>
+<td style="text-align: left;">腾讯控股</td>
+<td style="text-align: left;">HK700</td>
+<td style="text-align: left;">106.86</td>
+<td style="text-align: left;">34</td>
+</tr>
+<tr>
+<td style="text-align: left;">新易盛</td>
+<td style="text-align: left;">300502</td>
+<td style="text-align: left;">101.20</td>
+<td style="text-align: left;">46</td>
+</tr>
+<tr>
+<td style="text-align: left;">贵州茅台</td>
+<td style="text-align: left;">600519</td>
+<td style="text-align: left;">96.16</td>
+<td style="text-align: left;">26</td>
+</tr>
+<tr>
+<td style="text-align: left;">阿里巴巴-W</td>
+<td style="text-align: left;">HK9988</td>
+<td style="text-align: left;">90.74</td>
+<td style="text-align: left;">32</td>
+</tr>
+<tr>
+<td style="text-align: left;">山西汾酒</td>
+<td style="text-align: left;">600809</td>
+<td style="text-align: left;">65.85</td>
+<td style="text-align: left;">13</td>
+</tr>
+<tr>
+<td style="text-align: left;">泸州老窖</td>
+<td style="text-align: left;">000568</td>
+<td style="text-align: left;">52.14</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr>
+<td style="text-align: left;">五粮液</td>
+<td style="text-align: left;">000858</td>
+<td style="text-align: left;">51.28</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr>
+<td style="text-align: left;">东山精密</td>
+<td style="text-align: left;">002384</td>
+<td style="text-align: left;">47.71</td>
+<td style="text-align: left;">26</td>
+</tr>
+<tr>
+<td style="text-align: left;">沪电股份</td>
+<td style="text-align: left;">002463</td>
+<td style="text-align: left;">45.04</td>
+<td style="text-align: left;">20</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>口径说明</strong>：该表汇总了易方达旗下所有“主动权益”基金对所持股票的规模，并按持仓规模降序排列取前10名。</li>
+</ul>
+<hr>
+<h4>报告总结与局限说明</h4>
+<ol>
+<li><strong>规模对比</strong>：易方达主动权益管理规模约为华夏的2.2倍，具有明显的规模优势。两者产品数量相当，布局广度相似。</li>
+<li><strong>业绩对比</strong>：在“本年以来”区间内，两家公司均未进入行业平均收益率前十，但无法进行相互间的业绩优劣比较。</li>
+<li><strong>持仓对比</strong>：数据仅覆盖易方达，其持仓凸显了对AI算力（光模块/服务器）和高端消费（白酒/互联网）的重仓偏好。华夏的持仓风格因数据缺失尚无法判断。</li>
+</ol>
+<p><strong>本报告所依赖工具结果，不包含费率、渠道、客户结构、基金经理详情及完整业绩指标，因此不代表对两家公司经营竞争力或投资价值的完整评判。</strong></p></div>
+    </section>
+    <section>
+      <h2>结果表</h2>
+      <h3>company_summary</h3><table><thead><tr><th>日期</th><th>基金公司</th><th>公司总规模</th><th>基金数量</th></tr></thead><tbody><tr><td>2026-03-31</td><td>易方达</td><td>3227.0</td><td>121</td></tr><tr><td>2026-03-31</td><td>华夏</td><td>1442.73</td><td>132</td></tr></tbody></table>
+<h3>asset_structure</h3><table><thead><tr><th>日期</th><th>基金公司</th><th>资产类型</th><th>基金规模</th><th>规模占比</th><th>基金数量</th></tr></thead><tbody><tr><td>2026-03-31</td><td>华夏</td><td>主动权益</td><td>1442.73</td><td>100.0</td><td>132</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>主动权益</td><td>3227.0</td><td>100.0</td><td>121</td></tr></tbody></table>
+<h3>company_top_holdings</h3><table><thead><tr><th>日期</th><th>基金公司</th><th>股票代码</th><th>股票名称</th><th>持仓规模</th><th>涉及基金数量</th></tr></thead><tbody><tr><td>2026-03-31</td><td>易方达</td><td>300308</td><td>中际旭创</td><td>11437344450.0</td><td>47</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>HK700</td><td>腾讯控股</td><td>10685724176.58</td><td>34</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>300502</td><td>新易盛</td><td>10119723084.0</td><td>46</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>600519</td><td>贵州茅台</td><td>9615616741.08</td><td>26</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>HK9988</td><td>阿里巴巴-W</td><td>9074436865.0</td><td>32</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>600809</td><td>山西汾酒</td><td>6584989465.5</td><td>13</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>000568</td><td>泸州老窖</td><td>5213840720.4</td><td>4</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>000858</td><td>五粮液</td><td>5128120728.18</td><td>5</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>002384</td><td>东山精密</td><td>4771463925.85</td><td>26</td></tr><tr><td>2026-03-31</td><td>易方达</td><td>002463</td><td>沪电股份</td><td>4504146597.1</td><td>20</td></tr></tbody></table>
+<h3>company_average_return_ranking</h3><table><thead><tr><th>基金公司</th><th>资产类型</th><th>基金数量</th><th>平均组合收益率</th><th>平均超额收益</th><th>平均最大回撤</th></tr></thead><tbody><tr><td>红土创新</td><td>主动权益</td><td>8</td><td>14.79</td><td>16.91</td><td>8.85</td></tr><tr><td>汇百川</td><td>主动权益</td><td>1</td><td>9.24</td><td>11.2</td><td>12.96</td></tr><tr><td>施罗德</td><td>主动权益</td><td>1</td><td>7.93</td><td>10.22</td><td>10.6</td></tr><tr><td>国寿安保</td><td>主动权益</td><td>25</td><td>6.16</td><td>8.4</td><td>13.7</td></tr><tr><td>先锋</td><td>主动权益</td><td>4</td><td>3.64</td><td>5.68</td><td>13.25</td></tr><tr><td>华商</td><td>主动权益</td><td>56</td><td>3.2</td><td>5.31</td><td>12.97</td></tr><tr><td>中庚</td><td>主动权益</td><td>6</td><td>3.0</td><td>4.5</td><td>10.89</td></tr><tr><td>江信</td><td>主动权益</td><td>2</td><td>2.31</td><td>3.9</td><td>13.18</td></tr><tr><td>华银</td><td>主动权益</td><td>8</td><td>2.25</td><td>4.2</td><td>12.39</td></tr><tr><td>中科沃土</td><td>主动权益</td><td>4</td><td>2.18</td><td>4.04</td><td>7.44</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>调用工具 / SQL</h2>
+      <pre>[
+  {
+    &quot;tool_name&quot;: &quot;build_report_evidence_pack&quot;,
+    &quot;args&quot;: {
+      &quot;top_n&quot;: 10,
+      &quot;companies&quot;: [
+        &quot;易方达&quot;,
+        &quot;华夏&quot;
+      ],
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;asset_type&quot;: &quot;主动权益&quot;,
+      &quot;period&quot;: &quot;本年以来&quot;
+    },
+    &quot;metadata&quot;: {
+      &quot;companies&quot;: [
+        &quot;易方达&quot;,
+        &quot;华夏&quot;
+      ],
+      &quot;asset_type&quot;: &quot;主动权益&quot;,
+      &quot;period&quot;: &quot;本年以来&quot;
+    },
+    &quot;warnings&quot;: []
+  }
+]</pre>
+    </section>
+    
+    <section>
+      <h2>Trace</h2>
+      
+        <div class="trace-item">
+          <div class="trace-node">load_context_node</div>
+          <div><b>Action:</b> load_memory(session_id=ui-3b049e6c)</div>
+          <div><b>Observation:</b> memory keys=[&#x27;last_query&#x27;, &#x27;last_intent&#x27;, &#x27;last_tool_name&#x27;, &#x27;last_args&#x27;, &#x27;last_date&#x27;, &#x27;last_asset_type&#x27;, &#x27;last_fund_codes&#x27;, &#x27;last_stock_codes&#x27;, &#x27;last_companies&#x27;, &#x27;last_result_summary&#x27;, &#x27;last_metadata&#x27;, &#x27;recent_turns&#x27;, &#x27;long_memory_summaries&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">mode_router_node</div>
+          <div><b>Action:</b> route_by_sql_mode</div>
+          <div><b>Observation:</b> sql_mode=hard, branch=hard</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">planner_node</div>
+          <div><b>Action:</b> PlannerAgent.plan()</div>
+          <div><b>Observation:</b> intent=report_evidence_pack, tool=build_report_evidence_pack, args={&#x27;companies&#x27;: [&#x27;易方达&#x27;, &#x27;华夏&#x27;], &#x27;date&#x27;: None, &#x27;asset_type&#x27;: &#x27;主动权益&#x27;, &#x27;period&#x27;: &#x27;本年以来&#x27;, &#x27;top_n&#x27;: 10}, tool_calls=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">tool_router_node</div>
+          <div><b>Action:</b> ToolRouter.route()</div>
+          <div><b>Observation:</b> categories=[&#x27;cross_table_analysis&#x27;], planned_tools=[&#x27;build_report_evidence_pack&#x27;], allowed_tools_count=4</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">plan_validator_node</div>
+          <div><b>Action:</b> PlanValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=execute, warnings=[&#x27;date 未指定，已使用最新日期 2026-03-31。&#x27;], issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">executor_node</div>
+          <div><b>Action:</b> ToolExecutor.execute(build_report_evidence_pack)</div>
+          <div><b>Observation:</b> [TOOL] tool=build_report_evidence_pack, tables=[&#x27;company_summary&#x27;, &#x27;asset_structure&#x27;, &#x27;company_top_holdings&#x27;, &#x27;company_average_return_ranking&#x27;], notes=10, warnings=0</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">result_validator_node</div>
+          <div><b>Action:</b> ResultValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=report, warnings=[], issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">reflect_node</div>
+          <div><b>Action:</b> reflect_and_route</div>
+          <div><b>Observation:</b> next_action=report, retry_count=0, max_steps=3</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">report_writer_node</div>
+          <div><b>Action:</b> ReportWriterAgent.write()</div>
+          <div><b>Observation:</b> draft_answer_length=1549</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">self_check_node</div>
+          <div><b>Action:</b> SelfCheckAgent.check()</div>
+          <div><b>Observation:</b> passed=True, next_action=final, issues=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">save_context_node</div>
+          <div><b>Action:</b> save_memory_and_finalize</div>
+          <div><b>Observation:</b> final_answer_length=1549</div>
+        </div>
+        
+    </section>
+  </main>
+</body>
+</html>

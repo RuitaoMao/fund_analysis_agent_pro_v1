@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Fund Agent Report</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbeafe;
+      --bg: #f8fbff;
+      --card: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      padding: 28px 40px;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+    .meta {
+      color: #e0f2fe;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 0 20px 48px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+    }
+    h2 {
+      color: #1e40af;
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.55;
+    }
+    .answer-markdown {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+    .answer-markdown h1,
+    .answer-markdown h2,
+    .answer-markdown h3,
+    .answer-markdown h4 {
+      color: #1e40af;
+      margin: 18px 0 10px;
+      line-height: 1.35;
+    }
+    .answer-markdown h1 { font-size: 22px; }
+    .answer-markdown h2 { font-size: 20px; }
+    .answer-markdown h3 { font-size: 17px; }
+    .answer-markdown h4 { font-size: 15px; }
+    .answer-markdown p {
+      margin: 10px 0;
+    }
+    .answer-markdown ul,
+    .answer-markdown ol {
+      margin: 8px 0 12px 22px;
+      padding: 0;
+    }
+    .answer-markdown li {
+      margin: 5px 0;
+    }
+    .answer-markdown strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .answer-markdown code {
+      background: #e0f2fe;
+      color: #075985;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "SFMono-Regular", monospace;
+    }
+    .answer-markdown table {
+      min-width: 760px;
+      margin: 14px 0;
+      background: white;
+    }
+    .answer-markdown th {
+      white-space: nowrap;
+    }
+    .answer-markdown td {
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      background: var(--blue-soft);
+      color: #1e3a8a;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+    }
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    .trace-item {
+      border-left: 3px solid var(--blue);
+      background: #f8fafc;
+      padding: 10px 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .trace-node {
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 4px;
+    }
+    .repair-list {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+    .repair-list li {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>基金数据分析 Agent 报告</h1>
+    <div class="meta">mode=llm · sql_mode=generated · session=eval-20260526-200454-q013-generated</div>
+  </header>
+  <main>
+    <section>
+      <h2>用户问题</h2>
+      <pre>本年以来超额收益超过5%且最大回撤低于10%的基金有哪些</pre>
+    </section>
+    <section>
+      <h2>最终回答</h2>
+      <div class="answer-markdown"><p>好的，这是为您筛选出的“本年以来超额收益超过5%且最大回撤低于10%”的基金列表。</p>
+<h3>分析报告</h3>
+<p><strong>筛选条件</strong>：
+- <strong>业绩区间</strong>：本年以来
+- <strong>超额收益</strong>：&gt; 5%
+- <strong>最大回撤</strong>：&lt; 10%
+- <strong>结果排序</strong>：按超额收益率从高到低排列
+- <strong>数据截止日期</strong>：基金规模表的最新日期</p>
+<hr>
+<h3>符合条件的基金列表</h3>
+<p>（共筛选出符合条件的前200只基金，以下展示超额收益排名前30的基金）</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">基金代码</th>
+<th style="text-align: left;">基金名称</th>
+<th style="text-align: left;">基金公司</th>
+<th style="text-align: left;">超额收益率(%)</th>
+<th style="text-align: left;">最大回撤(%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">016873</td>
+<td style="text-align: left;">广发远见智选A</td>
+<td style="text-align: left;">广发</td>
+<td style="text-align: left;">61.24</td>
+<td style="text-align: left;">8.57</td>
+</tr>
+<tr>
+<td style="text-align: left;">020722</td>
+<td style="text-align: left;">国寿安保数字经济A</td>
+<td style="text-align: left;">国寿安保</td>
+<td style="text-align: left;">52.77</td>
+<td style="text-align: left;">8.43</td>
+</tr>
+<tr>
+<td style="text-align: left;">070028</td>
+<td style="text-align: left;">嘉实安心货币A</td>
+<td style="text-align: left;">嘉实</td>
+<td style="text-align: left;">35.71</td>
+<td style="text-align: left;">0.00</td>
+</tr>
+<tr>
+<td style="text-align: left;">168002</td>
+<td style="text-align: left;">国寿安保策略精选A</td>
+<td style="text-align: left;">国寿安保</td>
+<td style="text-align: left;">34.92</td>
+<td style="text-align: left;">7.92</td>
+</tr>
+<tr>
+<td style="text-align: left;">002862</td>
+<td style="text-align: left;">金信量化精选A</td>
+<td style="text-align: left;">金信</td>
+<td style="text-align: left;">29.87</td>
+<td style="text-align: left;">9.40</td>
+</tr>
+<tr>
+<td style="text-align: left;">011369</td>
+<td style="text-align: left;">华商均衡成长A</td>
+<td style="text-align: left;">华商</td>
+<td style="text-align: left;">29.73</td>
+<td style="text-align: left;">7.11</td>
+</tr>
+<tr>
+<td style="text-align: left;">024459</td>
+<td style="text-align: left;">华商致远回报A</td>
+<td style="text-align: left;">华商</td>
+<td style="text-align: left;">28.63</td>
+<td style="text-align: left;">7.02</td>
+</tr>
+<tr>
+<td style="text-align: left;">002376</td>
+<td style="text-align: left;">国寿安保核心产业</td>
+<td style="text-align: left;">国寿安保</td>
+<td style="text-align: left;">27.38</td>
+<td style="text-align: left;">8.56</td>
+</tr>
+<tr>
+<td style="text-align: left;">005328</td>
+<td style="text-align: left;">前海开源价值策略</td>
+<td style="text-align: left;">前海开源</td>
+<td style="text-align: left;">27.03</td>
+<td style="text-align: left;">9.70</td>
+</tr>
+<tr>
+<td style="text-align: left;">013495</td>
+<td style="text-align: left;">信澳产业优选一年持有A</td>
+<td style="text-align: left;">信达澳亚</td>
+<td style="text-align: left;">26.46</td>
+<td style="text-align: left;">8.38</td>
+</tr>
+<tr>
+<td style="text-align: left;">006265</td>
+<td style="text-align: left;">红土创新新科技A</td>
+<td style="text-align: left;">红土创新</td>
+<td style="text-align: left;">26.09</td>
+<td style="text-align: left;">6.05</td>
+</tr>
+<tr>
+<td style="text-align: left;">026210</td>
+<td style="text-align: left;">平安科技精选A</td>
+<td style="text-align: left;">平安</td>
+<td style="text-align: left;">25.76</td>
+<td style="text-align: left;">9.21</td>
+</tr>
+<tr>
+<td style="text-align: left;">018210</td>
+<td style="text-align: left;">红土创新景气回报A</td>
+<td style="text-align: left;">红土创新</td>
+<td style="text-align: left;">24.25</td>
+<td style="text-align: left;">6.53</td>
+</tr>
+<tr>
+<td style="text-align: left;">008528</td>
+<td style="text-align: left;">华泰柏瑞质量成长A</td>
+<td style="text-align: left;">华泰柏瑞</td>
+<td style="text-align: left;">24.24</td>
+<td style="text-align: left;">7.36</td>
+</tr>
+<tr>
+<td style="text-align: left;">501201</td>
+<td style="text-align: left;">红土创新科技创新A</td>
+<td style="text-align: left;">红土创新</td>
+<td style="text-align: left;">22.86</td>
+<td style="text-align: left;">6.55</td>
+</tr>
+<tr>
+<td style="text-align: left;">010415</td>
+<td style="text-align: left;">华泰柏瑞质量精选A</td>
+<td style="text-align: left;">华泰柏瑞</td>
+<td style="text-align: left;">22.54</td>
+<td style="text-align: left;">7.57</td>
+</tr>
+<tr>
+<td style="text-align: left;">013250</td>
+<td style="text-align: left;">红土创新智能制造A</td>
+<td style="text-align: left;">红土创新</td>
+<td style="text-align: left;">21.92</td>
+<td style="text-align: left;">6.69</td>
+</tr>
+<tr>
+<td style="text-align: left;">168401</td>
+<td style="text-align: left;">红土创新转型精选A</td>
+<td style="text-align: left;">红土创新</td>
+<td style="text-align: left;">21.77</td>
+<td style="text-align: left;">6.39</td>
+</tr>
+<tr>
+<td style="text-align: left;">008009</td>
+<td style="text-align: left;">华商高端装备制造A</td>
+<td style="text-align: left;">华商</td>
+<td style="text-align: left;">21.52</td>
+<td style="text-align: left;">5.83</td>
+</tr>
+<tr>
+<td style="text-align: left;">019155</td>
+<td style="text-align: left;">易方达全球配置A</td>
+<td style="text-align: left;">易方达</td>
+<td style="text-align: left;">21.49</td>
+<td style="text-align: left;">7.41</td>
+</tr>
+<tr>
+<td style="text-align: left;">001118</td>
+<td style="text-align: left;">华宝事件驱动A</td>
+<td style="text-align: left;">华宝</td>
+<td style="text-align: left;">21.45</td>
+<td style="text-align: left;">6.57</td>
+</tr>
+<tr>
+<td style="text-align: left;">160416</td>
+<td style="text-align: left;">华安标普全球石油A</td>
+<td style="text-align: left;">华安</td>
+<td style="text-align: left;">20.47</td>
+<td style="text-align: left;">2.79</td>
+</tr>
+<tr>
+<td style="text-align: left;">000612</td>
+<td style="text-align: left;">华宝生态中国A</td>
+<td style="text-align: left;">华宝</td>
+<td style="text-align: left;">20.33</td>
+<td style="text-align: left;">6.67</td>
+</tr>
+<tr>
+<td style="text-align: left;">004128</td>
+<td style="text-align: left;">前海联合泳隆A</td>
+<td style="text-align: left;">前海联合</td>
+<td style="text-align: left;">19.65</td>
+<td style="text-align: left;">9.54</td>
+</tr>
+<tr>
+<td style="text-align: left;">519185</td>
+<td style="text-align: left;">万家精选A</td>
+<td style="text-align: left;">万家</td>
+<td style="text-align: left;">19.34</td>
+<td style="text-align: left;">8.26</td>
+</tr>
+<tr>
+<td style="text-align: left;">110012</td>
+<td style="text-align: left;">易方达科汇</td>
+<td style="text-align: left;">易方达</td>
+<td style="text-align: left;">18.83</td>
+<td style="text-align: left;">7.06</td>
+</tr>
+<tr>
+<td style="text-align: left;">007590</td>
+<td style="text-align: left;">华宝绿色领先</td>
+<td style="text-align: left;">华宝</td>
+<td style="text-align: left;">18.77</td>
+<td style="text-align: left;">7.43</td>
+</tr>
+<tr>
+<td style="text-align: left;">025758</td>
+<td style="text-align: left;">华安新兴动力A</td>
+<td style="text-align: left;">华安</td>
+<td style="text-align: left;">18.71</td>
+<td style="text-align: left;">9.64</td>
+</tr>
+<tr>
+<td style="text-align: left;">001753</td>
+<td style="text-align: left;">红土创新新兴产业A</td>
+<td style="text-align: left;">红土创新</td>
+<td style="text-align: left;">18.40</td>
+<td style="text-align: left;">6.17</td>
+</tr>
+<tr>
+<td style="text-align: left;">008555</td>
+<td style="text-align: left;">华商龙头优势</td>
+<td style="text-align: left;">华商</td>
+<td style="text-align: left;">18.25</td>
+<td style="text-align: left;">7.70</td>
+</tr>
+</tbody>
+</table>
+<h3>数据口径说明</h3>
+<ul>
+<li><strong>数据来源与分析方式</strong>：本结果通过关联 <code>fund_performance</code>（基金业绩表）和 <code>fund_size</code>（基金规模表）两表，筛选出 <code>period</code>（业绩区间）为“本年以来”且满足超额收益与最大回撤条件的基金。其中关联的规模数据取自该表最新日期。</li>
+<li><strong>指标定义</strong>：</li>
+<li><strong>超额收益率(%)</strong>：相对于业绩基准的超额回报，数值越高表示跑赢基准越多。</li>
+<li><strong>最大回撤(%)</strong>：选定区间内净值从最高点到后续最低点的最大跌幅，用于衡量风险。</li>
+<li><strong>数据说明</strong>：所有查询均已完成数据库校验，确保只读安全。</li>
+</ul>
+<blockquote>
+<p>注意：列表中的“嘉实安心货币A”为货币市场基金，其风险收益特征与权益/混合类基金有本质区别，其优异表现在此筛选条件下属于特殊情况。</p>
+</blockquote></div>
+    </section>
+    <section>
+      <h2>结果表</h2>
+      <h3>generated_sql_result</h3><table><thead><tr><th>基金代码</th><th>基金名称</th><th>基金公司</th><th>超额收益率_pct</th><th>最大回撤_pct</th></tr></thead><tbody><tr><td>016873</td><td>广发远见智选A</td><td>广发</td><td>61.24</td><td>8.57</td></tr><tr><td>020722</td><td>国寿安保数字经济A</td><td>国寿安保</td><td>52.77</td><td>8.43</td></tr><tr><td>070028</td><td>嘉实安心货币A</td><td>嘉实</td><td>35.71</td><td>0.0</td></tr><tr><td>168002</td><td>国寿安保策略精选A</td><td>国寿安保</td><td>34.92</td><td>7.92</td></tr><tr><td>002862</td><td>金信量化精选A</td><td>金信</td><td>29.87</td><td>9.4</td></tr><tr><td>011369</td><td>华商均衡成长A</td><td>华商</td><td>29.73</td><td>7.11</td></tr><tr><td>024459</td><td>华商致远回报A</td><td>华商</td><td>28.63</td><td>7.02</td></tr><tr><td>002376</td><td>国寿安保核心产业</td><td>国寿安保</td><td>27.38</td><td>8.56</td></tr><tr><td>005328</td><td>前海开源价值策略</td><td>前海开源</td><td>27.03</td><td>9.7</td></tr><tr><td>013495</td><td>信澳产业优选一年持有A</td><td>信达澳亚</td><td>26.46</td><td>8.38</td></tr><tr><td>006265</td><td>红土创新新科技A</td><td>红土创新</td><td>26.09</td><td>6.05</td></tr><tr><td>026210</td><td>平安科技精选A</td><td>平安</td><td>25.76</td><td>9.21</td></tr><tr><td>018210</td><td>红土创新景气回报A</td><td>红土创新</td><td>24.25</td><td>6.53</td></tr><tr><td>008528</td><td>华泰柏瑞质量成长A</td><td>华泰柏瑞</td><td>24.24</td><td>7.36</td></tr><tr><td>501201</td><td>红土创新科技创新A</td><td>红土创新</td><td>22.86</td><td>6.55</td></tr><tr><td>010415</td><td>华泰柏瑞质量精选A</td><td>华泰柏瑞</td><td>22.54</td><td>7.57</td></tr><tr><td>013250</td><td>红土创新智能制造A</td><td>红土创新</td><td>21.92</td><td>6.69</td></tr><tr><td>168401</td><td>红土创新转型精选A</td><td>红土创新</td><td>21.77</td><td>6.39</td></tr><tr><td>008009</td><td>华商高端装备制造A</td><td>华商</td><td>21.52</td><td>5.83</td></tr><tr><td>019155</td><td>易方达全球配置A</td><td>易方达</td><td>21.49</td><td>7.41</td></tr><tr><td>001118</td><td>华宝事件驱动A</td><td>华宝</td><td>21.45</td><td>6.57</td></tr><tr><td>160416</td><td>华安标普全球石油A</td><td>华安</td><td>20.47</td><td>2.79</td></tr><tr><td>000612</td><td>华宝生态中国A</td><td>华宝</td><td>20.33</td><td>6.67</td></tr><tr><td>004128</td><td>前海联合泳隆A</td><td>前海联合</td><td>19.65</td><td>9.54</td></tr><tr><td>519185</td><td>万家精选A</td><td>万家</td><td>19.34</td><td>8.26</td></tr><tr><td>110012</td><td>易方达科汇</td><td>易方达</td><td>18.83</td><td>7.06</td></tr><tr><td>007590</td><td>华宝绿色领先</td><td>华宝</td><td>18.77</td><td>7.43</td></tr><tr><td>025758</td><td>华安新兴动力A</td><td>华安</td><td>18.71</td><td>9.64</td></tr><tr><td>001753</td><td>红土创新新兴产业A</td><td>红土创新</td><td>18.4</td><td>6.17</td></tr><tr><td>008555</td><td>华商龙头优势</td><td>华商</td><td>18.25</td><td>7.7</td></tr><tr><td>014023</td><td>宏利景气领航两年持有</td><td>宏利</td><td>18.08</td><td>7.13</td></tr><tr><td>519191</td><td>万家新利</td><td>万家</td><td>17.85</td><td>7.95</td></tr><tr><td>000390</td><td>华商优势行业A</td><td>华商</td><td>17.53</td><td>6.3</td></tr><tr><td>519212</td><td>万家宏观择时多策略A</td><td>万家</td><td>17.53</td><td>7.98</td></tr><tr><td>008251</td><td>汇安宜创量化精选A</td><td>汇安</td><td>17.27</td><td>9.02</td></tr><tr><td>026538</td><td>融通科技臻选A</td><td>融通</td><td>17.27</td><td>8.92</td></tr><tr><td>012545</td><td>富荣福银A</td><td>富荣</td><td>16.74</td><td>8.64</td></tr><tr><td>022754</td><td>易方达科鑫量化选股A</td><td>易方达</td><td>16.43</td><td>8.33</td></tr><tr><td>012816</td><td>国泰致和A</td><td>国泰</td><td>16.39</td><td>9.52</td></tr><tr><td>501064</td><td>国泰价值优选灵活配置A</td><td>国泰</td><td>16.29</td><td>9.56</td></tr><tr><td>001056</td><td>华银健康生活主题</td><td>华银</td><td>16.27</td><td>7.23</td></tr><tr><td>014478</td><td>中加低碳经济六个月持有A</td><td>中加</td><td>16.21</td><td>7.18</td></tr><tr><td>004320</td><td>前海开源沪港深乐享生活</td><td>前海开源</td><td>16.06</td><td>7.76</td></tr><tr><td>017737</td><td>融通慧心A</td><td>融通</td><td>15.76</td><td>9.96</td></tr><tr><td>161728</td><td>招商瑞智优选</td><td>招商</td><td>15.57</td><td>6.66</td></tr><tr><td>005903</td><td>宏利绩优增长A</td><td>宏利</td><td>15.53</td><td>7.09</td></tr><tr><td>168501</td><td>华银产业升级</td><td>华银</td><td>15.43</td><td>6.07</td></tr><tr><td>410009</td><td>华富量子生命力A</td><td>华富</td><td>15.38</td><td>8.82</td></tr><tr><td>008983</td><td>财通科技创新A</td><td>财通</td><td>15.34</td><td>7.85</td></tr><tr><td>012173</td><td>国泰兴泽优选一年持有期A</td><td>国泰</td><td>15.29</td><td>8.76</td></tr></tbody></table><p>仅展示前 50 行，共 200 行。</p>
+    </section>
+    <section>
+      <h2>调用工具 / SQL</h2>
+      <pre>[
+  {
+    &quot;tool_name&quot;: &quot;generated_sql_query&quot;,
+    &quot;args&quot;: {
+      &quot;sql&quot;: &quot;SELECT p.fund_code AS 基金代码, s.fund_name AS 基金名称, s.fund_company AS 基金公司, ROUND(p.excess_return*100,2) AS 超额收益率_pct, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code=s.fund_code AND s.date=(SELECT MAX(date) FROM fund_size) WHERE p.period=&#x27;本年以来&#x27; AND p.excess_return &gt; 0.05 AND p.max_drawdown &lt; 0.10 ORDER BY p.excess_return DESC LIMIT 200&quot;
+    },
+    &quot;metadata&quot;: {
+      &quot;sql&quot;: &quot;SELECT p.fund_code AS 基金代码, s.fund_name AS 基金名称, s.fund_company AS 基金公司, ROUND(p.excess_return*100,2) AS 超额收益率_pct, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code=s.fund_code AND s.date=(SELECT MAX(date) FROM fund_size) WHERE p.period=&#x27;本年以来&#x27; AND p.excess_return &gt; 0.05 AND p.max_drawdown &lt; 0.10 ORDER BY p.excess_return DESC LIMIT 200&quot;,
+      &quot;tables&quot;: [
+        &quot;fund_performance&quot;,
+        &quot;fund_size&quot;
+      ],
+      &quot;expected_columns&quot;: [
+        &quot;基金代码&quot;,
+        &quot;基金名称&quot;,
+        &quot;基金公司&quot;,
+        &quot;超额收益率_pct&quot;,
+        &quot;最大回撤_pct&quot;
+      ]
+    }
+  }
+]</pre>
+    </section>
+    
+    <section>
+      <h2>SQL 修复建议</h2>
+      <ul class="repair-list"><li>本轮 Generated SQL 已通过只读白名单校验、dry run 和结果校验；如果结果不符合预期，优先检查日期、基金公司简称、业绩区间和 LIMIT。</li><li>当前 SQL 摘要：SELECT p.fund_code AS 基金代码, s.fund_name AS 基金名称, s.fund_company AS 基金公司, ROUND(p.excess_return*100,2) AS 超额收益率_pct, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM fund_performance p JOIN fund_size s ON p.fund_code=s.fund_code AND s.date=(SELECT MAX(date) FROM...</li></ul>
+    </section>
+    
+    <section>
+      <h2>Trace</h2>
+      
+        <div class="trace-item">
+          <div class="trace-node">load_context_node</div>
+          <div><b>Action:</b> load_memory(session_id=eval-20260526-200454-q013-generated)</div>
+          <div><b>Observation:</b> memory keys=[&#x27;recent_turns&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">complexity_classifier_node</div>
+          <div><b>Action:</b> classify_complexity</div>
+          <div><b>Observation:</b> explicit=generated, signals=[&#x27;数值阈值过滤&#x27;], auto=generated, final=generated</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">mode_router_node</div>
+          <div><b>Action:</b> route_by_sql_mode</div>
+          <div><b>Observation:</b> sql_mode=generated, branch=generated</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_planner_node</div>
+          <div><b>Action:</b> GeneratedSQLAgent.plan_sql()</div>
+          <div><b>Observation:</b> [SQL] intent=Find funds with year-to-date excess return over 5% and max drawdown below 10%, tables=[&#x27;fund_performance&#x27;, &#x27;fund_size&#x27;], sql_preview=SELECT p.fund_code AS 基金代码, s.fund_name AS 基金名称, s.fund_company AS 基金公司, ROUND(p.excess_return*100,2) AS 超额收益率_pct, ROUND(p.max_drawdown*100,2) AS 最大回撤_pct FROM</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_validator_node</div>
+          <div><b>Action:</b> GeneratedSQLAgent.validate_sql()</div>
+          <div><b>Observation:</b> [SQL] passed=True, errors=[], next_action=execute</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_dry_run_node</div>
+          <div><b>Action:</b> EXPLAIN QUERY PLAN generated_sql</div>
+          <div><b>Observation:</b> [SQL] dry_run_passed=True</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_executor_node</div>
+          <div><b>Action:</b> SQLiteStore.query_df(generated_sql)</div>
+          <div><b>Observation:</b> [SQL][TOOL] rows=200, columns=[&#x27;基金代码&#x27;, &#x27;基金名称&#x27;, &#x27;基金公司&#x27;, &#x27;超额收益率_pct&#x27;, &#x27;最大回撤_pct&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_result_validator_node</div>
+          <div><b>Action:</b> validate_generated_sql_result</div>
+          <div><b>Observation:</b> [SQL] rows=200, issues=[], next_action=report</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">sql_report_writer_node</div>
+          <div><b>Action:</b> ReportWriterAgent.write(generated_sql_result)</div>
+          <div><b>Observation:</b> [SQL] draft_answer_length=1932</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">self_check_node</div>
+          <div><b>Action:</b> SelfCheckAgent.check()</div>
+          <div><b>Observation:</b> passed=True, next_action=final, issues=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">save_context_node</div>
+          <div><b>Action:</b> save_memory_and_finalize</div>
+          <div><b>Observation:</b> final_answer_length=1932</div>
+        </div>
+        
+    </section>
+  </main>
+</body>
+</html>

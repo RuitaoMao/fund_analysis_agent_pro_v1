@@ -1,0 +1,215 @@
+{
+  "query": "全市场基金最多共同持有的股票是哪些，前10名",
+  "session_id": "eval-20260526-201811-q011-generated",
+  "mode": "llm",
+  "sql_mode": "generated",
+  "memory_context": {
+    "recent_turns": []
+  },
+  "use_long_memory": false,
+  "max_steps": 3,
+  "plan": {
+    "intent": "generated_sql_query",
+    "tool_name": "generated_sql_query",
+    "args": {
+      "sql": "SELECT stock_name AS 股票名称, COUNT(DISTINCT fund_code) AS 持有基金数量 FROM fund_holding WHERE date = (SELECT MAX(date) FROM fund_holding) GROUP BY stock_name ORDER BY 持有基金数量 DESC LIMIT 10",
+      "tables": [
+        "fund_holding"
+      ]
+    },
+    "tool_calls": [],
+    "answer_type": "report",
+    "need_clarification": false,
+    "clarification_question": null,
+    "rationale": "统计最新持仓日期下每只股票被不同基金持有的数量，按持有基金数降序取前10"
+  },
+  "tool_route": null,
+  "plan_validation": null,
+  "tool_result": {
+    "tool_name": "generated_sql_query",
+    "intent": "generated_sql_query",
+    "tables": {
+      "generated_sql_result": [
+        {
+          "股票名称": "宁德时代",
+          "持有基金数量": 3701
+        },
+        {
+          "股票名称": "紫金矿业",
+          "持有基金数量": 3439
+        },
+        {
+          "股票名称": "中际旭创",
+          "持有基金数量": 3208
+        },
+        {
+          "股票名称": "新易盛",
+          "持有基金数量": 2458
+        },
+        {
+          "股票名称": "中国平安",
+          "持有基金数量": 2330
+        },
+        {
+          "股票名称": "腾讯控股",
+          "持有基金数量": 2324
+        },
+        {
+          "股票名称": "美的集团",
+          "持有基金数量": 1884
+        },
+        {
+          "股票名称": "贵州茅台",
+          "持有基金数量": 1851
+        },
+        {
+          "股票名称": "寒武纪-U",
+          "持有基金数量": 1832
+        },
+        {
+          "股票名称": "中芯国际",
+          "持有基金数量": 1747
+        }
+      ]
+    },
+    "notes": [
+      "未指定持仓日期，默认使用 fund_holding 表中最新日期",
+      "统计最新持仓日期下每只股票被不同基金持有的数量，按持有基金数降序取前10",
+      "SQL 由 LLM/规则生成，并经过只读白名单校验和 dry run。"
+    ],
+    "warnings": [],
+    "metadata": {
+      "sql": "SELECT stock_name AS 股票名称, COUNT(DISTINCT fund_code) AS 持有基金数量 FROM fund_holding WHERE date = (SELECT MAX(date) FROM fund_holding) GROUP BY stock_name ORDER BY 持有基金数量 DESC LIMIT 10",
+      "tables": [
+        "fund_holding"
+      ],
+      "expected_columns": [
+        "股票名称",
+        "持有基金数量"
+      ]
+    }
+  },
+  "result_validation": null,
+  "draft_answer": "当前全市场基金持仓中，被最多基金共同持有的前10只股票如下（基于最新披露的季度持仓日期统计）：\n\n| 排名 | 股票名称 | 持有基金数量（只） |\n|------|----------|-------------------|\n| 1 | 宁德时代 | 3,701 |\n| 2 | 紫金矿业 | 3,439 |\n| 3 | 中际旭创 | 3,208 |\n| 4 | 新易盛 | 2,458 |\n| 5 | 中国平安 | 2,330 |\n| 6 | 腾讯控股 | 2,324 |\n| 7 | 美的集团 | 1,884 |\n| 8 | 贵州茅台 | 1,851 |\n| 9 | 寒武纪-U | 1,832 |\n| 10 | 中芯国际 | 1,747 |\n\n**数据口径说明**\n- 数据范围：`fund_holding` 表，统计时间取该表最新季度持仓披露日期。\n- 统计方法：按股票名称分组，对持有该股票的基金代码去重计数（一只基金持有同一股票只计1次），持有基金数由高到低取前10。\n- 该统计结果已通过只读白名单校验与回测，未做任何额外调整。",
+  "self_check": {
+    "passed": true,
+    "issues": [],
+    "suggested_fix": null
+  },
+  "final_answer": "当前全市场基金持仓中，被最多基金共同持有的前10只股票如下（基于最新披露的季度持仓日期统计）：\n\n| 排名 | 股票名称 | 持有基金数量（只） |\n|------|----------|-------------------|\n| 1 | 宁德时代 | 3,701 |\n| 2 | 紫金矿业 | 3,439 |\n| 3 | 中际旭创 | 3,208 |\n| 4 | 新易盛 | 2,458 |\n| 5 | 中国平安 | 2,330 |\n| 6 | 腾讯控股 | 2,324 |\n| 7 | 美的集团 | 1,884 |\n| 8 | 贵州茅台 | 1,851 |\n| 9 | 寒武纪-U | 1,832 |\n| 10 | 中芯国际 | 1,747 |\n\n**数据口径说明**\n- 数据范围：`fund_holding` 表，统计时间取该表最新季度持仓披露日期。\n- 统计方法：按股票名称分组，对持有该股票的基金代码去重计数（一只基金持有同一股票只计1次），持有基金数由高到低取前10。\n- 该统计结果已通过只读白名单校验与回测，未做任何额外调整。",
+  "trace": [
+    {
+      "node": "load_context_node",
+      "thought": "读取会话级上下文，用于解析这些基金、刚才、同样口径等指代。",
+      "action": "load_memory(session_id=eval-20260526-201811-q011-generated)",
+      "observation": "memory keys=['recent_turns']"
+    },
+    {
+      "node": "complexity_classifier_node",
+      "thought": "按规则识别查询复杂度；auto 模式默认走 generated SQL，显式指定则尊重用户选择。",
+      "action": "classify_complexity",
+      "observation": "explicit=generated, signals=[], auto=hard, final=generated"
+    },
+    {
+      "node": "mode_router_node",
+      "thought": "根据用户选择的查询引擎，把任务路由到专家工具分支或 LLM 生成 SQL 分支。",
+      "action": "route_by_sql_mode",
+      "observation": "sql_mode=generated, branch=generated"
+    },
+    {
+      "node": "sql_planner_node",
+      "thought": "让 LLM/规则根据用户问题和 schema 生成受控只读 SQL。",
+      "action": "GeneratedSQLAgent.plan_sql()",
+      "observation": "[SQL] intent=Find top 10 stocks held by the most funds across the entire market, tables=['fund_holding'], sql_preview=SELECT stock_name AS 股票名称, COUNT(DISTINCT fund_code) AS 持有基金数量 FROM fund_holding WHERE date = (SELECT MAX(date) FROM fund_holding) GROUP BY stock_name ORDER BY "
+    },
+    {
+      "node": "sql_validator_node",
+      "thought": "检查 SQL 是否只读、是否只访问白名单表、是否有 LIMIT 且不会越权。",
+      "action": "GeneratedSQLAgent.validate_sql()",
+      "observation": "[SQL] passed=True, errors=[], next_action=execute"
+    },
+    {
+      "node": "sql_dry_run_node",
+      "thought": "正式执行前先让 SQLite 解析查询计划，提前发现字段名、表名、语法错误。",
+      "action": "EXPLAIN QUERY PLAN generated_sql",
+      "observation": "[SQL] dry_run_passed=True"
+    },
+    {
+      "node": "sql_executor_node",
+      "thought": "执行已通过校验和 dry run 的只读 SQL。",
+      "action": "SQLiteStore.query_df(generated_sql)",
+      "observation": "[SQL][TOOL] rows=10, columns=['股票名称', '持有基金数量']"
+    },
+    {
+      "node": "sql_result_validator_node",
+      "thought": "检查生成 SQL 的结果。执行失败→重试；结果为空→告知用户没有满足条件的数据；有结果→报告。",
+      "action": "validate_generated_sql_result",
+      "observation": "[SQL] rows=10, issues=[], next_action=report"
+    },
+    {
+      "node": "sql_report_writer_node",
+      "thought": "把生成 SQL、查询结果和数据口径说明整理成用户可读输出。",
+      "action": "ReportWriterAgent.write(generated_sql_result)",
+      "observation": "[SQL] draft_answer_length=473"
+    },
+    {
+      "node": "self_check_node",
+      "thought": "检查最终回答是否回答原问题、忠实于工具结果、说明口径且避免投资建议。",
+      "action": "SelfCheckAgent.check()",
+      "observation": "passed=True, next_action=final, issues=[]"
+    },
+    {
+      "node": "save_context_node",
+      "thought": "保存结构化上下文，支持下一轮追问。",
+      "action": "save_memory_and_finalize",
+      "observation": "final_answer_length=473"
+    }
+  ],
+  "tool_history": [
+    {
+      "tool_name": "generated_sql_query",
+      "args": {
+        "sql": "SELECT stock_name AS 股票名称, COUNT(DISTINCT fund_code) AS 持有基金数量 FROM fund_holding WHERE date = (SELECT MAX(date) FROM fund_holding) GROUP BY stock_name ORDER BY 持有基金数量 DESC LIMIT 10"
+      },
+      "metadata": {
+        "sql": "SELECT stock_name AS 股票名称, COUNT(DISTINCT fund_code) AS 持有基金数量 FROM fund_holding WHERE date = (SELECT MAX(date) FROM fund_holding) GROUP BY stock_name ORDER BY 持有基金数量 DESC LIMIT 10",
+        "tables": [
+          "fund_holding"
+        ],
+        "expected_columns": [
+          "股票名称",
+          "持有基金数量"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    "load_context_node: memory keys=['recent_turns']",
+    "complexity_classifier_node: explicit=generated, signals=[], auto=hard, final=generated",
+    "mode_router_node: sql_mode=generated, branch=generated",
+    "sql_planner_node: [SQL] intent=Find top 10 stocks held by the most funds across the entire market, tables=['fund_holding'], sql_preview=SELECT stock_name AS 股票名称, COUNT(DISTINCT fund_code) AS 持有基金数量 FROM fund_holding WHERE date = (SELECT MAX(date) FROM fund_holding) GROUP BY stock_name ORDER BY ",
+    "sql_validator_node: [SQL] passed=True, errors=[], next_action=execute",
+    "sql_dry_run_node: [SQL] dry_run_passed=True",
+    "sql_executor_node: [SQL][TOOL] rows=10, columns=['股票名称', '持有基金数量']",
+    "sql_result_validator_node: [SQL] rows=10, issues=[], next_action=report",
+    "sql_report_writer_node: [SQL] draft_answer_length=473",
+    "self_check_node: passed=True, next_action=final, issues=[]",
+    "save_context_node: final_answer_length=473"
+  ],
+  "errors": [],
+  "retry_count": 0,
+  "revision_count": 0,
+  "next_action": "final",
+  "sql_plan": "SQLPlan(query_intent='Find top 10 stocks held by the most funds across the entire market', tables=['fund_holding'], assumptions=['未指定持仓日期，默认使用 fund_holding 表中最新日期'], sql='SELECT stock_name AS 股票名称, COUNT(DISTINCT fund_code) AS 持有基金数量 FROM fund_holding WHERE date = (SELECT MAX(date) FROM fund_holding) GROUP BY stock_name ORDER BY 持有基金数量 DESC LIMIT 10', expected_columns=['股票名称', '持有基金数量'], explanation='统计最新持仓日期下每只股票被不同基金持有的数量，按持有基金数降序取前10')",
+  "generated_sql": "SELECT stock_name AS 股票名称, COUNT(DISTINCT fund_code) AS 持有基金数量 FROM fund_holding WHERE date = (SELECT MAX(date) FROM fund_holding) GROUP BY stock_name ORDER BY 持有基金数量 DESC LIMIT 10",
+  "sql_validation_errors": [],
+  "sql_retry_count": 0,
+  "hard_fallback_attempted": false,
+  "auto_routed_mode": "hard",
+  "complexity_signals": [],
+  "pending_clarification": null,
+  "used_langgraph": true,
+  "run_artifacts_dir": "D:\\financial_agent\\fund_analysis_agent_pro\\outputs\\runs\\20260526_202430_250277",
+  "html_report_path": "D:\\financial_agent\\fund_analysis_agent_pro\\outputs\\reports\\report_20260526_202430_253305.html",
+  "html_report_url": "/reports/report_20260526_202430_253305.html"
+}

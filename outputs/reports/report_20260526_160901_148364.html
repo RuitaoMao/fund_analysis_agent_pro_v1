@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Fund Agent Report</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbeafe;
+      --bg: #f8fbff;
+      --card: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      padding: 28px 40px;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+    .meta {
+      color: #e0f2fe;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 0 20px 48px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+    }
+    h2 {
+      color: #1e40af;
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.55;
+    }
+    .answer-markdown {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+    .answer-markdown h1,
+    .answer-markdown h2,
+    .answer-markdown h3,
+    .answer-markdown h4 {
+      color: #1e40af;
+      margin: 18px 0 10px;
+      line-height: 1.35;
+    }
+    .answer-markdown h1 { font-size: 22px; }
+    .answer-markdown h2 { font-size: 20px; }
+    .answer-markdown h3 { font-size: 17px; }
+    .answer-markdown h4 { font-size: 15px; }
+    .answer-markdown p {
+      margin: 10px 0;
+    }
+    .answer-markdown ul,
+    .answer-markdown ol {
+      margin: 8px 0 12px 22px;
+      padding: 0;
+    }
+    .answer-markdown li {
+      margin: 5px 0;
+    }
+    .answer-markdown strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .answer-markdown code {
+      background: #e0f2fe;
+      color: #075985;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "SFMono-Regular", monospace;
+    }
+    .answer-markdown table {
+      min-width: 760px;
+      margin: 14px 0;
+      background: white;
+    }
+    .answer-markdown th {
+      white-space: nowrap;
+    }
+    .answer-markdown td {
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      background: var(--blue-soft);
+      color: #1e3a8a;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+    }
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    .trace-item {
+      border-left: 3px solid var(--blue);
+      background: #f8fafc;
+      padding: 10px 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .trace-node {
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 4px;
+    }
+    .repair-list {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+    .repair-list li {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>基金数据分析 Agent 报告</h1>
+    <div class="meta">mode=llm · sql_mode=hard · session=demo-hard-5</div>
+  </header>
+  <main>
+    <section>
+      <h2>用户问题</h2>
+      <pre>全市场哪些基金公司持有贵州茅台最多</pre>
+    </section>
+    <section>
+      <h2>最终回答</h2>
+      <div class="answer-markdown"><p>以下是截至 <strong>2026年3月31日</strong>，全市场基金公司持有贵州茅台规模排名前10的情况：</p>
+<hr>
+<h2>📊 全市场基金公司持有贵州茅台 Top 10</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">排名</th>
+<th style="text-align: left;">基金公司</th>
+<th style="text-align: center;">持仓规模（亿元）</th>
+<th style="text-align: center;">持仓基金数（只）</th>
+<th style="text-align: center;">平均净值占比（%）</th>
+<th style="text-align: center;">最高净值占比（%）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">华夏</td>
+<td style="text-align: center;">265.29</td>
+<td style="text-align: center;">31</td>
+<td style="text-align: center;">4.47</td>
+<td style="text-align: center;">14.83</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">易方达</td>
+<td style="text-align: center;">220.81</td>
+<td style="text-align: center;">54</td>
+<td style="text-align: center;">5.65</td>
+<td style="text-align: center;">14.70</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">华泰柏瑞</td>
+<td style="text-align: center;">158.26</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">2.88</td>
+<td style="text-align: center;">9.47</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">嘉实</td>
+<td style="text-align: center;">80.83</td>
+<td style="text-align: center;">29</td>
+<td style="text-align: center;">4.98</td>
+<td style="text-align: center;">9.95</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">招商</td>
+<td style="text-align: center;">75.02</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">5.90</td>
+<td style="text-align: center;">15.38</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">汇添富</td>
+<td style="text-align: center;">44.90</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">3.24</td>
+<td style="text-align: center;">9.84</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">富国</td>
+<td style="text-align: center;">43.31</td>
+<td style="text-align: center;">37</td>
+<td style="text-align: center;">5.42</td>
+<td style="text-align: center;">14.69</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">鹏华</td>
+<td style="text-align: center;">43.25</td>
+<td style="text-align: center;">27</td>
+<td style="text-align: center;">5.29</td>
+<td style="text-align: center;">14.99</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: left;">景顺长城</td>
+<td style="text-align: center;">37.34</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">4.31</td>
+<td style="text-align: center;">9.81</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">国泰</td>
+<td style="text-align: center;">19.88</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">3.78</td>
+<td style="text-align: center;">14.07</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>📌 数据口径说明</h2>
+<ul>
+<li><strong>持仓截止日期</strong>：2026‑03‑31  </li>
+<li><strong>股票关键词</strong>：贵州茅台  </li>
+<li><strong>对比范围</strong>：全市场所有基金公司  </li>
+<li><strong>筛选逻辑</strong>：按基金公司汇总全部持仓，以持仓总规模降序排列，取前 10 名  </li>
+<li><strong>数据来源</strong>：基金公司股票持仓明细表，经 <strong>只读白名单校验与 dry run 通过</strong>  </li>
+<li><strong>单位说明</strong>：  </li>
+<li>持仓规模已换算为 <strong>亿元人民币</strong>  </li>
+<li>净值占比单位为 <strong>百分点</strong>（例如 5 表示 5%）</li>
+</ul>
+<hr>
+<blockquote>
+<p>💡 前3名依次为华夏、易方达、华泰柏瑞，持仓规模均超百亿；招商旗下某只基金的贵州茅台净值占比高达 15.38%，在前10中集中度最高。</p>
+</blockquote></div>
+    </section>
+    <section>
+      <h2>结果表</h2>
+      <h3>company_stock_holding</h3><table><thead><tr><th>基金公司</th><th>持仓规模_亿</th><th>持仓基金数</th><th>平均净值占比_pct</th><th>最高净值占比_pct</th></tr></thead><tbody><tr><td>华夏</td><td>265.29</td><td>31</td><td>4.47</td><td>14.83</td></tr><tr><td>易方达</td><td>220.81</td><td>54</td><td>5.65</td><td>14.7</td></tr><tr><td>华泰柏瑞</td><td>158.26</td><td>17</td><td>2.88</td><td>9.47</td></tr><tr><td>嘉实</td><td>80.83</td><td>29</td><td>4.98</td><td>9.95</td></tr><tr><td>招商</td><td>75.02</td><td>21</td><td>5.9</td><td>15.38</td></tr><tr><td>汇添富</td><td>44.9</td><td>35</td><td>3.24</td><td>9.84</td></tr><tr><td>富国</td><td>43.31</td><td>37</td><td>5.42</td><td>14.69</td></tr><tr><td>鹏华</td><td>43.25</td><td>27</td><td>5.29</td><td>14.99</td></tr><tr><td>景顺长城</td><td>37.34</td><td>24</td><td>4.31</td><td>9.81</td></tr><tr><td>国泰</td><td>19.88</td><td>18</td><td>3.78</td><td>14.07</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>调用工具 / SQL</h2>
+      <pre>[
+  {
+    &quot;tool_name&quot;: &quot;query_stock_holders&quot;,
+    &quot;args&quot;: {
+      &quot;top_n&quot;: 10,
+      &quot;stock_keyword&quot;: &quot;贵州茅台&quot;,
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;group_by&quot;: &quot;company&quot;,
+      &quot;companies&quot;: null,
+      &quot;fund_company&quot;: null,
+      &quot;asset_type&quot;: null,
+      &quot;min_companies&quot;: 2
+    },
+    &quot;metadata&quot;: {
+      &quot;date&quot;: &quot;2026-03-31&quot;,
+      &quot;stock_keyword&quot;: &quot;贵州茅台&quot;,
+      &quot;group_by&quot;: &quot;company&quot;,
+      &quot;companies&quot;: [],
+      &quot;top_n&quot;: 10
+    },
+    &quot;warnings&quot;: []
+  }
+]</pre>
+    </section>
+    
+    <section>
+      <h2>Trace</h2>
+      
+        <div class="trace-item">
+          <div class="trace-node">load_context_node</div>
+          <div><b>Action:</b> load_memory(session_id=demo-hard-5)</div>
+          <div><b>Observation:</b> memory keys=[&#x27;recent_turns&#x27;, &#x27;long_memory_summaries&#x27;]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">complexity_classifier_node</div>
+          <div><b>Action:</b> classify_complexity</div>
+          <div><b>Observation:</b> explicit=hard, signals=[], auto=hard, final=hard</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">mode_router_node</div>
+          <div><b>Action:</b> route_by_sql_mode</div>
+          <div><b>Observation:</b> sql_mode=hard, branch=hard</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">planner_node</div>
+          <div><b>Action:</b> PlannerAgent.plan()</div>
+          <div><b>Observation:</b>  intent=company_stock_holding_ranking, tool=query_stock_holders, args={&#x27;stock_keyword&#x27;: &#x27;贵州茅台&#x27;, &#x27;group_by&#x27;: &#x27;company&#x27;, &#x27;top_n&#x27;: 10}, tool_calls=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">tool_router_node</div>
+          <div><b>Action:</b> ToolRouter.route()</div>
+          <div><b>Observation:</b> categories=[&#x27;holding&#x27;], planned_tools=[&#x27;query_stock_holders&#x27;], allowed_tools_count=2</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">plan_validator_node</div>
+          <div><b>Action:</b> PlanValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=execute, issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">executor_node</div>
+          <div><b>Action:</b> ToolExecutor.execute(query_stock_holders)</div>
+          <div><b>Observation:</b> [TOOL] tool=query_stock_holders, tables=[&#x27;company_stock_holding&#x27;], notes=4, warnings=0</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">result_validator_node</div>
+          <div><b>Action:</b> ResultValidator.validate()</div>
+          <div><b>Observation:</b> passed=True, next_action=report, warnings=[], issues=[], hint=None</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">reflect_node</div>
+          <div><b>Action:</b> reflect_and_route</div>
+          <div><b>Observation:</b> next_action=report, retry_count=0, max_steps=3</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">report_writer_node</div>
+          <div><b>Action:</b> ReportWriterAgent.write()</div>
+          <div><b>Observation:</b> draft_answer_length=900</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">self_check_node</div>
+          <div><b>Action:</b> SelfCheckAgent.check()</div>
+          <div><b>Observation:</b> passed=True, next_action=final, issues=[]</div>
+        </div>
+        
+
+        <div class="trace-item">
+          <div class="trace-node">save_context_node</div>
+          <div><b>Action:</b> save_memory_and_finalize</div>
+          <div><b>Observation:</b> final_answer_length=900</div>
+        </div>
+        
+    </section>
+  </main>
+</body>
+</html>

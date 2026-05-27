@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>基金 Agent — Batch Evaluation</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+            background: #f0f9ff; color: #0f172a; margin: 0; }
+    header { background: #1d4ed8; color: white; padding: 24px 40px;
+              display: flex; justify-content: space-between; align-items: center; }
+    header h1 { margin: 0; font-size: 22px; }
+    .scoreboard { display: flex; gap: 20px; }
+    .score-chip { background: rgba(255,255,255,0.15); border-radius: 8px;
+                  padding: 8px 16px; text-align: center; }
+    .score-chip .num { font-size: 28px; font-weight: 700; }
+    .score-chip .lbl { font-size: 12px; opacity: 0.85; }
+    main { max-width: 1400px; margin: 24px auto; padding: 0 20px 40px; }
+    table { width: 100%; border-collapse: collapse; background: white;
+             border: 1px solid #bfdbfe; border-radius: 8px; overflow: hidden;
+             box-shadow: 0 1px 6px rgba(0,0,0,.06); }
+    th, td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb;
+              text-align: left; vertical-align: top; }
+    th { background: #eff6ff; color: #1e40af; font-size: 13px; }
+    tr:last-child td { border-bottom: none; }
+    a { color: #1d4ed8; font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .meta { color: #64748b; font-size: 13px; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>基金分析 Agent — Batch Evaluation</h1>
+      <div style="font-size:13px;opacity:.8;margin-top:4px">2026-05-26 20:29:53 &nbsp;·&nbsp; 37 道题 / 37 个子任务</div>
+    </div>
+    <div class="scoreboard">
+      <div class="score-chip"><div class="num">86%</div><div class="lbl">通过率</div></div>
+      <div class="score-chip" style="background:#16a34a"><div class="num">32</div><div class="lbl">PASS</div></div>
+      <div class="score-chip" style="background:#d97706"><div class="num">5</div><div class="lbl">WARN</div></div>
+      <div class="score-chip" style="background:#dc2626"><div class="num">0</div><div class="lbl">FAIL</div></div>
+    </div>
+  </header>
+  <main>
+    <p class="meta">
+      问题文件: D:\financial_agent\fund_analysis_agent_pro\evaluation\batch_questions.yaml &nbsp;·&nbsp;
+      耗时合计: 700.2s &nbsp;·&nbsp;
+      输出目录: D:\financial_agent\fund_analysis_agent_pro\outputs\evaluations\html_batch_20260526-201811
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>结果</th><th>SQL 路径</th><th>耗时</th>
+          <th>问题</th><th>报告</th><th>回答摘要</th><th>问题说明</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr style="background:#fef9c3">
+            <td style="font-weight:600">q001</td>
+            <td><span style="background:#d97706;color:white;padding:2px 8px;border-radius:4px;font-size:12px">WARN</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">11.89s</td>
+            <td>易方达目前旗下所有基金的总规模是多少</td>
+            <td><a href="q001_hard_易方达目前旗下所有基金的总规模是多少.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">截至 **2026年3月31日**，易方达基金旗下共管理 **503** 只基金，合计总规模为 **24,954.48 亿元人民币**。  按资产类型的构成分布如下：  | 资产类型 | 基金数量 | 规模（亿元） | 占公司总规模比例 | | :--- | :--- | :--- | :--- | | 现金管理 | 10 | 8,435.08 | 33.8% | | 被动权益 | 213 | 7,876.65 | 31.6% | | </td>
+            <td style="font-size:12px;color:#b91c1c">hard/generated首个数值差距&gt;20%: [2026.0, 24.0]</td>
+          </tr>
+          <tr style="background:#fef9c3">
+            <td style="font-weight:600">q001</td>
+            <td><span style="background:#d97706;color:white;padding:2px 8px;border-radius:4px;font-size:12px">WARN</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">17.96s</td>
+            <td>易方达目前旗下所有基金的总规模是多少</td>
+            <td><a href="q001_generated_易方达目前旗下所有基金的总规模是多少.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据最新一期数据，易方达基金旗下所有基金的总规模约为 **24,954.48 亿元人民币**。  **数据口径说明：** - 数据来源：`fund_size` 表（基金规模表） - 计算方式：筛选基金管理人为“易方达”，取该表中最新日期的所有基金规模求和。 - 计量单位：亿元（人民币） - 查询生成的 SQL 已通过只读白名单校验与 dry run 验证。</td>
+            <td style="font-size:12px;color:#b91c1c">SQL 必须包含 LIMIT。</td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q002</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">10.78s</td>
+            <td>规模最大的10只主动权益基金是哪些，按规模排序</td>
+            <td><a href="q002_hard_规模最大的10只主动权益基金是哪些_按规模排序.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">下面是截至 **2026-03-31** 规模最大的 10 只主动权益基金，按基金规模由高到低排列：  | 排名 | 基金代码 | 基金名称 | 基金公司 | 基金规模（亿元） | |------|----------|----------|----------|-----------------| | 1 | 005827 | 易方达蓝筹精选 | 易方达 | 267.93 | | 2 | 003095 | 中欧医疗健康A | 中欧 |</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q002</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">14.7s</td>
+            <td>规模最大的10只主动权益基金是哪些，按规模排序</td>
+            <td><a href="q002_generated_规模最大的10只主动权益基金是哪些_按规模排序.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">好的，根据最新季度数据，为您整理了规模最大的10只主动权益基金，按规模降序排列如下。  | 排名 | 基金代码 | 基金名称 | 基金公司 | 基金规模（亿元） | | :--- | :--- | :--- | :--- | :--- | | 1 | 005827 | 易方达蓝筹精选 | 易方达 | 267.93 | | 2 | 003095 | 中欧医疗健康A | 中欧 | 252.70 | | 3 | 161005 | 富国天惠精选</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q003</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">10.74s</td>
+            <td>全市场基金规模前10的基金公司是哪些，每家管理了多少亿</td>
+            <td><a href="q003_hard_全市场基金规模前10的基金公司是哪些_每家管理了多少亿.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据 `fund_size` 表数据（截至 2026-03-31），全市场基金公司管理规模（资产净值合计）前 10 名如下：  | 排名 | 基金公司 | 管理规模（亿元） | 基金数量 | |:---:|---------|--------------:|---------:| | 1   | 易方达 | 24,954.48     | 503     | | 2   | 华夏   | 20,894.67     | 537     </td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q003</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">17.56s</td>
+            <td>全市场基金规模前10的基金公司是哪些，每家管理了多少亿</td>
+            <td><a href="q003_generated_全市场基金规模前10的基金公司是哪些_每家管理了多少亿.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">以下是全市场按最新季度数据统计的管理规模（基金资产净值合计）前十的基金公司：  | 排名 | 基金公司 | 管理规模（亿元） | |------|----------|------------------| | 1 | 易方达 | 24,954.48 | | 2 | 华夏 | 20,894.67 | | 3 | 广发 | 16,739.07 | | 4 | 南方 | 15,053.14 | | 5 | 富国 | 13,814.27 | </td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q004</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">11.39s</td>
+            <td>易方达旗下各类资产规模分别是多少</td>
+            <td><a href="q004_hard_易方达旗下各类资产规模分别是多少.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">好的，这是易方达基金公司截至最新报告期的资产规模分布情况。  **数据口径说明** - 数据日期：**2026-03-31** - 数据来源：基于基金规模表（fund_size）聚合统计。 - 单位：**亿元人民币**  **易方达总体概况** - 基金总数量：503只 - 合计管理规模：24,954.48亿元  **各类资产规模明细**  | 资产类型 | 基金数量 | 规模（亿元） | 占公司比例（%） | | :--- | :--</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q004</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">13.82s</td>
+            <td>易方达旗下各类资产规模分别是多少</td>
+            <td><a href="q004_generated_易方达旗下各类资产规模分别是多少.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">好的，根据最新的数据，易方达基金旗下各类资产的规模情况整理如下。  **数据口径说明** -   **数据来源**：数据取自 `fund_size` 表，统计了易方达基金公司旗下所有基金的最新规模。 -   **数据日期**：基于数据库中最新的规模日期。 -   **规模单位**：亿元人民币。  ### 易方达各类资产规模  | 资产类型 | 规模（亿元） | | :--- | :--- | | 现金管理 | 8,435.08 | | </td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q005</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">16.65s</td>
+            <td>本年以来收益率最高的10只基金是哪些</td>
+            <td><a href="q005_hard_本年以来收益率最高的10只基金是哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">以下为您整理的本年以来收益率最高的10只基金。  ### 基金业绩排名  | 排名 | 基金代码 | 基金名称 | 组合收益率 (%) | 基准收益率 (%) | 超额收益 (%) | 最大回撤 (%) | | :--- | :--- | :--- | :--- | :--- | :--- | :--- | | 1 | 161129 | 易方达原油(QDII-LOF)(A类) | 63.23 | 75.68 | -12.45 | 5.9</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#fef9c3">
+            <td style="font-weight:600">q005</td>
+            <td><span style="background:#d97706;color:white;padding:2px 8px;border-radius:4px;font-size:12px">WARN</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">8.76s</td>
+            <td>本年以来收益率最高的10只基金是哪些</td>
+            <td><a href="q005_generated_本年以来收益率最高的10只基金是哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">这个问题暂时无法转换成可执行的数据查询。请补充您想分析的对象，例如基金公司、基金、股票、时间、规模、持仓或业绩口径。</td>
+            <td style="font-size:12px;color:#b91c1c">SQL planner 未返回合法 JSON：Expecting value: line 1 column 1 (char 0); raw_preview=</td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q006</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">15.66s</td>
+            <td>本年以来最大回撤最小的主动权益基金前10只</td>
+            <td><a href="q006_hard_本年以来最大回撤最小的主动权益基金前10只.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">以下是本年以来（截至当前数据日）最大回撤最小的主动权益基金前 10 名。这些基金本年以来均未发生回撤（最大回撤为 0.0%）。  | 排名 | 基金代码 | 基金名称 | 基金公司 | 组合收益率 (%) | 基准收益率 (%) | 超额收益 (%) | 最大回撤 (%) | |------|----------|----------|----------|----------------|----------------|------</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q006</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">29.02s</td>
+            <td>本年以来最大回撤最小的主动权益基金前10只</td>
+            <td><a href="q006_generated_本年以来最大回撤最小的主动权益基金前10只.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">以下是本年以来（截至最新数据日期）最大回撤最小的主动权益基金前10名。  | 基金代码 | 基金名称 | 最大回撤 (%) | |----------|----------|----------------| | 025090 | 百嘉百裕成长混合发起式(A类) | 0.00 | | 025785 | 中金科创优选混合发起式(A类) | 0.00 | | 026442 | 国泰海通港股优势精选股票发起式(QDII)(A类) | 0.00</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q007</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">13.14s</td>
+            <td>易方达蓝筹精选最新的前10大重仓股是什么</td>
+            <td><a href="q007_hard_易方达蓝筹精选最新的前10大重仓股是什么.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">好的，这是易方达蓝筹精选基金（代码：005827）的最新前10大重仓股。  ### 📊 易方达蓝筹精选（005827）前10大重仓股  以下数据基于全市场所有基金持仓的汇总排名，代表了这只基金的核心持仓，数据截至 **2026年3月31日**。  | 排名 | 股票代码 | 股票名称 | 持仓规模（亿元） | 持有该股的基金总数 | | :--- | :--- | :--- | :--- | :--- | | 1 | 300750 | </td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#fef9c3">
+            <td style="font-weight:600">q007</td>
+            <td><span style="background:#d97706;color:white;padding:2px 8px;border-radius:4px;font-size:12px">WARN</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">40.99s</td>
+            <td>易方达蓝筹精选最新的前10大重仓股是什么</td>
+            <td><a href="q007_generated_易方达蓝筹精选最新的前10大重仓股是什么.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据数据库查询结果，**当前没有找到易方达蓝筹精选的前10大重仓股记录**。  ### 可能的原因 - 数据库中暂未收录该基金的最新持仓数据。 - 基金名称拼写或格式不完全匹配。  ### 建议 - 确认基金名称的准确性，如“易方达蓝筹精选混合”或“易方达蓝筹精选”等。 - 尝试放宽条件，例如查询“易方达”旗下的基金列表，再从中确认准确的基金代码和名称。  本次查询的 SQL 语句已通过只读白名单校验与 dry run，查询范围为持仓表</td>
+            <td style="font-size:12px;color:#b91c1c">缺少关键词: 贵州茅台</td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q008</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">15.16s</td>
+            <td>005827这只基金持仓集中度怎么样，前十大持仓占净值多少</td>
+            <td><a href="q008_hard_005827这只基金持仓集中度怎么样_前十大持仓占净值多少.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">好的，来看一下易方达蓝筹精选（005827）的持仓集中度情况。  ### 易方达蓝筹精选（005827）持仓集中度分析  **数据截止日期：2026年3月31日**  该基金在报告期内，**前十大重仓股合计占基金资产净值比例高达 85.1%**，持仓非常集中。  以下是具体的持仓明细：  | 排名 | 股票代码 | 股票名称 | 持仓占净值比例 | | :--- | :--- | :--- | :--- | | 1 | HK700 | </td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q008</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">22.73s</td>
+            <td>005827这只基金持仓集中度怎么样，前十大持仓占净值多少</td>
+            <td><a href="q008_generated_005827这只基金持仓集中度怎么样_前十大持仓占净值多少.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据最新一期季报数据（持仓日期 2026-03-31），**易方达蓝筹精选（005827）** 的前十大持仓占净值比例合计为 **85.10%**，持仓集中度较高。  | 基金代码 | 基金名称 | 前十大持仓集中度（%） | |----------|----------|----------------------| | 005827 | 易方达蓝筹精选 | 85.10 |  ### 指标说明 - **计算口径**：基于基金最新披露的</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q009</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">11.59s</td>
+            <td>全市场基金公司中，持有贵州茅台规模最大的前5家是哪些</td>
+            <td><a href="q009_hard_全市场基金公司中_持有贵州茅台规模最大的前5家是哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">以下是截至 **2026年3月31日**，全市场持有贵州茅台规模最大的前5家基金公司：  | 排名 | 基金公司 | 持仓规模（亿元） | 持仓基金数（只） | 平均净值占比（%） | 最高净值占比（%） | |------|----------|------------------|------------------|-------------------|-------------------| | 1    | 华夏     |</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q009</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">17.37s</td>
+            <td>全市场基金公司中，持有贵州茅台规模最大的前5家是哪些</td>
+            <td><a href="q009_generated_全市场基金公司中_持有贵州茅台规模最大的前5家是哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">基于最新一期基金持仓数据，持有贵州茅台规模最大的前5家基金公司如下：  | 排名 | 基金公司 | 茅台持仓规模（亿元） | |------|----------|----------------------| | 1 | 华夏 | 265.29 | | 2 | 易方达 | 220.81 | | 3 | 华泰柏瑞 | 158.26 | | 4 | 嘉实 | 80.83 | | 5 | 招商 | 75.02 |  **数据口径说明：** </td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q010</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">11.43s</td>
+            <td>持仓宁德时代净值占比最高的5只基金是哪些</td>
+            <td><a href="q010_hard_持仓宁德时代净值占比最高的5只基金是哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">持仓宁德时代净值占比最高的 5 只基金如下：  | 排名 | 基金代码 | 基金名称 | 基金公司 | 资产类型 | 持仓规模（亿元） | 净值占比（%） | |------|----------|----------|----------|----------|----------------|--------------| | 1 | 159915 | 易方达创业板ETF | 易方达 | 被动权益 | 179.98 | 17.92 </td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q010</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">17.15s</td>
+            <td>持仓宁德时代净值占比最高的5只基金是哪些</td>
+            <td><a href="q010_generated_持仓宁德时代净值占比最高的5只基金是哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">好的，以下是根据最新持仓数据，整理出的持有宁德时代净值占比最高的5只基金。  **📊 宁德时代净值占比最高的5只基金**  | 排名 | 基金代码 | 基金名称 | 基金公司 | 宁德时代净值占比 (%) | |:---:|:---:|---|:---:|:---:| | 1 | 159383 | 华泰柏瑞创业板50ETF | 华泰柏瑞 | 21.52 | | 2 | 159949 | 华安创业板50ETF | 华安 | 21.50 |</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q011</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">28.21s</td>
+            <td>全市场基金最多共同持有的股票是哪些，前10名</td>
+            <td><a href="q011_hard_全市场基金最多共同持有的股票是哪些_前10名.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据数据库最新数据，全市场被最多基金共同持有的前10名股票如下。  | 排名 | 股票代码 | 股票名称 | 持仓公司数 | 持仓基金数 | 持仓规模（亿元） | |------|----------|----------|------------|------------|------------------| | 1 | 300308 | 中际旭创 | 136 | 1803 | 1627.52 | | 2 | 601899 | 紫金</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q011</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">20.09s</td>
+            <td>全市场基金最多共同持有的股票是哪些，前10名</td>
+            <td><a href="q011_generated_全市场基金最多共同持有的股票是哪些_前10名.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">当前全市场基金持仓中，被最多基金共同持有的前10只股票如下（基于最新披露的季度持仓日期统计）：  | 排名 | 股票名称 | 持有基金数量（只） | |------|----------|-------------------| | 1 | 宁德时代 | 3,701 | | 2 | 紫金矿业 | 3,439 | | 3 | 中际旭创 | 3,208 | | 4 | 新易盛 | 2,458 | | 5 | 中国平安 | 2,330 | |</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q012</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">22.07s</td>
+            <td>规模超过50亿且本年以来收益为正的主动权益基金有哪些，按规模排序</td>
+            <td><a href="q012_hard_规模超过50亿且本年以来收益为正的主动权益基金有哪些_按规模排序.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据您的要求，筛选出规模超过50亿元且本年以来收益为正的主动权益基金，以下按基金规模从大到小排序。  ---  ## 筛选结果（规模排序）  | 排名 | 基金代码 | 基金名称 | 基金公司 | 规模（亿元） | 本年以来收益 | 最大回撤 | |------|----------|----------|----------|-------------|-------------|----------| | 1 | 025208 | </td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q012</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">23.69s</td>
+            <td>规模超过50亿且本年以来收益为正的主动权益基金有哪些，按规模排序</td>
+            <td><a href="q012_generated_规模超过50亿且本年以来收益为正的主动权益基金有哪些_按规模排序.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">经过查询，当前数据库中**没有满足“主动权益类、规模超过50亿且本年以来收益为正”条件的基金记录**。  这可能意味着： - 在当前最新的规模统计日，市场中所有规模超过50亿的主动权益基金，今年以来（本以来）的收益均为零或负值； - 或者数据库中主动权益类产品的分类/规模统计口径有所调整，导致暂时没有完全命中的数据。  **建议**：您可以适当放宽筛选条件，例如： - 将规模门槛下调至30亿或20亿； - 确认是否要查看“今年以来”区间</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q013</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">14.77s</td>
+            <td>本年以来超额收益超过5%且最大回撤低于10%的基金有哪些</td>
+            <td><a href="q013_hard_本年以来超额收益超过5_且最大回撤低于10_的基金有哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据筛选条件（**本年以来**，**超额收益 &gt; 5%** 且 **最大回撤 &lt; 10%**），共为您找到 10 只符合条件的基金。数据详情如下：  | 基金代码 | 基金名称 | 基金公司 | 资产类型 | 基金规模（亿） | 组合收益率（%） | 超额收益（%） | 最大回撤（%） | | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | | 016873 | 广发远见智</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q013</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">26.97s</td>
+            <td>本年以来超额收益超过5%且最大回撤低于10%的基金有哪些</td>
+            <td><a href="q013_generated_本年以来超额收益超过5_且最大回撤低于10_的基金有哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">好的，这是根据数据库查询结果整理的本年以来（截至数据日）符合“超额收益超过5%且最大回撤低于10%”条件的基金列表。  数据口径： - **数据来源**：`fund_performance` 表。 - **业绩区间**：本年以来。 - **筛选标准**：同期超额收益 &gt;5% 且 最大回撤 &lt;10%。 - **排序规则**：超额收益从高到低排列。  符合条件的基金共有200只，下表展示排名前20的基金：  | 基金代码 | 基金名称 | </td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q014</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">15.18s</td>
+            <td>本年以来收益最高的5只主动权益基金，各自的第一大重仓股是什么</td>
+            <td><a href="q014_hard_本年以来收益最高的5只主动权益基金_各自的第一大重仓股是什么.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">好的，以下是基于工具结果的分析。  ---  ### 本年以来收益前5的主动权益基金  **数据说明：** - **业绩区间：** 本年以来 - **资产类别：** 主动权益 - **收益率口径：** 组合收益率（已换算为百分比）  | 排名 | 基金代码 | 基金名称 | 基金公司 | 组合收益率 | 超额收益 | 最大回撤 | |------|----------|----------|----------|------------</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#fef9c3">
+            <td style="font-weight:600">q014</td>
+            <td><span style="background:#d97706;color:white;padding:2px 8px;border-radius:4px;font-size:12px">WARN</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">37.48s</td>
+            <td>本年以来收益最高的5只主动权益基金，各自的第一大重仓股是什么</td>
+            <td><a href="q014_generated_本年以来收益最高的5只主动权益基金_各自的第一大重仓股是什么.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据数据库最新截面数据，我为您整理出本年以来收益最高的5只主动权益基金及其第一大重仓股如下：  | 排名 | 基金代码 | 基金名称 | 基金公司 | 本年以来收益率 | 第一大重仓股 | 持仓占比 | |------|----------|----------|----------|----------------|--------------|----------| | 1 | 016873 | 广发远见智选A | 广发 | 58.</td>
+            <td style="font-size:12px;color:#b91c1c">缺少关键词: 股票</td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q015</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>hard</code></td>
+            <td style="color:#6b7280">7.05s</td>
+            <td>帮我查一下易方达蓝筹精选这只基金的基本信息</td>
+            <td><a href="q015_hard_帮我查一下易方达蓝筹精选这只基金的基本信息.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">为您整理“易方达蓝筹精选”的基本信息如下：  | 项目 | 内容 | | :--- | :--- | | **基金代码** | 005827 | | **基金名称** | 易方达蓝筹精选 | | **基金公司** | 易方达基金 | | **资产类型** | 主动权益 | | **最新规模** | 267.93 亿元人民币 |  **口径说明：** 以上数据来源于基金基础信息表，检索关键词为“易方达蓝筹精选”，数据截至日期为 2026年</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q015</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">12.42s</td>
+            <td>帮我查一下易方达蓝筹精选这只基金的基本信息</td>
+            <td><a href="q015_generated_帮我查一下易方达蓝筹精选这只基金的基本信息.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">好的，这是易方达蓝筹精选基金的基本信息：  | 项目 | 内容 | | :--- | :--- | | **基金名称** | 易方达蓝筹精选 | | **基金代码** | 005827 | | **基金管理人** | 易方达基金管理有限公司 | | **资产类型** | 主动权益 | | **基金规模** | 约 267.93 亿元人民币 | | **数据截止日期** | 2026年3月31日 |  **数据口径说明** *   数据来</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q016</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">34.69s</td>
+            <td>规模前50的主动权益基金中，同时持有贵州茅台和宁德时代的有哪些，按规模排序</td>
+            <td><a href="q016_generated_规模前50的主动权益基金中_同时持有贵州茅台和宁德时代的有哪些_按规模排序.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">好的，我们来看一下根据最新数据，规模前50的主动权益基金中，同时持有贵州茅台和宁德时代的情况。  以下是查询结果，按基金规模降序排列：  | 基金代码 | 基金名称 | 基金公司 | 规模(亿元) | | :--- | :--- | :--- | :--- | | 161005 | 富国天惠精选成长A | 富国 | 197.39 |  **数据口径说明：** *   **市场类型**：主动权益基金。 *   **基金范围**：按最新规模</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q017</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">22.65s</td>
+            <td>持仓贵州茅台净值占比超过5%的基金中，本年以来收益最好的前5只是哪些</td>
+            <td><a href="q017_generated_持仓贵州茅台净值占比超过5_的基金中_本年以来收益最好的前5只是哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据最新持仓数据，在贵州茅台净值占比超过5%的基金中，本年以来收益最好的前5只如下：  | 排名 | 基金代码 | 基金名称 | 基金公司 | 茅台净值占比(%) | 本年收益率(%) | |------|----------|----------|----------|-----------------|---------------| | 1 | 005618 | 融通红利机会A | 融通 | 5.19 | 9.72 | | 2 |</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q018</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">17.67s</td>
+            <td>规模前100基金中本年以来超额收益最高的10只</td>
+            <td><a href="q018_generated_规模前100基金中本年以来超额收益最高的10只.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">基于最新规模数据，在规模前100的基金中，本年以来超额收益最高的10只如下：  | 排名 | 基金代码 | 基金名称 | 超额收益率（%） | 组合收益率（%） | |------|----------|----------|----------------|----------------| | 1 | 004137 | 博时合惠货币(B类) | 0.27 | 0.35 | | 2 | 000602 | 富国安益货币(A类) | 0.</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q019</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">27.62s</td>
+            <td>易方达和华夏谁更看好宁德时代</td>
+            <td><a href="q019_generated_易方达和华夏谁更看好宁德时代.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据最新一期基金持仓数据，在对宁德时代（股票名称：宁德时代）的配置上，**易方达的持仓市值显著高于华夏**。具体数据如下：  | 基金公司 | 持仓市值（亿元） | | :--- | :--- | | **易方达** | 358.95 | | 华夏 | 166.04 |  ### 数据口径说明 - **数据来源**：以上结果汇总自 `fund_holding`（基金持仓表）和 `fund_size`（基金规模表）。 - **最新时点**</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q020</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">32.44s</td>
+            <td>持仓半导体相关股票占净值超过20%的主动权益基金有哪些</td>
+            <td><a href="q020_generated_持仓半导体相关股票占净值超过20_的主动权益基金有哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">基于最新的基金持仓数据，查询结果显示，数据库中**没有满足“持仓半导体相关股票占净值超过20%”条件的主动权益基金记录**。  ### 📊 数据查询口径说明 - **数据来源**：通过对 `fund_holding`（基金持仓表）与 `fund_size`（基金规模表）的联合查询，所生成的SQL已通过只读白名单校验和dry run。 - **最新数据日期**：查询取用的是数据库中 `fund_holding` 表和 `fund_size</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q021</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">14.51s</td>
+            <td>规模超过10000亿的单只基金有哪些</td>
+            <td><a href="q021_generated_规模超过10000亿的单只基金有哪些.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据最新的基金规模数据（数据日期基于 `fund_size` 表中最新日期），目前**没有**规模超过10000亿元人民币的单只基金。  ### 数据说明 - **数据来源**：`fund_size` 表，筛选了基金规模大于10000亿元的基金，并按规模降序排列。 - **日期口径**：基于 `fund_size` 表中的最大日期（最新数据）。 - **数据范围**：当前数据库中记录的基金规模均在0亿至7993亿元之间，无满足条件的记录</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr>
+          <tr style="background:#dcfce7">
+            <td style="font-weight:600">q022</td>
+            <td><span style="background:#16a34a;color:white;padding:2px 8px;border-radius:4px;font-size:12px">PASS</span></td>
+            <td><code>generated</code></td>
+            <td style="color:#6b7280">14.2s</td>
+            <td>不存在的基金公司XYZ旗下有哪些基金</td>
+            <td><a href="q022_generated_不存在的基金公司XYZ旗下有哪些基金.html" target="_blank">📄 报告</a></td>
+            <td style="font-size:13px;color:#374151">根据查询结果，基金公司“XYZ”在我们的数据库中**没有找到任何匹配的基金记录**。  ### 📋 数据口径说明 - **数据来源**：基金规模表（`fund_size`） - **筛选条件**：基金公司名称精确匹配“XYZ”，并使用了最新的数据日期 - **查询结果**：共返回 0 条记录  ### 💡 建议 数据库中没有记录可能是由于以下原因： 1. 基金公司名称拼写有误，或实际全称并非“XYZ”。 2. 该基金公司目前没有存续的基</td>
+            <td style="font-size:12px;color:#b91c1c"></td>
+          </tr></tbody>
+    </table>
+  </main>
+</body>
+</html>
