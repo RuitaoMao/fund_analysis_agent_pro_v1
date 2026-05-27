@@ -1,5 +1,0 @@
-当前问题暂时无法可靠回答。
-
-- Execution failed on sql 'EXPLAIN QUERY PLAN WITH avg_performance AS (SELECT fp.fund_company, AVG(fp.portfolio_return) AS avg_return FROM fund_performance fp WHERE fp.period = '本年以来' GROUP BY fp.fund_company) SELECT fund_company AS 基金公司, ROUND(avg_return * 100, 2) AS 平均收益百分比 FROM avg_performance ORDER BY avg_return DESC LIMIT 10;': no such column: fp.fund_company
-- Execution failed on sql 'EXPLAIN QUERY PLAN WITH avg_performance AS (SELECT fp.fund_company, AVG(fp.portfolio_return) AS avg_return FROM fund_performance fp WHERE fp.period = '本年以来' GROUP BY fp.fund_company) SELECT fund_company AS 基金公司, ROUND(avg_return * 100, 2) AS 平均收益百分比 FROM avg_performance ORDER BY avg_return DESC LIMIT 10;': no such column: fp.fund_company
-- Execution failed on sql 'EXPLAIN QUERY PLAN WITH avg_performance AS (SELECT fund_company, AVG(portfolio_return) AS avg_return FROM fund_performance WHERE period = '本年以来' GROUP BY fund_company) SELECT fund_company AS "基金公司", ROUND(avg_return * 100, 2) AS "平均收益百分比" FROM avg_performance ORDER BY avg_return DESC LIMIT 10;': no such column: fund_company
