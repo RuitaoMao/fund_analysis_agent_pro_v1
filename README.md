@@ -9,7 +9,7 @@
 - 使用 LangGraph 编排 Agent workflow
 - 支持 Hard Tools 与 LLM Generated SQL 两种分析路径
 - 支持多轮对话上下文，能够处理“这些基金”“同样口径”等追问
-- 支持 FastAPI / Streamlit / CLI 交互方式
+- 支持 FastAPI / CLI 交互方式
 - 支持 HTML 报告导出和批量评测
 
 ## 核心设计
@@ -76,12 +76,6 @@ FastAPI：
 .\.venv\Scripts\python.exe app_fastapi.py
 ```
 
-Streamlit：
-
-```powershell
-.\.venv\Scripts\streamlit.exe run app_streamlit.py
-```
-
 ## 批量评测
 
 评测脚本会读取 `evaluation/batch_questions.yaml`，通过 FastAPI TestClient 批量调用接口，并生成 HTML 汇总报告。
@@ -114,7 +108,7 @@ outputs/evaluations/html_batch_<timestamp>/
 
 - Python
 - LangGraph
-- FastAPI / Streamlit
+- FastAPI
 - SQLite
 - pandas / openpyxl
 - Pydantic

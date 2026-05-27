@@ -82,7 +82,8 @@ def interactive_loop(
     print("\n基金数据分析 Agent")
     print(f"- 本次短期 memory session：{session_id}")
     print(f"- LLM/mock 模式：{mode}")
-    print(f"- 查询引擎：{'硬 SQL 专家工具' if sql_mode == 'hard' else 'LLM 生成 SQL'}")
+    _engine_labels = {"hard": "硬 SQL 专家工具", "generated": "LLM 生成 SQL", "auto": "自动按复杂度选择"}
+    print(f"- 查询引擎：{_engine_labels.get(sql_mode, sql_mode)}")
     print(f"- 是否读取长期 memory 摘要：{'是' if use_long_memory else '否'}")
     print("\n支持的问题类别：")
     print("1. 基金规模：规模排名、公司总规模、规模趋势、资产类型分布、Wind 一级/二级/三级分类。")
@@ -103,8 +104,10 @@ def interactive_loop(
         if query.lower() in {"exit", "quit", "q"}:
             break
         if query == "/engine":
-            sql_mode = "generated" if sql_mode == "hard" else "hard"
-            print(f"已切换查询引擎：{'硬 SQL 专家工具' if sql_mode == 'hard' else 'LLM 生成 SQL'}\n")
+            cycle = {"hard": "generated", "generated": "auto", "auto": "hard"}
+            sql_mode = cycle.get(sql_mode, "hard")
+            labels = {"hard": "硬 SQL 专家工具", "generated": "LLM 生成 SQL", "auto": "自动按复杂度选择"}
+            print(f"已切换查询引擎：{labels[sql_mode]}\n")
             continue
         if query == "/trace":
             trace = not trace
@@ -128,7 +131,7 @@ def main() -> None:
     parser.add_argument("--rebuild-db", action="store_true", help="从 Excel 重建 SQLite 数据库")
     parser.add_argument("--trace", action="store_true", help="打印运行轨迹")
     parser.add_argument("--interactive", action="store_true", help="交互模式")
-    parser.add_argument("--sql-mode", choices=["hard", "generated"], default="hard", help="hard=专家工具固定 SQL；generated=LLM+数据生成受控 SQL")
+    parser.add_argument("--sql-mode", choices=["hard", "generated", "auto"], default="hard", help="hard=专家工具固定 SQL；generated=LLM 生成受控 SQL；auto=按复杂度自动选择")
     parser.add_argument("--long-memory", action=argparse.BooleanOptionalAction, default=True, help="是否读取已归档的长期 memory 摘要")
     args = parser.parse_args()
 
@@ -145,7 +148,7 @@ def main() -> None:
     if args.interactive or not args.query:
         print("请选择本次运行方式。直接回车使用推荐值。")
         chosen_mode = choose("LLM/mock 模式：mock 或 llm", mode, {"mock", "llm"})
-        chosen_sql_mode = choose("查询引擎：hard 或 generated", args.sql_mode, {"hard", "generated"})
+        chosen_sql_mode = choose("查询引擎：hard / generated / auto", args.sql_mode, {"hard", "generated", "auto"})
         long_choice = choose("是否读取长期 memory 摘要：y 或 n", "y" if args.long_memory else "n", {"y", "n"})
         session_id = f"session-{datetime.now().strftime('%Y%m%d-%H%M%S')}-{uuid4().hex[:6]}"
         interactive_loop(

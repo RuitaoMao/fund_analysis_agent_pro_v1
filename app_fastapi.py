@@ -52,6 +52,14 @@ AGENT: FundAnalysisAgent = _build_agent()
 # 跟踪每个 session 的 interrupt 状态，决定 ask 走 run 还是 resume
 SESSION_PENDING_CLARIFICATION: dict[str, dict] = {}
 SESSION_LAST_STATE: dict[str, dict] = {}
+_SESSION_LOCKS: dict[str, asyncio.Lock] = {}
+
+
+def _session_lock(session_id: str) -> asyncio.Lock:
+    """每个 session 一把锁，防止并发请求竞争同一 session 的 interrupt 状态。"""
+    if session_id not in _SESSION_LOCKS:
+        _SESSION_LOCKS[session_id] = asyncio.Lock()
+    return _SESSION_LOCKS[session_id]
 
 
 app = FastAPI(title="基金分析 Agent", version="1.0")
@@ -110,75 +118,77 @@ async def health() -> dict[str, Any]:
 @app.post("/api/ask")
 async def ask(req: AskRequest) -> dict[str, Any]:
     """非流式提问。Clarify 时返回 needs_clarification=True 和 question。"""
-    is_resuming = req.session_id in SESSION_PENDING_CLARIFICATION
+    async with _session_lock(req.session_id):
+        is_resuming = req.session_id in SESSION_PENDING_CLARIFICATION
 
-    def _run() -> dict:
-        if is_resuming:
-            state = AGENT.resume(req.user_response if hasattr(req, "user_response") else req.query, session_id=req.session_id)
-        else:
-            state = AGENT.run(
-                req.query,
-                mode=req.mode,
-                sql_mode=req.sql_mode,
-                session_id=req.session_id,
-                use_long_memory=req.use_long_memory,
-                max_steps=req.max_steps,
-            )
-        return state
+        def _run() -> dict:
+            if is_resuming:
+                state = AGENT.resume(req.user_response if hasattr(req, "user_response") else req.query, session_id=req.session_id)
+            else:
+                state = AGENT.run(
+                    req.query,
+                    mode=req.mode,
+                    sql_mode=req.sql_mode,
+                    session_id=req.session_id,
+                    use_long_memory=req.use_long_memory,
+                    max_steps=req.max_steps,
+                )
+            return state
 
-    state = await asyncio.to_thread(_run)
-    state["sql_mode"] = req.sql_mode
+        state = await asyncio.to_thread(_run)
+        state["sql_mode"] = req.sql_mode
 
-    if state.get("is_interrupted"):
-        SESSION_PENDING_CLARIFICATION[req.session_id] = state.get("pending_clarification", {})
+        if state.get("is_interrupted"):
+            SESSION_PENDING_CLARIFICATION[req.session_id] = state.get("pending_clarification", {})
+            payload = _state_to_payload(state)
+            payload["needs_clarification"] = True
+            payload["clarification_question"] = state.get("clarification_question")
+            SESSION_LAST_STATE[req.session_id] = payload
+            return payload
+
+        SESSION_PENDING_CLARIFICATION.pop(req.session_id, None)
+        # 保存 HTML 报告
+        try:
+            path = save_html_report(AGENT.settings.project_root, state)
+            state["html_report_path"] = str(path)
+        except Exception as exc:
+            logger.warning("save_html_report failed: %s", exc)
+
         payload = _state_to_payload(state)
-        payload["needs_clarification"] = True
-        payload["clarification_question"] = state.get("clarification_question")
         SESSION_LAST_STATE[req.session_id] = payload
         return payload
-
-    SESSION_PENDING_CLARIFICATION.pop(req.session_id, None)
-    # 保存 HTML 报告
-    try:
-        path = save_html_report(AGENT.settings.project_root, state)
-        state["html_report_path"] = str(path)
-    except Exception as exc:
-        logger.warning("save_html_report failed: %s", exc)
-
-    payload = _state_to_payload(state)
-    SESSION_LAST_STATE[req.session_id] = payload
-    return payload
 
 
 @app.post("/api/resume")
 async def resume(req: ResumeRequest) -> dict[str, Any]:
     """提交对 clarification 的补充答复。"""
-    if req.session_id not in SESSION_PENDING_CLARIFICATION:
-        raise HTTPException(status_code=400, detail="当前 session 没有待补充的 clarification。")
+    async with _session_lock(req.session_id):
+        if req.session_id not in SESSION_PENDING_CLARIFICATION:
+            raise HTTPException(status_code=400, detail="当前 session 没有待补充的 clarification。")
 
-    def _run() -> dict:
-        return AGENT.resume(req.user_response, session_id=req.session_id)
+        def _run() -> dict:
+            return AGENT.resume(req.user_response, session_id=req.session_id)
 
-    state = await asyncio.to_thread(_run)
+        state = await asyncio.to_thread(_run)
 
-    if state.get("is_interrupted"):
-        # 再次中断（用户回答仍不充分）
-        SESSION_PENDING_CLARIFICATION[req.session_id] = state.get("pending_clarification", {})
+        if state.get("is_interrupted"):
+            # 再次中断（用户回答仍不充分）
+            SESSION_PENDING_CLARIFICATION[req.session_id] = state.get("pending_clarification", {})
+            payload = _state_to_payload(state)
+            payload["needs_clarification"] = True
+            payload["clarification_question"] = state.get("clarification_question")
+            return payload
+
+        SESSION_PENDING_CLARIFICATION.pop(req.session_id, None)
+        try:
+            path = save_html_report(AGENT.settings.project_root, state)
+            state["html_report_path"] = str(path)
+        except Exception as exc:
+            logger.warning("save_html_report failed: %s", exc)
+
         payload = _state_to_payload(state)
-        payload["needs_clarification"] = True
-        payload["clarification_question"] = state.get("clarification_question")
+        SESSION_LAST_STATE[req.session_id] = payload
         return payload
-
-    SESSION_PENDING_CLARIFICATION.pop(req.session_id, None)
-    try:
-        path = save_html_report(AGENT.settings.project_root, state)
-        state["html_report_path"] = str(path)
-    except Exception as exc:
-        logger.warning("save_html_report failed: %s", exc)
-
-    payload = _state_to_payload(state)
-    SESSION_LAST_STATE[req.session_id] = payload
-    return payload
 
 
 @app.get("/api/stream")
