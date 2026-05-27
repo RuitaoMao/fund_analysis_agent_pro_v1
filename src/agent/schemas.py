@@ -133,3 +133,37 @@ class StepTrace(BaseModel):
     thought: str
     action: str
     observation: str
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# 分析报告大纲（Branch 2 新增）
+# ──────────────────────────────────────────────────────────────────────────
+
+class ReportSection(BaseModel):
+    """报告的单个章节模板，由技能规划器生成，驱动 Drafter LLM。"""
+
+    title: str
+    analytical_angles: list[str] = Field(default_factory=list)
+    """该章节需要覆盖的分析要点，Drafter LLM 必须逐一回应。"""
+
+
+class ReportOutline(BaseModel):
+    """分析报告大纲。
+
+    由 report_skills 中的技能类（规则生成，无需额外 LLM 调用）产生，
+    然后传给 Drafter LLM 作为写作蓝图。
+    """
+
+    skill_type: str = "generic"
+    direct_answer: str | None = None
+    """简单问题的核心答案，放在报告最前面粗体显示。复杂问题为 None。"""
+    sections: list[ReportSection] = Field(default_factory=list)
+
+
+class QueryProfile(BaseModel):
+    """轻量级问题分类，辅助技能选择器。"""
+
+    question_type: str = "generic"
+    complexity: Literal["simple", "moderate", "complex"] = "moderate"
+    primary_entities: list[str] = Field(default_factory=list)
+    """涉及的主要实体（公司名、股票名、资产类型等）。"""

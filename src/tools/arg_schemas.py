@@ -151,6 +151,11 @@ class LookupFundArgs(TopNMixin):
     keyword: str
 
 
+class QueryMarketOverviewArgs(TopNMixin):
+    """query_market_overview 参数 schema。"""
+    date: str | None = None
+
+
 TOOL_ARG_SCHEMAS: dict[str, type[BaseModel]] = {
     "query_fund_size": QueryFundSizeArgs,
     "query_company_size": QueryCompanySizeArgs,
@@ -159,5 +164,6 @@ TOOL_ARG_SCHEMAS: dict[str, type[BaseModel]] = {
     "query_stock_holders": QueryStockHoldersArgs,
     "screen_funds": ScreenFundsArgs,
     "query_performance_holdings": QueryPerformanceHoldingsArgs,
+    "query_market_overview": QueryMarketOverviewArgs,
     "lookup_fund": LookupFundArgs,
 }
