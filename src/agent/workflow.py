@@ -529,6 +529,10 @@ class FundAgentWorkflow:
         state = {**state, "draft_answer": answer, "next_action": "final"}
         skill_type = getattr(self.report_writer, "last_skill_type", "?") or "?"
         outline_source = getattr(self.report_writer, "last_outline_source", "?") or "?"
+        stage_ms = getattr(self.report_writer, "last_stage_ms", {}) or {}
+        # 拼成 "outliner_llm=2351ms drafter_llm=8204ms" 紧凑串，让 --trace 直接显示瓶颈
+        timing_str = " ".join(f"{k}={int(v)}ms" for k, v in stage_ms.items())
+        total_ms = int(sum(stage_ms.values()))
         is_sql = bool(generated_sql)
         return _append_trace(
             state,
@@ -537,7 +541,8 @@ class FundAgentWorkflow:
             action=f"AnalyticalReportWriter.write(sql={'yes' if is_sql else 'no'})",
             observation=(
                 f"skill={skill_type}, outline_source={outline_source}, "
-                f"sql={'yes' if is_sql else 'no'}, draft_length={len(answer)}"
+                f"sql={'yes' if is_sql else 'no'}, draft_length={len(answer)}, "
+                f"total={total_ms}ms [{timing_str}]"
             ),
         )
 
