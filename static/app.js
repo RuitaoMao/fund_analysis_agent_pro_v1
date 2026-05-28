@@ -49,6 +49,14 @@ function clearTrace() {
   traceList.innerHTML = "";
 }
 
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 function appendTrace(step, nextAction) {
   if (!step) return;
   const obs = step.observation || "";
@@ -59,12 +67,21 @@ function appendTrace(step, nextAction) {
   else if (obs.includes("[TOOL]")) cls = "tool";
   else if (obs.includes("[SQL]")) cls = "sql";
 
+  // 提取 analytical_report_writer_node 的 total=Xms 做成显眼的徽标
+  // 比如 "total=33590ms [skill=0ms market_ctx=2ms outliner_llm=5480ms drafter_llm=28107ms]"
+  let timingBadge = "";
+  const m = obs.match(/total=(\d+)ms\s*\[([^\]]+)\]/);
+  if (m) {
+    const totalSec = (parseInt(m[1], 10) / 1000).toFixed(1);
+    timingBadge = ` <span class="timing-badge" title="${escapeHtml(m[2])}">⏱ ${totalSec}s</span>`;
+  }
+
   const div = document.createElement("div");
   div.className = `trace-step ${cls}`;
   div.innerHTML = `
-    <div class="node">${step.node}</div>
-    <div class="action">${step.action || ""}</div>
-    <div class="obs">${obs}</div>
+    <div class="node">${escapeHtml(step.node)}${timingBadge}</div>
+    <div class="action">${escapeHtml(step.action || "")}</div>
+    <div class="obs">${escapeHtml(obs)}</div>
   `;
   traceList.appendChild(div);
   traceList.scrollTop = traceList.scrollHeight;
