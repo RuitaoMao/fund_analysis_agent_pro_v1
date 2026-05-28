@@ -113,6 +113,45 @@ def load_questions(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     return defaults, questions
 
 
+def available_question_files() -> list[Path]:
+    """列出 evaluation/ 下可直接选择的 YAML 问题文件。"""
+    return sorted((PROJECT_ROOT / "evaluation").glob("*.yaml"))
+
+
+def resolve_question_path(questions_arg: str | None, question_set: str | None) -> Path:
+    """解析用户选择的问题文件。
+
+    优先级：
+    1. --question-set：从 evaluation/ 目录按文件名或 stem 选择；
+    2. --questions：兼容旧参数，可传任意相对/绝对路径；
+    3. 默认 evaluation/batch_questions.yaml。
+    """
+    if question_set:
+        raw = Path(question_set)
+        if raw.is_absolute() or raw.parent != Path("."):
+            path = raw
+            if not path.is_absolute():
+                path = PROJECT_ROOT / path
+            return path
+
+        eval_dir = PROJECT_ROOT / "evaluation"
+        candidates = [
+            eval_dir / question_set,
+            eval_dir / f"{question_set}.yaml",
+            eval_dir / f"{question_set}.yml",
+        ]
+        for candidate in candidates:
+            if candidate.exists():
+                return candidate
+        known = ", ".join(path.stem for path in available_question_files())
+        raise ValueError(f"未找到 question-set：{question_set}。可用 question-set：{known}")
+
+    path = Path(questions_arg or "evaluation/batch_questions.yaml")
+    if not path.is_absolute():
+        path = PROJECT_ROOT / path
+    return path
+
+
 # ──────────────────────────────────────────────────────────────────
 # index.html 生成
 # ──────────────────────────────────────────────────────────────────
@@ -255,18 +294,25 @@ def _check_server_conflict(port: int = 8000) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="批量运行基金 Agent 评测，输出 HTML 报告")
-    parser.add_argument("--questions", default="evaluation/batch_questions.yaml", help="YAML 问题文件路径")
+    parser.add_argument("--questions", default=None, help="YAML 问题文件路径（兼容旧用法）")
+    parser.add_argument("--question-set", default=None,
+                        help="选择 evaluation/ 下的问题文件，可传文件名或 stem，例如 batch_questions_extra")
+    parser.add_argument("--list-question-files", action="store_true", help="列出可选 YAML 问题文件后退出")
     parser.add_argument("--out-dir", default=None, help="输出目录；默认 outputs/evaluations/html_batch_<timestamp>")
     parser.add_argument("--sql-modes", default=None,
                         help="强制覆盖所有题目的 SQL 路径（hard/generated/hard,generated）")
     parser.add_argument("--ids", default=None, help="只跑指定 id，逗号分隔，例如 q001,q005")
     args = parser.parse_args()
 
+    if args.list_question_files:
+        print("可用 YAML 问题文件：")
+        for path in available_question_files():
+            print(f"- {path.stem}  ({path.relative_to(PROJECT_ROOT)})")
+        return
+
     _check_server_conflict()  # 检测是否与 uvicorn 冲突
 
-    question_path = Path(args.questions)
-    if not question_path.is_absolute():
-        question_path = PROJECT_ROOT / question_path
+    question_path = resolve_question_path(args.questions, args.question_set)
     defaults, questions = load_questions(question_path)
 
     # 全局 sql_mode 覆盖（命令行优先）

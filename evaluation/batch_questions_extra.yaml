@@ -1,0 +1,60 @@
+# ================================================================
+# 基金分析 Agent — Extra Eval Set
+#
+# 共 6 题：3 简单 + 3 复杂
+# 目标：覆盖与默认 demo eval 不同的问题类型，包括资产类型分布、
+# 单基金业绩明细、个股基金持有人、公司规模趋势、风险收益画像、
+# 以及公募共识股。
+#
+# 运行示例：
+#   python evaluation/run_batch_html_reports.py --question-set batch_questions_extra
+#   python evaluation/run_batch_html_reports.py --questions evaluation/batch_questions_extra.yaml
+# ================================================================
+
+defaults:
+  mode: llm
+  sql_modes: hard, generated
+  max_steps: 3
+  use_long_memory: false
+
+
+questions:
+
+  # ════════════════════════════════════════════════════════════════
+  # 简单问题（x-s001–x-s003）
+  # ════════════════════════════════════════════════════════════════
+
+  - id: x-s001
+    category: asset_type_distribution
+    query: 全市场基金资产类型分布如何，各类资产规模分别是多少
+    expected_keywords: [资产类型, 规模, 亿]
+
+  - id: x-s002
+    category: fund_performance_detail
+    query: 005827这只基金本年以来的业绩表现如何，收益率和最大回撤是多少
+    expected_keywords: [005827, 收益, 回撤]
+
+  - id: x-s003
+    category: stock_fund_holders
+    query: 腾讯控股被哪些基金持有，净值占比最高的前5只基金是哪些
+    expected_keywords: [腾讯控股, 基金, 净值]
+
+
+  # ════════════════════════════════════════════════════════════════
+  # 复杂问题（x-c001–x-c003）
+  # ════════════════════════════════════════════════════════════════
+
+  - id: x-c001
+    category: company_size_trend
+    query: 比较易方达和广发近几个季度总规模变化，并分析两家公司规模增长节奏差异
+    expected_keywords: [易方达, 广发, 规模]
+
+  - id: x-c002
+    category: downside_risk_profile
+    query: 分析本年以来最大回撤最小的主动权益基金前10只的收益表现、所属公司和规模特征
+    expected_keywords: [主动权益, 回撤, 收益]
+
+  - id: x-c003
+    category: consensus_stock_analysis
+    query: 分析公募基金共识股，被最多基金公司共同持有的股票有哪些，并讨论持仓集中度和配置特征
+    expected_keywords: [共识股, 基金公司, 持仓]
