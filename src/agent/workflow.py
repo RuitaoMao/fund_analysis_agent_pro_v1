@@ -353,8 +353,33 @@ class FundAgentWorkflow:
                 memory_context=state.get("memory_context"),
             )
         except Exception as exc:
-            # Generated SQL 分支遇到非数据问题、LLM 非 JSON 输出或无法规划 SQL 时，
-            # 不能把 traceback 暴露给用户，应转成追问/澄清。
+            # Generated SQL 分支遇到 LLM 非 JSON / 超时 / 无法规划时的处理：
+            # 1) 优先 C-fallback：转 hard tools 模式（与 reflect_node 中 hard→generated 对称），
+            #    避免用户直接看到"无法转换成可执行的数据查询"这种死胡同回答。
+            # 2) 没有 fallback 余地时再退到 clarification。
+            errors = list(state.get("errors", [])) + [str(exc)]
+            if (
+                not state.get("generated_fallback_attempted", False)
+                and self.planner is not None
+            ):
+                state = {
+                    **state,
+                    "generated_fallback_attempted": True,
+                    "sql_mode": "hard",
+                    "sql_retry_count": 0,
+                    "retry_count": 0,
+                    "errors": errors,
+                    "generated_sql": "",
+                    "next_action": "fallback_hard",
+                }
+                return _append_trace(
+                    state,
+                    node="sql_planner_node",
+                    thought="SQL planner 抛出异常（如 LLM JSON 解析失败），C-fallback 转到 hard tools 模式。",
+                    action="GeneratedSQLAgent.plan_sql()",
+                    observation=f"[C-FALLBACK] sql_plan_error={exc}; next_action=fallback_hard",
+                )
+
             plan = AgentPlan(
                 intent="unknown",
                 tool_name="none",
@@ -364,7 +389,6 @@ class FundAgentWorkflow:
                 clarification_question="这个问题暂时无法转换成可执行的数据查询。请补充您想分析的对象，例如基金公司、基金、股票、时间、规模、持仓或业绩口径。",
                 rationale=f"Generated SQL planner failed: {exc}",
             )
-            errors = list(state.get("errors", [])) + [str(exc)]
             state = {
                 **state,
                 "plan": plan,
@@ -375,7 +399,7 @@ class FundAgentWorkflow:
             return _append_trace(
                 state,
                 node="sql_planner_node",
-                thought="SQL planner 未能产出可解析计划，转为用户澄清而不是继续执行 SQL。",
+                thought="SQL planner 未能产出可解析计划，且已尝试过 hard fallback，转为用户澄清。",
                 action="GeneratedSQLAgent.plan_sql()",
                 observation=f"[REACT-CORRECTION] sql_plan_error={exc}; next_action=clarify",
             )
@@ -549,6 +573,12 @@ class FundAgentWorkflow:
         """
         result = state.get("tool_result")
         generated_sql = state.get("generated_sql", "")
+        plan = state.get("plan")
+        # planner 已经为每个 plan 打了 answer_type 标签（simple / report / clarification）；
+        # SQL 路径目前固定写 report，由 writer 内部 _infer_answer_type 兜底推断。
+        planner_answer_type = getattr(plan, "answer_type", None) if plan else None
+        # clarification 不是写报告的合法类型，传 None 让 writer 自己推断
+        writer_answer_type = planner_answer_type if planner_answer_type in {"simple", "report"} else None
 
         if result is None:
             answer = "未能得到可用结果，请尝试换一种提问方式或放宽查询条件。"
@@ -559,23 +589,66 @@ class FundAgentWorkflow:
                 generated_sql=generated_sql,
                 result_validation=state.get("result_validation"),
                 mode=state.get("mode", "mock"),
+                answer_type=writer_answer_type,
             )
 
-        state = {**state, "draft_answer": answer, "next_action": "final"}
         skill_type = getattr(self.report_writer, "last_skill_type", "?") or "?"
         outline_source = getattr(self.report_writer, "last_outline_source", "?") or "?"
+        resolved_answer_type = getattr(self.report_writer, "last_answer_type", "?") or "?"
         stage_ms = getattr(self.report_writer, "last_stage_ms", {}) or {}
-        # 拼成 "outliner_llm=2351ms drafter_llm=8204ms" 紧凑串，让 --trace 直接显示瓶颈
         timing_str = " ".join(f"{k}={int(v)}ms" for k, v in stage_ms.items())
         total_ms = int(sum(stage_ms.values()))
         is_sql = bool(generated_sql)
+
+        # Drafter 两次都返回空：不走 self_check + revise（那会拼出"### 自检修订说明"垃圾文本），
+        # 直接路由到 clarification_node，让用户换种问法或简化问题。
+        # 触发条件：result 有数据（说明问题本身可执行），但 LLM 写作端没产出。
+        drafter_empty = result is not None and not (answer and answer.strip())
+        if drafter_empty:
+            rows_count = sum(len(rows) for rows in result.tables.values()) if result else 0
+            clarification_msg = (
+                "本次分析报告生成调用未返回内容（已自动重试一次仍为空）。"
+                f"数据查询已成功并取得 {rows_count} 行结果，但报告写作端没能输出文字。\n"
+                "请尝试：\n"
+                "1. **简化问题**：把多维度合并问题拆成单维度（例如先问规模，再问业绩，再问持仓）；\n"
+                "2. **缩小范围**：明确具体公司、基金、股票或时间窗口；\n"
+                "3. **稍后重试**：可能是模型侧的临时异常。"
+            )
+            clarify_plan = AgentPlan(
+                intent="unknown",
+                tool_name=state.get("plan").tool_name if state.get("plan") else "none",
+                args={},
+                answer_type="clarification",
+                need_clarification=True,
+                clarification_question=clarification_msg,
+                rationale="Drafter LLM 两次都返回空，转为澄清而不是展示原始数据。",
+            )
+            state = {
+                **state,
+                "plan": clarify_plan,
+                "draft_answer": None,
+                "next_action": "clarify",
+            }
+            return _append_trace(
+                state,
+                node="analytical_report_writer_node",
+                thought="Drafter LLM 两次返回空内容，转澄清而不是 self_check / revise（避免产生垃圾文本）。",
+                action=f"AnalyticalReportWriter.write(sql={'yes' if is_sql else 'no'})",
+                observation=(
+                    f"[REACT-CORRECTION] drafter_empty=True, "
+                    f"skill={skill_type}, outline_source={outline_source}, "
+                    f"rows={rows_count}, total={total_ms}ms [{timing_str}], next_action=clarify"
+                ),
+            )
+
+        state = {**state, "draft_answer": answer, "next_action": "final"}
         return _append_trace(
             state,
             node="analytical_report_writer_node",
-            thought="技能 → Outliner LLM → Drafter LLM 三阶段（hard/SQL 双路径统一）。",
-            action=f"AnalyticalReportWriter.write(sql={'yes' if is_sql else 'no'})",
+            thought="按 answer_type 分流：simple 走简洁回答（1-3 句结论 + 表 + 追问），report 走完整分析报告。",
+            action=f"AnalyticalReportWriter.write(answer_type={resolved_answer_type}, sql={'yes' if is_sql else 'no'})",
             observation=(
-                f"skill={skill_type}, outline_source={outline_source}, "
+                f"answer_type={resolved_answer_type}, skill={skill_type}, outline_source={outline_source}, "
                 f"sql={'yes' if is_sql else 'no'}, draft_length={len(answer)}, "
                 f"total={total_ms}ms [{timing_str}]"
             ),
@@ -859,7 +932,12 @@ class FundAgentWorkflow:
 
     @staticmethod
     def route_after_sql_planner(state: AgentState) -> str:
-        return "clarify" if state.get("next_action") == "clarify" else "validate"
+        action = state.get("next_action")
+        if action == "clarify":
+            return "clarify"
+        if action == "fallback_hard":
+            return "fallback_hard"
+        return "validate"
 
     @staticmethod
     def route_after_sql_dry_run(state: AgentState) -> str:
@@ -910,6 +988,11 @@ class FundAgentWorkflow:
             return "revise"
         return "save"
 
+    @staticmethod
+    def route_after_report_writer(state: AgentState) -> str:
+        """Drafter 两次返回空时绕过 self_check，直接进入澄清节点。"""
+        return "clarify" if state.get("next_action") == "clarify" else "self_check"
+
     def run_linear(self, state: AgentState) -> AgentState:
         """没有安装 LangGraph 时的 fallback，保持与图执行一致的路由语义。"""
         state = self.load_context_node(state)
@@ -918,9 +1001,13 @@ class FundAgentWorkflow:
         if state.get("next_action") == "generated":
             while True:
                 state = self.sql_planner_node(state)
-                if self.route_after_sql_planner(state) == "clarify":
+                _planner_route = self.route_after_sql_planner(state)
+                if _planner_route == "clarify":
                     state = self.clarification_node(state)
                     return self.save_context_node(state)
+                if _planner_route == "fallback_hard":  # C-fallback：SQL plan 异常 → hard tools
+                    state = {**state, "sql_mode": "hard"}
+                    return self.run_linear(state)
                 state = self.sql_validator_node(state)
                 if self.route_after_sql_validation(state) == "reflect":
                     state = self.sql_reflect_node(state)
@@ -947,6 +1034,9 @@ class FundAgentWorkflow:
                 state = self.sql_result_validator_node(state)
                 if self.route_after_sql_result_validation(state) == "report":
                     state = self.analytical_report_writer_node(state)
+                    if self.route_after_report_writer(state) == "clarify":
+                        state = self.clarification_node(state)
+                        return self.save_context_node(state)
                     state = self.self_check_node(state)
                     if self.route_after_self_check(state) == "revise":
                         state = self.revise_report_node(state)
@@ -958,6 +1048,9 @@ class FundAgentWorkflow:
                     return self.run_linear(state)
                 if _r == "sql_report":              # reflect 决定直接报告
                     state = self.analytical_report_writer_node(state)
+                    if self.route_after_report_writer(state) == "clarify":
+                        state = self.clarification_node(state)
+                        return self.save_context_node(state)
                     state = self.self_check_node(state)
                     if self.route_after_self_check(state) == "revise":
                         state = self.revise_report_node(state)
@@ -998,6 +1091,9 @@ class FundAgentWorkflow:
             return self.save_context_node(state)
 
         state = self.report_writer_node(state)
+        if self.route_after_report_writer(state) == "clarify":
+            state = self.clarification_node(state)
+            return self.save_context_node(state)
         state = self.self_check_node(state)
         if self.route_after_self_check(state) == "revise":
             state = self.revise_report_node(state)
@@ -1092,7 +1188,11 @@ class FundAgentWorkflow:
         graph.add_conditional_edges(
             "sql_planner_node",
             self.route_after_sql_planner,
-            {"validate": "sql_validator_node", "clarify": "clarification_node"},
+            {
+                "validate": "sql_validator_node",
+                "clarify": "clarification_node",
+                "fallback_hard": "planner_node",  # C-fallback：SQL plan 异常 → hard tools
+            },
         )
         graph.add_conditional_edges(
             "sql_validator_node",
@@ -1120,7 +1220,14 @@ class FundAgentWorkflow:
                 "fallback_hard": "planner_node",   # C fallback: generated SQL → hard tools
             },
         )
-        graph.add_edge("analytical_report_writer_node", "self_check_node")
+        graph.add_conditional_edges(
+            "analytical_report_writer_node",
+            self.route_after_report_writer,
+            {
+                "self_check": "self_check_node",
+                "clarify": "clarification_node",  # drafter 空返回 → 跳过 self_check 走澄清
+            },
+        )
 
         if checkpointer is not None:
             return graph.compile(checkpointer=checkpointer)

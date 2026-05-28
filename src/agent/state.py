@@ -61,6 +61,7 @@ class AgentState(TypedDict, total=False):
 
     # ===== ReAct 闭环增强 =====
     hard_fallback_attempted: bool   # B：hard 失败已转 generated SQL
+    generated_fallback_attempted: bool  # C：generated SQL 失败已转 hard tools
     auto_routed_mode: str           # E：复杂度分类器选择的模式
     complexity_signals: list[str]   # 复杂度分类器命中的信号
     pending_clarification: dict     # interrupt 暂停时的待补充信息

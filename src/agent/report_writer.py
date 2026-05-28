@@ -23,7 +23,11 @@ from typing import Any
 from src.agent.report_skills import select_skill
 from src.agent.schemas import ReportOutline, ReportSection, ToolResult
 from src.llm.client import LLMClient
-from src.llm.prompts import DRAFTER_SYSTEM_PROMPT, OUTLINER_SYSTEM_PROMPT
+from src.llm.prompts import (
+    DRAFTER_SYSTEM_PROMPT,
+    OUTLINER_SYSTEM_PROMPT,
+    SIMPLE_ANSWER_SYSTEM_PROMPT,
+)
 from src.utils.json_utils import extract_json_object
 from src.utils.table_utils import records_to_markdown
 
@@ -40,6 +44,7 @@ class ReportWriterAgent:
         # 暴露给 workflow 节点用于 trace / 可观测性
         self.last_skill_type: str | None = None
         self.last_outline_source: str | None = None  # "skill" | "llm_outliner" | "skill_fallback"
+        self.last_answer_type: str | None = None     # "simple" | "report"，最近一次 write() 实际走的路径
         # 每个阶段的墙钟时间（毫秒），便于排查"写报告慢"的瓶颈
         self.last_stage_ms: dict[str, float] = {}
 
@@ -58,8 +63,9 @@ class ReportWriterAgent:
         plan=None,
         plan_validation=None,
         result_validation=None,
+        answer_type: str | None = None,  # "simple" | "report"；不传时按规则推断
     ) -> str:
-        """生成分析报告。
+        """生成回答（简单查询走 simple，分析问题走 report）。
 
         Parameters
         ----------
@@ -67,6 +73,9 @@ class ReportWriterAgent:
         tool_result     工具结果（ToolResult）；None 时返回友好错误提示。
         generated_sql   生成 SQL 路径时的 SQL 字符串，用于口径说明。
         mode            "mock" | "llm"；mock 不调用 LLM。
+        answer_type     "simple" → 简短结论 + 表格 + 追问，不分章节
+                        "report" → 完整分析报告
+                        None     → 由 _infer_answer_type 按规则推断
         """
         # 重置时间统计；本轮 write() 不到的阶段不会污染上一轮的读数
         self.last_stage_ms = {}
@@ -82,10 +91,13 @@ class ReportWriterAgent:
         self.last_skill_type = skill.skill_type
         self.last_stage_ms["skill"] = (time.perf_counter() - t0) * 1000
 
-        # 加载市场快照作为免费上下文（写报告时可用）
-        t0 = time.perf_counter()
-        market_context = self._load_market_context()
-        self.last_stage_ms["market_ctx"] = (time.perf_counter() - t0) * 1000
+        # 决定走 simple 还是 report：
+        # 规则推断（基于 query 关键词 + 数据规模 + 技能类型）是确定性的，
+        # 比 planner 的 LLM 标签更可靠（planner LLM JSON 失败时会回退到规则版误标，
+        # generated SQL 路径还把 answer_type 固定为 "report"）。
+        # 所以让规则推断作为主信号，传入的 answer_type 仅用于可观测性，不参与决策。
+        resolved_type = self._infer_answer_type(query, tool_result, skill.skill_type)
+        self.last_answer_type = resolved_type
 
         if mode == "mock":
             self.last_outline_source = "skill"
@@ -94,7 +106,19 @@ class ReportWriterAgent:
             self.last_stage_ms["mock_render"] = (time.perf_counter() - t0) * 1000
             return answer
 
-        # LLM 模式：先 Outliner（可选）→ 再 Drafter
+        # Simple 路径：一次轻量 LLM 调用，跳过 outliner + market_context
+        if resolved_type == "simple":
+            self.last_outline_source = "skill"
+            t0 = time.perf_counter()
+            answer = self._draft_simple_with_llm(query, tool_result, generated_sql)
+            self.last_stage_ms["drafter_llm"] = (time.perf_counter() - t0) * 1000
+            return answer
+
+        # Report 路径：加载市场快照 → outliner（可选）→ drafter
+        t0 = time.perf_counter()
+        market_context = self._load_market_context()
+        self.last_stage_ms["market_ctx"] = (time.perf_counter() - t0) * 1000
+
         t0 = time.perf_counter()
         if self.outliner_enabled:
             outline = self._outline_with_llm(query, tool_result, skill_outline)
@@ -108,6 +132,43 @@ class ReportWriterAgent:
         answer = self._draft_with_llm(query, tool_result, outline, generated_sql, market_context)
         self.last_stage_ms["drafter_llm"] = (time.perf_counter() - t0) * 1000
         return answer
+
+    # ──────────────────────────────────────────────────────────────────
+    # 答案类型推断（planner 未提供 answer_type 时的兜底规则）
+    # ──────────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _infer_answer_type(query: str, tool_result: ToolResult, skill_type: str) -> str:
+        """根据 query 形态 + 工具结果规模推断 simple / report。
+
+        规则（优先级从高到低）：
+        1. lookup / simple_lookup 技能 → simple
+        2. 单表 ≤ 25 行 + query 含查找/排名关键词（"是多少"/"前N"/"最高"/"最大"/"哪些"/"基本信息"）→ simple
+        3. 多表 或 单表 > 25 行 或 查询含分析关键词（"对比"/"分析"/"格局"/"特征"/"分化"/"差异"/"路径"）→ report
+        4. 默认 → report
+        """
+        # 1. 技能直接标记
+        if skill_type in {"simple_lookup", "lookup"}:
+            return "simple"
+
+        # 3. 强分析关键词 → report
+        analytical_kw = ("对比", "分析", "格局", "特征", "分化", "差异", "路径",
+                         "全面", "深度", "联动", "结构", "画像", "归因")
+        if any(kw in query for kw in analytical_kw):
+            return "report"
+
+        # 2. 简单查找/排名 + 数据量不大 → simple
+        # 注：放宽 is_small 到"总行数 ≤ 30"，不强制单表（很多 hard 工具会返回 2 张辅助表）。
+        tables = tool_result.tables or {}
+        total_rows = sum(len(rows) for rows in tables.values())
+        is_small = total_rows <= 30
+        simple_kw = ("是多少", "是哪", "哪些", "前", "最高", "最低", "最大", "最小",
+                     "基本信息", "介绍", "代码", "规模是", "收益是", "收益率最",
+                     "排名", "总规模", "管理了多少", "持有", "持仓最")
+        if is_small and any(kw in query for kw in simple_kw):
+            return "simple"
+
+        return "report"
 
     # ──────────────────────────────────────────────────────────────────
     # 市场快照上下文
@@ -234,14 +295,111 @@ class ReportWriterAgent:
             "请撰写完整的中文分析报告。要有实质性分析洞察，不要只是数据的机械复述。"
         )
 
-        return self.llm_client.chat(
-            role="report",
-            system_prompt=DRAFTER_SYSTEM_PROMPT,
-            user_prompt=user_prompt,
-            json_mode=False,
-            temperature=0.3,
-            max_tokens=3500,
+        # Drafter 容错：DeepSeek-v4-pro 偶发返回空 content（多见于 thinking 模式占满 token、
+        # 长 prompt 截断、provider 临时异常等）。
+        # 策略：
+        #   1) 第一次正常调用 (max_tokens=8000)
+        #   2) 若返回空：用更大 token 预算 + 精简后的 prompt 重试（去掉 market_context 等冗余）
+        #   3) 仍为空：返回 ""，由 workflow 节点统一兜底为"友好澄清"而非展示原始数据表
+        draft = self._safe_chat_draft(user_prompt, max_tokens=8000)
+        if draft and draft.strip():
+            return draft
+
+        # 重试用精简版 prompt：去掉 market_context、只展示 20 行数据，降低 token 压力
+        compact_tables = self._render_tables(tool_result, max_rows=20)
+        compact_prompt = (
+            f"用户问题：{query}\n\n"
+            f"查询结果数据：\n{compact_tables}{sql_note}\n\n"
+            f"报告框架（请严格按此结构撰写）：\n{outline_text}\n\n"
+            "请撰写完整的中文分析报告。注意：上次调用未返回内容，请确保本次回答完整、有结论。"
         )
+        t_retry = time.perf_counter()
+        draft = self._safe_chat_draft(compact_prompt, max_tokens=12000)
+        self.last_stage_ms["drafter_llm_retry"] = (time.perf_counter() - t_retry) * 1000
+        if draft and draft.strip():
+            return draft
+
+        # 两次都为空：返回空串，由上层（analytical_report_writer_node）改为澄清流程，
+        # 不暴露原始数据表（用户更愿意看到"请换种问法"而不是 mock 风格的裸表）。
+        self.last_outline_source = (self.last_outline_source or "skill") + "+drafter_empty"
+        return ""
+
+    def _safe_chat_draft(self, user_prompt: str, max_tokens: int = 8000) -> str:
+        """调用 Drafter LLM 并把异常/空返回都归一成 ""，由调用方决定下一步。"""
+        try:
+            return self.llm_client.chat(
+                role="report",
+                system_prompt=DRAFTER_SYSTEM_PROMPT,
+                user_prompt=user_prompt,
+                json_mode=False,
+                temperature=0.3,
+                max_tokens=max_tokens,
+            ) or ""
+        except Exception:
+            return ""
+
+    # ──────────────────────────────────────────────────────────────────
+    # Simple 答案路径（短结论 + 单表 + 追问）
+    # ──────────────────────────────────────────────────────────────────
+
+    def _draft_simple_with_llm(
+        self,
+        query: str,
+        tool_result: ToolResult,
+        generated_sql: str,
+    ) -> str:
+        """Simple 模式：一次 LLM 调用，目标是 1-3 句结论 + 1 张表 + 2-3 个追问。
+
+        与 _draft_with_llm 的差异：
+        - 系统提示用 SIMPLE_ANSWER_SYSTEM_PROMPT，明确禁止分章节
+        - 不注入 market_context、不传 outline
+        - 单表只展示 ≤ 15 行，token 控制在 ≤ 2000
+        - 仍保留两次重试 + 空兜底，行为与 _draft_with_llm 对称
+        """
+        if self.llm_client is None:
+            raise RuntimeError("LLMClient 未初始化，无法调用 Drafter LLM。")
+
+        tables_text = self._render_tables(tool_result, max_rows=15)
+        sql_note = (
+            f"\n\n（数据来自一次只读 SQL 查询，已通过白名单校验。）"
+            if generated_sql
+            else ""
+        )
+        user_prompt = (
+            f"用户问题：{query}\n\n"
+            f"查询结果数据：\n{tables_text}{sql_note}\n\n"
+            "请按【简洁回答】规范输出：第一行 **直接回答：**，接 1 张表（如果有数据），"
+            "结尾给 2-3 个 `💡 您可能还想了解` 的具体追问。**不要写分析报告，不要 ## 章节。**"
+        )
+
+        draft = self._safe_simple_chat(user_prompt, max_tokens=2000)
+        if draft and draft.strip():
+            return draft
+
+        # 一次重试，给更多 token 余量
+        t_retry = time.perf_counter()
+        draft = self._safe_simple_chat(user_prompt, max_tokens=4000)
+        self.last_stage_ms["drafter_llm_retry"] = (time.perf_counter() - t_retry) * 1000
+        if draft and draft.strip():
+            return draft
+
+        # 两次都空：返回空串，让上层走澄清（与 report 路径同语义）
+        self.last_outline_source = (self.last_outline_source or "skill") + "+simple_drafter_empty"
+        return ""
+
+    def _safe_simple_chat(self, user_prompt: str, max_tokens: int = 2000) -> str:
+        """Simple 路径的 LLM 调用，使用 SIMPLE_ANSWER_SYSTEM_PROMPT。"""
+        try:
+            return self.llm_client.chat(
+                role="report",
+                system_prompt=SIMPLE_ANSWER_SYSTEM_PROMPT,
+                user_prompt=user_prompt,
+                json_mode=False,
+                temperature=0.2,
+                max_tokens=max_tokens,
+            ) or ""
+        except Exception:
+            return ""
 
     # ──────────────────────────────────────────────────────────────────
     # Mock 模式（不调用 LLM）
@@ -299,12 +457,12 @@ class ReportWriterAgent:
     # ──────────────────────────────────────────────────────────────────
 
     @staticmethod
-    def _render_tables(tool_result: ToolResult) -> str:
-        """把所有数据表渲染成 Markdown，附数据口径。"""
+    def _render_tables(tool_result: ToolResult, max_rows: int = 50) -> str:
+        """把所有数据表渲染成 Markdown，附数据口径。max_rows 可下调用于重试 prompt。"""
         parts: list[str] = []
         for table_name, rows in tool_result.tables.items():
             parts.append(f"【{table_name}】")
-            parts.append(records_to_markdown(rows, max_rows=50))
+            parts.append(records_to_markdown(rows, max_rows=max_rows))
         if tool_result.notes:
             parts.append("（数据口径：" + "；".join(tool_result.notes) + "）")
         if tool_result.warnings:
