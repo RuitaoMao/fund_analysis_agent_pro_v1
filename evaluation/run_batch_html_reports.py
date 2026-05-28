@@ -480,11 +480,21 @@ def main() -> None:
 
     write_index(out_dir, rows, summary)
 
-    print("\n" + "═" * 55)
-    print(f"  评测完成  耗时 {elapsed}s  通过率 {verdict_counts['PASS']}/{len(rows)}")
+    # 耗时统计：均值 / 中位 / 最长 + 报告写作专项
+    durations = [r["duration_sec"] for r in rows if r.get("duration_sec")]
+    avg_dur = round(sum(durations) / len(durations), 1) if durations else 0
+    med_dur = round(sorted(durations)[len(durations) // 2], 1) if durations else 0
+    max_dur = round(max(durations), 1) if durations else 0
+    slowest = max(rows, key=lambda r: r.get("duration_sec", 0)) if rows else None
+
+    print("\n" + "═" * 60)
+    print(f"  评测完成  总耗时 {elapsed}s  通过率 {verdict_counts['PASS']}/{len(rows)}")
     print(f"  PASS {verdict_counts['PASS']}  WARN {verdict_counts['WARN']}  FAIL {verdict_counts['FAIL']}")
+    print(f"  单题耗时：均值 {avg_dur}s  中位 {med_dur}s  最长 {max_dur}s")
+    if slowest:
+        print(f"  最慢一题：{slowest['id']} [{slowest['sql_mode']}] {slowest['duration_sec']}s")
     print(f"  Index:  {out_dir / 'index.html'}")
-    print("═" * 55)
+    print("═" * 60)
 
 
 if __name__ == "__main__":

@@ -1,29 +1,24 @@
 # ================================================================
-# 基金分析 Agent — 批量评测问题集 v2
+# 基金分析 Agent — Demo Eval Set
 #
-# 共 30 题：10 道简单题 + 20 道复杂题
+# 共 15 题：5 简单 + 10 复杂
+# 简单（s001–s005）：单工具可覆盖，验证基础查询正确性
+# 复杂（c001–c010）：多工具/分析/对比/边界，含两个 manager 关心的样例
 #
 # 运行命令：
-#   全量（hard + generated 双路径，约 53 个子任务）：
-#     python evaluation/run_batch_html_reports.py
+#   python evaluation/run_batch_html_reports.py
 #
-#   只跑 hard 工具路径：
-#     python evaluation/run_batch_html_reports.py --sql-modes hard
+# 只跑某几题：
+#   python evaluation/run_batch_html_reports.py --ids s001,c001
 #
-#   只跑 generated SQL 路径：
-#     python evaluation/run_batch_html_reports.py --sql-modes generated
-#
-#   单题调试：
-#     python evaluation/run_batch_html_reports.py --ids s001,c007
-#
-# sql_modes 说明：
-#   hard,generated（默认）：同时跑两种路径，生成对比结果
-#   generated：该题 hard 工具无法覆盖，仅跑 generated SQL 路径
+# 切换 SQL 路径：
+#   python evaluation/run_batch_html_reports.py --sql-modes generated
+#   python evaluation/run_batch_html_reports.py --sql-modes hard,generated  # 双跑对比
 # ================================================================
 
 defaults:
   mode: llm
-  sql_modes: hard,generated   # 每题默认同时跑 hard 和 generated
+  sql_modes: hard, generated   # 每题默认同时跑 hard 和 generated
   max_steps: 3
   use_long_memory: false
 
@@ -31,228 +26,128 @@ defaults:
 questions:
 
   # ════════════════════════════════════════════════════════════════
-  # 简单问题（s001–s010）
-  # 单工具可覆盖，hard 路径对应工具标注在注释中
+  # 简单问题（s001–s005）
   # ════════════════════════════════════════════════════════════════
-
-  # ── 基金公司规模（Hard: query_company_size）────────────────────
 
   - id: s001
     category: company_size
+    # 触发技能：company_profile + 走 query_company_size
     query: 易方达目前旗下所有基金的总规模是多少
     expected_keywords: [易方达, 亿]
-    cross_mode_check: true   # hard/generated 总规模数值应一致
 
   - id: s002
     category: company_size
+    # 触发技能：competitive_landscape + 走 query_company_size（无 companies 参数 → 全市场排名）
     query: 全市场基金规模前10的基金公司是哪些，每家管理了多少亿
     expected_keywords: [易方达, 华夏, 亿]
-    cross_mode_check: true   # 榜首易方达数值应一致
 
   - id: s003
-    category: company_size
-    query: 易方达旗下各类资产规模分别是多少
-    expected_keywords: [易方达, 主动权益, 亿]
-
-  # ── 基金规模（Hard: query_fund_size）──────────────────────────
-
-  - id: s004
-    category: fund_size
-    query: 规模最大的10只主动权益基金是哪些，按规模排序
-    expected_keywords: [主动权益, 亿]
-
-  # ── 基金业绩（Hard: query_fund_performance）───────────────────
-
-  - id: s005
     category: fund_performance
+    # 触发技能：performance_analysis + 走 query_fund_performance
     query: 本年以来收益率最高的10只基金是哪些
     expected_keywords: [收益, 基金]
 
-  # ── 基金信息查询（Hard: lookup_fund）──────────────────────────
-
-  - id: s006
+  - id: s004
     category: lookup
+    # 触发技能：simple_lookup + 走 lookup_fund，应有"直接回答"
     query: 帮我查一下易方达蓝筹精选这只基金的基本信息
     expected_keywords: [易方达蓝筹精选, 005827]
 
-  # ── 基金持仓（Hard: query_fund_holdings）──────────────────────
-  # 注意：直接用基金代码，避免需要先 lookup 再查持仓的链式依赖
-
-  - id: s007
-    category: fund_holdings
-    query: 005827最新的前10大重仓股是什么
-    expected_keywords: [腾讯控股, 贵州茅台, 五粮液]   # 已验证前三大持仓
-
-  - id: s008
-    category: fund_holdings
-    query: 005827这只基金前十大持仓占净值比例合计是多少
-    expected_keywords: [005827, 净值, 85]   # 已验证前10大净值占比合计约85.1%
-
-  # ── 股票持有者（Hard: query_stock_holders group_by=company）───
-
-  - id: s009
+  - id: s005
     category: stock_holders
+    # 触发技能：stock_holder_analysis + 走 query_stock_holders(group_by=company)
     query: 持有贵州茅台规模最大的前5家基金公司是哪些
-    expected_keywords: [贵州茅台, 华夏, 亿]   # 已验证华夏排名第一
-
-  # ── 边界测试：空结果（Hard: screen_funds）─────────────────────
-  # 市场上无单只基金规模超过10000亿（最大约7993亿天弘余额宝），期望系统返回空并说明
-
-  - id: s010
-    category: edge_case
-    query: 规模超过10000亿的单只基金有哪些
-    expected_keywords: []
-    expect_empty: true
+    expected_keywords: [贵州茅台, 华夏, 亿]
 
 
   # ════════════════════════════════════════════════════════════════
-  # 复杂问题（c001–c020）
+  # 复杂问题（c001–c010）
+  # 全部为开放式分析题，期望系统输出多角度结构化报告
+  # （而非"找出 X 数据"这种点查类问题）
   # ════════════════════════════════════════════════════════════════
 
-  # ────────────────────────────────────────────────────────────────
-  # hard+generated 双路径（c001–c012）
-  # hard 工具可覆盖，同时验证两种路径的一致性
-  # ────────────────────────────────────────────────────────────────
-
-  # ── 业绩类（Hard: query_fund_performance）─────────────────────
+  # ── manager 关心的两道样例（c001–c002）──────────────────────────
 
   - id: c001
-    category: fund_performance
-    query: 本年以来最大回撤最小的主动权益基金前10只，按最大回撤从低到高排序
-    expected_keywords: [主动权益, 回撤]
-    cross_mode_check: true   # 两种路径对回撤最小基金应一致
+    category: company_comparison
+    # 触发技能：company_comparison
+    # 期望多维分析：规模/业务结构/业绩/持仓特征/综合评价
+    query: 对比分析易方达和华夏基金，从各类资产规模、产品业绩、重仓持仓等角度做全面分析
+    expected_keywords: [易方达, 华夏, 规模, 亿]
 
   - id: c002
-    category: fund_performance
-    query: 易方达旗下主动权益基金中，本年以来收益最高的10只，收益率、超额收益和最大回撤分别是多少
-    expected_keywords: [易方达, 主动权益, 收益率, 回撤]
+    category: market_landscape
+    # 触发技能：competitive_landscape
+    # 期望分析：全市场规模变化、各资产类型头部公司、行业集中度
+    query: 对一季度公募基金规模竞争格局进行分析，包括全市场总规模、各类型基金（主动权益、被动权益、纯债、现金管理）里的头部基金公司排名
+    expected_keywords: [基金公司, 规模, 主动权益]
 
-  # ── 持仓/股票持有者类（Hard: query_stock_holders）────────────
+  # ── 多家公司多维度对比（c003）─────────────────────────────────
 
   - id: c003
-    category: stock_holders
-    query: 持仓宁德时代净值占比最高的10只基金是哪些，按净值占比排序
-    expected_keywords: [宁德时代, 净值占比]
-    cross_mode_check: true   # 排序已修复，两路径应返回相同首只基金
+    category: company_comparison
+    # 触发技能：company_comparison（三家公司）
+    # 期望分析：三家公司业务侧重点的差异、各自的优劣
+    query: 对比分析易方达、华夏、广发三家头部基金公司的业务结构和发展路径，识别各自的差异化优势
+    expected_keywords: [易方达, 华夏, 广发, 规模]
+
+  # ── 业绩格局深度分析（c004）───────────────────────────────────
 
   - id: c004
-    category: stock_holders
-    query: 全市场被最多基金共同持有的股票前10名是哪些，按持有基金数排序
-    expected_keywords: [股票, 基金, 公司]
+    category: fund_performance
+    # 触发技能：performance_analysis
+    # 期望分析：业绩分布、头部基金共同特征、风险收益匹配
+    query: 分析本年以来主动权益基金的业绩分化情况，包括头部基金的共同特征（公司归属、规模区间、风险水平）以及收益与回撤的匹配关系
+    expected_keywords: [主动权益, 收益, 回撤]
+
+  # ── 单只股票的持仓格局分析（c005）─────────────────────────────
 
   - id: c005
     category: stock_holders
-    query: 持仓腾讯控股净值占比最高的10只基金是哪些
-    expected_keywords: [腾讯控股, 净值, 基金]   # 已验证DB含HK700腾讯控股，2797只基金持有
+    # 触发技能：stock_holder_analysis
+    # 期望分析：哪些公司重仓、机构集中度、持仓基金类型分布
+    query: 分析公募基金对宁德时代的持仓格局，从持仓规模最大的基金公司、机构集中度、不同资产类型基金的配置差异等角度切入
+    expected_keywords: [宁德时代, 公司, 净值]
 
-  # ── 公司持仓对比（Hard: query_stock_holders group_by=company + companies 参数）
+  # ── 业绩+持仓联动分析（c006）──────────────────────────────────
 
   - id: c006
-    category: stock_holders
-    query: 易方达和华夏谁更看好宁德时代？分别从持仓总市值、平均净值占比、持有基金数量三个角度比较
-    expected_keywords: [易方达, 华夏, 宁德时代, 亿]
+    category: performance_holdings
+    # 触发技能：performance_analysis + holdings
+    # 期望分析：高收益基金的共同重仓股、持仓集中度、风格画像
+    query: 分析本年以来收益最高的主动权益基金的持仓特征，包括共同重仓股、持仓集中度、所属基金公司的分布规律
+    expected_keywords: [主动权益, 收益, 持仓]
+
+  # ── 高质量基金筛选+特征分析（c007）────────────────────────────
 
   - id: c007
-    category: stock_holders
-    query: 易方达和华夏持有贵州茅台的规模、基金数量和平均净值占比分别是多少
-    expected_keywords: [易方达, 华夏, 贵州茅台, 亿]
+    category: screen_funds
+    # 触发技能：screening_result
+    # 期望分析：不只列出筛选结果，还要总结这些基金的共同特征
+    query: 筛选本年以来超额收益超过5%且最大回撤低于10%的基金，并分析这批"高超额低回撤"基金的共同特征和所属公司分布
+    expected_keywords: [超额收益, 回撤, 基金]
 
-  # ── 多条件筛选（Hard: screen_funds）──────────────────────────
-  # 注：screen_funds 固定按收益率降序返回结果，问题中不指定排序方向
+  # ── Generated SQL 才能覆盖的分析（c008–c009）──────────────────
 
   - id: c008
-    category: screen_funds
-    query: 规模超过50亿且本年以来收益为正的主动权益基金有哪些
-    expected_keywords: [主动权益, 亿, 收益]
+    category: generated_sql_complex
+    sql_modes: generated   # hard 工具无法做多股票交集 + 特征聚合
+    # 期望分析：交集基金的画像而不仅是列表
+    query: 分析同时重仓贵州茅台和宁德时代的主动权益基金，包括这类"跨赛道平衡型"基金的规模分布、公司归属、业绩表现特征
+    expected_keywords: [贵州茅台, 宁德时代, 主动权益]
 
   - id: c009
-    category: screen_funds
-    query: 本年以来超额收益超过5%且最大回撤低于10%的基金有哪些
-    expected_keywords: [超额收益, 回撤]
-    cross_mode_check: true
+    category: generated_sql_complex
+    sql_modes: generated   # hard 工具无法做规模 TOP30 子集内的业绩分化分析
+    # 期望分析：大盘基金内部的业绩分层
+    query: 分析主动权益基金中规模前30只的业绩分化情况，识别其中收益领先和落后的基金分别有什么共同点
+    expected_keywords: [主动权益, 规模, 收益]
+
+  # ── 边界测试：空结果（c010）───────────────────────────────────
 
   - id: c010
-    category: screen_funds
-    query: 规模超过20亿、本年以来收益率超过10%、最大回撤低于15%的主动权益基金有哪些
-    expected_keywords: [主动权益, 收益, 回撤, 亿]
-
-  - id: c011
-    category: screen_funds
-    query: 持仓贵州茅台净值占比超过5%的基金中，本年以来收益最好的前5只是哪些
-    expected_keywords: [贵州茅台, 收益, 基金]
-    # screen_funds 按收益率 DESC 排序，top_n=5 自然返回收益最高的5只
-
-  # ── 业绩+持仓联查（Hard: query_performance_holdings）──────────
-
-  - id: c012
-    category: performance_holdings
-    query: 本年以来收益最高的5只主动权益基金，各自的第一大重仓股是什么
-    expected_keywords: [收益, 持仓, 股票]
-
-
-  # ────────────────────────────────────────────────────────────────
-  # 仅 Generated SQL（c013–c019）
-  # hard 工具无法直接覆盖（多股票交集/市场级聚合/负向筛选/多关键词聚合）
-  # ────────────────────────────────────────────────────────────────
-
-  - id: c013
-    category: generated_sql_complex
-    sql_modes: generated
-    query: 主动权益基金中，同时持有贵州茅台和宁德时代的基金有哪些，按规模排序
-    expected_keywords: [贵州茅台, 宁德时代, 主动权益]
-    # 需两张 fund_holding 子查询交集，hard 工具无法处理
-
-  - id: c014
-    category: generated_sql_complex
-    sql_modes: generated
-    query: 主动权益基金中，规模前30只里本年以来超额收益最高的10只是哪些
-    expected_keywords: [超额收益, 主动权益]
-    # 需先按规模排名取TOP30，再按超额收益排序，两步聚合
-
-  - id: c015
-    category: generated_sql_complex
-    sql_modes: generated
-    query: 主动权益基金中，前十大持仓集中度最高的10只基金是哪些
-    expected_keywords: [主动权益, 净值, 基金]
-    # 需对全市场主动权益基金做SUM(nav_ratio) TOP10聚合排名
-    # 已验证：泰信中小盘精选94.4%为市场最高
-
-  - id: c016
-    category: generated_sql_complex
-    sql_modes: generated
-    query: 主动权益基金中，前十大持仓集中度最低的10只基金是哪些
-    expected_keywords: [主动权益, 净值, 基金]
-    # 与c015相同逻辑，改为ASC排序
-
-  - id: c017
-    category: generated_sql_complex
-    sql_modes: generated
-    query: 主动权益基金中，本年以来收益为正但超额收益为负的基金，按规模从大到小列出前20只
-    expected_keywords: [主动权益, 收益, 超额]
-    # 需要 portfolio_return>0 AND excess_return<0，screen_funds 无 max_excess_return 参数
-    # 已验证：满足条件的主动权益基金数量充足
-
-  - id: c018
-    category: generated_sql_complex
-    sql_modes: generated
-    query: 同时持有腾讯控股、阿里巴巴-W、贵州茅台的基金有哪些，按基金规模排序
-    expected_keywords: [腾讯控股, 阿里巴巴, 贵州茅台]
-    # 三股票交集，已验证154只基金同时持有三者
-
-  - id: c019
-    category: generated_sql_complex
-    sql_modes: generated
-    query: 主动权益基金中，持仓半导体相关股票（包含半导体、芯片、集成电路、存储、晶圆、光电等关键词）合计净值占比超过20%的基金有哪些
-    expected_keywords: [主动权益, 基金]
-    # 极限测试：多关键词OR匹配 + 聚合 + 阈值过滤，复杂度最高
-
-
-  # ────────────────────────────────────────────────────────────────
-  # 边界测试：空结果（hard+generated 双路径）
-  # ────────────────────────────────────────────────────────────────
-
-  - id: c020
     category: edge_case
+    # 触发技能：兜底；期望系统优雅返回"无符合条件"而非报错
     query: 不存在的基金公司XYZ旗下有哪些基金
     expected_keywords: []
-    expect_empty: true   # 期望系统返回空结果并明确说明无数据，而非报错
+    expect_empty: true
