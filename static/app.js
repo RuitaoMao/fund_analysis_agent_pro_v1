@@ -67,13 +67,15 @@ function appendTrace(step, nextAction) {
   else if (obs.includes("[TOOL]")) cls = "tool";
   else if (obs.includes("[SQL]")) cls = "sql";
 
-  // 提取 analytical_report_writer_node 的 total=Xms 做成显眼的徽标
-  // 比如 "total=33590ms [skill=0ms market_ctx=2ms outliner_llm=5480ms drafter_llm=28107ms]"
+  // 每个节点都带 duration_ms（workflow._timed_node 装饰器写入）
+  // 报告写作节点的 observation 里还有内部分段（skill/outliner/drafter），渲染为 tooltip
   let timingBadge = "";
-  const m = obs.match(/total=(\d+)ms\s*\[([^\]]+)\]/);
-  if (m) {
-    const totalSec = (parseInt(m[1], 10) / 1000).toFixed(1);
-    timingBadge = ` <span class="timing-badge" title="${escapeHtml(m[2])}">⏱ ${totalSec}s</span>`;
+  if (typeof step.duration_ms === "number") {
+    const ms = step.duration_ms;
+    const text = ms >= 1000 ? (ms / 1000).toFixed(1) + "s" : Math.round(ms) + "ms";
+    const breakdown = obs.match(/total=\d+ms\s*\[([^\]]+)\]/);
+    const tooltip = breakdown ? escapeHtml(breakdown[1]) : "本节点墙钟耗时";
+    timingBadge = ` <span class="timing-badge" title="${tooltip}">⏱ ${text}</span>`;
   }
 
   const div = document.createElement("div");
