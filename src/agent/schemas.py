@@ -133,6 +133,7 @@ class StepTrace(BaseModel):
     thought: str
     action: str
     observation: str
+    duration_ms: float | None = None  # 节点本次执行的墙钟耗时（毫秒），由 workflow._timed_node 写入
 
 
 # ──────────────────────────────────────────────────────────────────────────

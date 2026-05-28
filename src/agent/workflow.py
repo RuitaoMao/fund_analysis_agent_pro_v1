@@ -6,7 +6,9 @@ plan -> act -> observe -> reflect -> 必要时 replan/retry。
 
 from __future__ import annotations
 
+import functools
 import re
+import time
 from typing import Any
 
 from src.agent.state import AgentState
@@ -30,6 +32,29 @@ def _append_trace(state: AgentState, node: str, thought: str, action: str, obser
     observations = list(state.get("observations", []))
     observations.append(f"{node}: {observation}")
     return {**state, "trace": trace, "observations": observations}
+
+
+def _timed_node(method):
+    """装饰器：测量节点墙钟耗时，写入该节点 _append_trace 出来的最后一条 StepTrace.duration_ms。
+
+    所有 *_node 方法都会在 FundAgentWorkflow 类定义后被自动包裹（见文件末尾），
+    不需要在每个方法上手动加 @_timed_node。
+    """
+    @functools.wraps(method)
+    def wrapper(self, state):
+        t0 = time.perf_counter()
+        new_state = method(self, state)
+        elapsed_ms = (time.perf_counter() - t0) * 1000
+        if isinstance(new_state, dict):
+            trace = new_state.get("trace") or []
+            if trace:
+                last = trace[-1]
+                try:
+                    last.duration_ms = round(elapsed_ms, 1)
+                except Exception:
+                    pass
+        return new_state
+    return wrapper
 
 
 class FundAgentWorkflow:
@@ -1100,3 +1125,11 @@ class FundAgentWorkflow:
         if checkpointer is not None:
             return graph.compile(checkpointer=checkpointer)
         return graph.compile()
+
+
+# 在类定义后自动包裹所有 *_node 方法以测量每个节点的墙钟耗时。
+# 这样新增节点不需要记得手动加装饰器。
+for _name in list(vars(FundAgentWorkflow)):
+    _attr = vars(FundAgentWorkflow)[_name]
+    if _name.endswith("_node") and callable(_attr) and not isinstance(_attr, (staticmethod, classmethod)):
+        setattr(FundAgentWorkflow, _name, _timed_node(_attr))
