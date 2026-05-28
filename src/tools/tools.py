@@ -1,4 +1,8 @@
-"""通用基金分析工具（8 个核心工具）。
+"""通用基金分析工具（9 个核心工具）。
+
+9 个工具：query_fund_size / query_company_size / query_fund_performance /
+         query_fund_holdings / query_stock_holders / screen_funds /
+         query_performance_holdings / query_market_overview / lookup_fund
 
 设计原则：
 - 每个工具覆盖一个数据维度，参数通用，通过 group_by / include_* 等开关适配多种查询场景。

@@ -59,36 +59,64 @@ def render_html_report(state: dict[str, Any]) -> str:
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <title>Fund Agent Report</title>
+  <title>基金分析 Agent · 报告</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
   <style>
+    /* efund-inspired theme · 与前端 static/style.css 共享色板
+       主色从 https://www.efunds.com.cn/css/index.css 提取：
+       #005096 深邃海军蓝（主色，91 次复用）· #24bbe1 亮青强调
+       #ffc819 金黄 CTA · #333 主文 · #f5f7fa 页底 · #ffffff 卡片 */
     :root {{
-      --blue: #2563eb;
-      --blue-soft: #eff6ff;
-      --ink: #0f172a;
-      --muted: #64748b;
-      --line: #dbeafe;
-      --bg: #f8fbff;
-      --card: #ffffff;
+      --efund-navy:      #005096;
+      --efund-navy-dark: #00345f;
+      --efund-navy-soft: #eff5fb;
+      --efund-cyan:      #24bbe1;
+      --efund-gold:      #ffc819;
+      --efund-gold-dark: #c99700;
+      --efund-up:        #009b6d;
+      --efund-down:      #ee1533;
+      --ink:             #333333;
+      --ink-soft:        #555555;
+      --muted:           #999999;
+      --line:            #dcdfe6;
+      --line-strong:    #c1c6c8;
+      --bg-page:         #f5f7fa;
+      --bg-card:         #ffffff;
+      --bg-soft:         #eff2f6;
+      --bg-table-head:   #eff5fb;
+      --bg-table-zebra:  #f8fafd;
+      --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+      --font-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
     }}
     body {{
       margin: 0;
-      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
-      background: var(--bg);
+      font-family: var(--font-sans);
+      background: var(--bg-page);
       color: var(--ink);
+      font-size: 14px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
     }}
     header {{
-      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
-      color: white;
-      padding: 28px 40px;
+      background: #fff;
+      color: var(--ink);
+      padding: 28px 40px 22px;
+      border-bottom: 3px solid var(--efund-navy);
     }}
     header h1 {{
       margin: 0 0 8px;
+      font-family: var(--font-serif);
       font-size: 26px;
-      letter-spacing: 0;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--efund-navy);
     }}
     .meta {{
-      color: #e0f2fe;
-      font-size: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: Consolas, monospace;
     }}
     main {{
       max-width: 1120px;
@@ -96,119 +124,136 @@ def render_html_report(state: dict[str, Any]) -> str:
       padding: 0 20px 48px;
     }}
     section {{
-      background: var(--card);
+      background: var(--bg-card);
       border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 20px;
+      border-radius: 4px;
+      padding: 22px 26px;
       margin-bottom: 18px;
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+      box-shadow: 0 1px 2px rgba(26,26,26,.04), 0 4px 12px rgba(26,26,26,.04);
     }}
     h2 {{
-      color: #1e40af;
+      color: var(--efund-navy);
       margin: 0 0 14px;
+      font-family: var(--font-serif);
       font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
     }}
     pre {{
       white-space: pre-wrap;
       word-break: break-word;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 14px;
-      line-height: 1.55;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--efund-navy);
+      border-radius: 3px;
+      padding: 14px 16px;
+      line-height: 1.6;
+      font-family: Consolas, "JetBrains Mono", monospace;
+      font-size: 13px;
+      color: var(--ink-soft);
     }}
     .answer-markdown {{
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 16px 20px;
-      line-height: 1.75;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--efund-navy);
+      border-radius: 3px;
+      padding: 20px 24px;
+      line-height: 1.8;
       overflow-x: auto;
     }}
     .answer-markdown h1,
     .answer-markdown h2,
     .answer-markdown h3,
     .answer-markdown h4 {{
-      color: #1e40af;
-      margin: 18px 0 10px;
-      line-height: 1.35;
+      font-family: var(--font-serif);
+      font-weight: 700;
+      color: var(--ink);
+      margin: 20px 0 10px;
+      line-height: 1.4;
     }}
-    .answer-markdown h1 {{ font-size: 22px; }}
-    .answer-markdown h2 {{ font-size: 20px; }}
-    .answer-markdown h3 {{ font-size: 17px; }}
-    .answer-markdown h4 {{ font-size: 15px; }}
-    .answer-markdown p {{
-      margin: 10px 0;
+    .answer-markdown h1 {{
+      font-size: 22px;
+      color: var(--efund-navy);
+      border-bottom: 2px solid var(--efund-navy);
+      padding-bottom: 6px;
     }}
+    .answer-markdown h2 {{
+      font-size: 19px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 5px;
+    }}
+    .answer-markdown h3 {{ font-size: 16px; color: var(--ink-soft); }}
+    .answer-markdown h4 {{ font-size: 15px; color: var(--ink-soft); }}
+    .answer-markdown p {{ margin: 10px 0; }}
     .answer-markdown ul,
-    .answer-markdown ol {{
-      margin: 8px 0 12px 22px;
-      padding: 0;
-    }}
-    .answer-markdown li {{
-      margin: 5px 0;
-    }}
+    .answer-markdown ol {{ margin: 8px 0 12px 24px; padding: 0; }}
+    .answer-markdown li {{ margin: 5px 0; }}
     .answer-markdown strong {{
-      color: #0f172a;
+      color: var(--efund-navy);
       font-weight: 700;
     }}
     .answer-markdown code {{
-      background: #e0f2fe;
-      color: #075985;
-      border-radius: 4px;
-      padding: 1px 5px;
+      background: var(--bg-soft);
+      color: var(--efund-navy);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: 1px 6px;
       font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 12.5px;
     }}
     .answer-markdown table {{
       min-width: 760px;
       margin: 14px 0;
       background: white;
     }}
-    .answer-markdown th {{
-      white-space: nowrap;
-    }}
-    .answer-markdown td {{
-      white-space: nowrap;
-    }}
+    .answer-markdown th, .answer-markdown td {{ white-space: nowrap; }}
     table {{
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      font-size: 14px;
+      font-size: 13.5px;
+      background: white;
     }}
     th {{
       text-align: left;
-      background: var(--blue-soft);
-      color: #1e3a8a;
-      border-bottom: 1px solid var(--line);
-      padding: 10px;
+      background: var(--bg-table-head);
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-weight: 700;
+      border: 1px solid var(--line-strong);
+      padding: 9px 11px;
     }}
     td {{
-      border-bottom: 1px solid #e5e7eb;
-      padding: 9px 10px;
+      border: 1px solid var(--line);
+      padding: 8px 11px;
       vertical-align: top;
+      color: var(--ink);
     }}
+    table tr:nth-child(even) td {{ background: var(--bg-table-zebra); }}
     .trace-item {{
-      border-left: 3px solid var(--blue);
-      background: #f8fafc;
-      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--efund-navy);
+      background: #fff;
+      padding: 10px 13px;
       margin: 8px 0;
-      border-radius: 6px;
+      border-radius: 3px;
       font-size: 13px;
     }}
     .trace-node {{
       font-weight: 700;
-      color: #1d4ed8;
+      font-family: var(--font-serif);
+      color: var(--efund-navy);
       margin-bottom: 4px;
+      letter-spacing: 0.3px;
     }}
     .repair-list {{
       margin: 0;
       padding-left: 20px;
       line-height: 1.7;
     }}
-    .repair-list li {{
-      margin: 6px 0;
-    }}
+    .repair-list li {{ margin: 6px 0; }}
   </style>
 </head>
 <body>
