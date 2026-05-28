@@ -340,9 +340,9 @@ class GeneratedSQLAgent:
             user_prompt=user_prompt,
             json_mode=True,
             temperature=0.0,
-            # 复杂多表嵌套 SQL 的 JSON 容易超过 1200 tokens；
-            # 上限过低会导致 JSON 被截断，进入 clarification 兜底。
-            max_tokens=3000,
+            # 复杂多表嵌套 SQL 的 JSON 容易超过 3000 tokens（尤其 thinking 模式占额外预算）；
+            # 上限过低会导致 JSON 被截断（"Unterminated string"），进入 clarification 兜底。
+            max_tokens=5000,
         )
         try:
             data = extract_json_object(raw)

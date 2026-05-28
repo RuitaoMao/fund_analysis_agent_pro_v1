@@ -8,11 +8,111 @@ from __future__ import annotations
 
 import re
 from json import JSONDecodeError
+from typing import Any
 
 from src.agent.schemas import AgentPlan, ToolCall
 from src.llm.client import LLMClient
 from src.llm.prompts import PLANNER_SYSTEM_PROMPT
 from src.utils.json_utils import extract_json_object
+
+
+# 当前 9 个白名单工具（与 src/tools/__init__.py 保持一致）
+_VALID_TOOLS: set[str] = {
+    "query_fund_size",
+    "query_company_size",
+    "query_fund_performance",
+    "query_fund_holdings",
+    "query_stock_holders",
+    "screen_funds",
+    "query_performance_holdings",
+    "query_market_overview",
+    "lookup_fund",
+}
+
+# 历史遗留工具名 → (新工具, 必要参数补丁)
+# LLM 偶尔会从 memory 里的旧 tool_name 或训练语料里复刻旧工具名。
+# 此映射让 Planner 自愈，避免简单问题被 B-fallback 转 generated SQL 后又超时。
+_LEGACY_TOOL_NAME_MAP: dict[str, tuple[str, dict[str, Any]]] = {
+    # 公司维度 → query_company_size / query_fund_size
+    "compare_company_business_structure": ("query_company_size", {}),
+    "get_company_total_size": ("query_company_size", {}),
+    "list_company_funds_by_size": ("query_fund_size", {}),
+    "get_company_size_trend": ("query_company_size", {"include_trend": True}),
+    "rank_companies_by_asset_type_size": ("query_company_size", {}),
+    "rank_companies_by_wind_category_size": ("query_company_size", {}),
+    "compare_company_growth": ("query_company_size", {"include_trend": True}),
+    "get_company_active_equity_profile": ("query_company_size", {"asset_type": "主动权益"}),
+    "get_company_product_count_by_asset_type": ("query_company_size", {}),
+    # 基金规模 → query_fund_size
+    "get_top_funds_by_size": ("query_fund_size", {}),
+    "get_fund_size_history": ("query_fund_size", {"include_history": True}),
+    "get_top_funds_by_wind_category": ("query_fund_size", {}),
+    "get_size_growth_ranking": ("query_fund_size", {}),
+    "compare_fund_size_across_dates": ("query_fund_size", {}),
+    "get_asset_type_size_distribution": ("query_fund_size", {"group_by": "asset_type"}),
+    "get_wind_category_size_distribution": ("query_fund_size", {"group_by": "wind_level1"}),
+    # 持仓 → query_fund_holdings
+    "get_fund_holdings_detail": ("query_fund_holdings", {}),
+    "analyze_fund_holding_concentration": ("query_fund_holdings", {"include_concentration": True}),
+    "get_company_top_holdings": ("query_fund_holdings", {}),
+    "compare_holdings_between_companies": ("query_fund_holdings", {}),
+    "get_common_holdings_between_funds": ("query_fund_holdings", {}),
+    "get_fund_holding_change": ("query_fund_holdings", {}),
+    # 股票持有人 → query_stock_holders
+    "get_top_stocks_by_holding": ("query_stock_holders", {}),
+    "find_funds_holding_stock": ("query_stock_holders", {"group_by": "fund"}),
+    "rank_funds_holding_stock_by_value": ("query_stock_holders", {"group_by": "fund"}),
+    "rank_companies_by_stock_holding": ("query_stock_holders", {"group_by": "company"}),
+    "compare_companies_stock_holding": ("query_stock_holders", {"group_by": "company"}),
+    "get_company_stock_holding_breakdown": ("query_stock_holders", {"group_by": "fund"}),
+    "get_stock_company_distribution": ("query_stock_holders", {"group_by": "company"}),
+    "rank_stocks_by_company_concentration": ("query_stock_holders", {"group_by": "concentration"}),
+    "get_stock_holding_trend": ("query_stock_holders", {}),
+    "get_stock_holding_by_asset_type": ("query_stock_holders", {}),
+    # 业绩 → query_fund_performance / query_performance_holdings
+    "get_top_funds_by_performance": ("query_fund_performance", {}),
+    "get_bottom_funds_by_performance": ("query_fund_performance", {"ascending": True}),
+    "get_fund_performance_detail": ("query_fund_performance", {}),
+    "compare_fund_performance": ("query_fund_performance", {}),
+    "rank_companies_by_average_return": ("query_fund_performance", {"rank_by_company": True}),
+    "analyze_performance_distribution": ("query_fund_performance", {}),
+    "analyze_top_performance_holdings": ("query_performance_holdings", {}),
+    # 筛选 / 综合报告
+    "screen_funds_by_conditions": ("screen_funds", {}),
+    "analyze_size_and_return": ("screen_funds", {}),
+    "build_report_evidence_pack": ("query_market_overview", {}),
+}
+
+
+def _heal_tool_name(tool_name: str, args: dict[str, Any] | None) -> tuple[str, dict[str, Any]]:
+    """把旧工具名映射到 9 工具之一并附加参数补丁。返回 (new_name, merged_args)。
+
+    - tool_name 已是合法工具 → 原样返回
+    - 在历史映射中 → 映射，补丁参数只在 args 没有同名 key 时填入
+    - 不识别 → 原样返回（让 plan_validator 报错，触发常规 replan/fallback）
+    """
+    args = dict(args or {})
+    if tool_name in _VALID_TOOLS:
+        return tool_name, args
+    mapped = _LEGACY_TOOL_NAME_MAP.get(tool_name)
+    if mapped is None:
+        return tool_name, args
+    new_name, patch = mapped
+    for k, v in patch.items():
+        args.setdefault(k, v)
+    return new_name, args
+
+
+def _sanitize_memory_context(memory_context: dict | None) -> dict:
+    """从 memory 里删除指向未知工具的旧字段，防止 LLM 模仿旧工具名。"""
+    if not memory_context:
+        return {}
+    cleaned = dict(memory_context)
+    last_tool = cleaned.get("last_tool_name")
+    if last_tool and last_tool not in _VALID_TOOLS and last_tool != "none":
+        for key in ("last_tool_name", "last_args", "last_intent"):
+            cleaned.pop(key, None)
+    return cleaned
 
 
 class PlannerAgent:
@@ -35,8 +135,20 @@ class PlannerAgent:
         failure_context 为上一轮失败信息，用于 ReAct 闭环重规划。
         """
         if mode == "mock":
-            return self._mock_plan(query, memory_context or {})
-        return self._llm_plan(query, memory_context or {}, failure_context or {})
+            plan = self._mock_plan(query, memory_context or {})
+        else:
+            plan = self._llm_plan(query, memory_context or {}, failure_context or {})
+        # 出口统一自愈一次，防止 _mock_plan 的旧工具名继续传出
+        healed_name, healed_args = _heal_tool_name(plan.tool_name, plan.args)
+        if healed_name != plan.tool_name:
+            plan.tool_name = healed_name
+            plan.args = healed_args
+        if plan.tool_calls:
+            for call in plan.tool_calls:
+                c_name, c_args = _heal_tool_name(call.tool_name, call.args)
+                call.tool_name = c_name
+                call.args = c_args
+        return plan
 
     @staticmethod
     def _format_failure_context(failure_context: dict) -> str:
@@ -74,6 +186,8 @@ class PlannerAgent:
     def _llm_plan(self, query: str, memory_context: dict, failure_context: dict) -> AgentPlan:
         if self.llm_client is None:
             raise RuntimeError("LLMClient 未初始化。")
+        # 先清洗 memory，避免旧 last_tool_name 把 LLM 带偏
+        memory_context = _sanitize_memory_context(memory_context)
         failure_text = self._format_failure_context(failure_context)
         user_prompt = (
             f"用户问题：{query}\n\n"
@@ -93,10 +207,33 @@ class PlannerAgent:
             data = extract_json_object(raw)
         except (JSONDecodeError, ValueError) as exc:
             # LLM planner 没有返回结构化 JSON 时，回退到规则 planner。
-            # 规则 planner 若也无法匹配，会产出 clarification plan。
             fallback = self._mock_plan(query, memory_context)
             fallback.rationale = f"LLM planner JSON 解析失败，已回退到规则 planner：{exc}"
             return fallback
+
+        # ── 自愈：把 LLM 幻觉的旧工具名映射到当前 9 工具 ──
+        raw_tool = str(data.get("tool_name") or "")
+        healed_name, healed_args = _heal_tool_name(raw_tool, data.get("args"))
+        if healed_name != raw_tool:
+            data["tool_name"] = healed_name
+            data["args"] = healed_args
+            data["rationale"] = (
+                f"[auto-heal] LLM 选择了旧工具名 {raw_tool}，已映射到 {healed_name}。"
+                + (" " + str(data.get("rationale") or ""))
+            )
+
+        # tool_calls 数组里也要自愈
+        if isinstance(data.get("tool_calls"), list):
+            healed_calls = []
+            for call in data["tool_calls"]:
+                if not isinstance(call, dict):
+                    continue
+                c_name, c_args = _heal_tool_name(str(call.get("tool_name") or ""), call.get("args"))
+                call["tool_name"] = c_name
+                call["args"] = c_args
+                healed_calls.append(call)
+            data["tool_calls"] = healed_calls
+
         data["intent"] = self._normalize_intent(data.get("intent"), data.get("tool_name"))
         if str(data.get("tool_name")) in {"generate_sql_query", "generated_sql_query"}:
             # hard tools 模式必须选择注册工具；LLM 若漂移到生成 SQL，回退到规则 planner。

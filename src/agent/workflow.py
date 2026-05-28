@@ -175,19 +175,28 @@ class FundAgentWorkflow:
         validation = self.plan_validator.validate(state["query"], state["plan"])
         next_action = validation.next_action
 
-        # B fallback（早触发版）：hard 模式 plan 校验就失败时，不等 max_steps 重试，
-        # 直接切换到 generated SQL，避免把 pydantic 错误信息暴露给用户。
+        # B fallback：hard 模式 plan 校验失败时，**先给 planner 1 次 replan 机会**再降级到 SQL。
+        # 之前的早触发版会在第一次失败立刻切到 generated SQL（SQL planner 慢、复杂查询易超时）。
+        # 新策略：
+        #   - 第 1 次失败：next_action="replan" → 让 planner 看到 issues/hint 重规划
+        #   - 第 2 次仍失败：B fallback → generated SQL（保留兜底语义）
         b_fallback = False
+        plan_retry_count = int(state.get("plan_retry_count", 0))
         if (
             not validation.passed
-            and validation.issues                          # 有实质性错误（非纯 clarify）
+            and validation.issues
             and state.get("sql_mode") == "hard"
-            and not state.get("hard_fallback_attempted", False)
-            and self.sql_agent is not None
         ):
-            b_fallback = True
-            next_action = "fallback_sql"
-            state = {**state, "hard_fallback_attempted": True, "sql_mode": "generated"}
+            if plan_retry_count == 0:
+                next_action = "replan"
+                state = {**state, "plan_retry_count": 1}
+            elif (
+                not state.get("hard_fallback_attempted", False)
+                and self.sql_agent is not None
+            ):
+                b_fallback = True
+                next_action = "fallback_sql"
+                state = {**state, "hard_fallback_attempted": True, "sql_mode": "generated"}
 
         state = {**state, "plan_validation": validation, "next_action": next_action}
         return _append_trace(
@@ -198,6 +207,7 @@ class FundAgentWorkflow:
             observation=(
                 f"passed={validation.passed}, next_action={next_action}"
                 + (f" [REACT-FALLBACK] b_fallback_triggered=True" if b_fallback else "")
+                + (f" [plan_retry={plan_retry_count}]" if plan_retry_count else "")
                 + f", issues={validation.issues}, hint={validation.correction_hint}"
             ),
         )

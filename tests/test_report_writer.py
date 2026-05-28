@@ -146,7 +146,8 @@ def test_llm_pipeline_invokes_outliner_then_drafter():
         ],
     }, ensure_ascii=False)
     fake = _FakeLLM(outliner_response=outliner_json)
-    writer = ReportWriterAgent(llm_client=fake)
+    # outliner_enabled=True 显式开启第一阶段；默认 False 是为了 demo 速度
+    writer = ReportWriterAgent(llm_client=fake, outliner_enabled=True)
     result = _tr("query_market_overview", {"market_total": [{"全市场总规模_亿": 30000}]})
 
     report = writer.write(query="竞争格局", tool_result=result, mode="llm")
@@ -160,7 +161,7 @@ def test_llm_pipeline_invokes_outliner_then_drafter():
 
 def test_llm_pipeline_falls_back_when_outliner_returns_bad_json():
     fake = _FakeLLM(outliner_response="not valid json {{{{")
-    writer = ReportWriterAgent(llm_client=fake)
+    writer = ReportWriterAgent(llm_client=fake, outliner_enabled=True)
     result = _tr("query_market_overview", {"market_total": [{"全市场总规模_亿": 30000}]})
 
     writer.write(query="竞争格局", tool_result=result, mode="llm")
@@ -173,11 +174,24 @@ def test_llm_pipeline_falls_back_when_outliner_returns_bad_json():
 def test_llm_pipeline_falls_back_when_outliner_returns_empty_sections():
     outliner_json = json.dumps({"skill_type": "x", "direct_answer": None, "sections": []})
     fake = _FakeLLM(outliner_response=outliner_json)
-    writer = ReportWriterAgent(llm_client=fake)
+    writer = ReportWriterAgent(llm_client=fake, outliner_enabled=True)
     result = _tr("query_fund_performance", {"performance_ranking": [{"基金名称": "A"}]})
 
     writer.write(query="收益最高的基金", tool_result=result, mode="llm")
     assert writer.last_outline_source == "skill_fallback"
+
+
+def test_outliner_disabled_by_default_only_one_llm_call():
+    """默认 outliner_enabled=False：只调用 1 次 Drafter，省一半时间。"""
+    fake = _FakeLLM(outliner_response="should not be called")
+    writer = ReportWriterAgent(llm_client=fake)  # 默认 outliner_enabled=False
+    result = _tr("query_market_overview", {"market_total": [{"全市场总规模_亿": 30000}]})
+
+    writer.write(query="竞争格局", tool_result=result, mode="llm")
+
+    assert len(fake.calls) == 1, f"Expected 1 LLM call (Drafter only), got {len(fake.calls)}"
+    assert "撰写专家" in fake.calls[0]["system_prompt"]
+    assert writer.last_outline_source == "skill"
 
 
 def test_mock_mode_does_not_call_llm():

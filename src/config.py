@@ -73,6 +73,11 @@ class Settings:
     report_thinking_enabled: bool = False
     deepseek_reasoning_effort: str = "high"
 
+    # 是否启用 Outliner LLM（报告写作第一阶段）。默认关闭以节省一次 LLM 往返；
+    # 关闭时直接使用 report_skills 生成的规则化大纲（9 类问题都有专门模板）。
+    # 想恢复"真正的两阶段"，在 .env 设 REPORT_OUTLINER_ENABLED=true。
+    report_outliner_enabled: bool = False
+
     openai_api_key: str | None = None
     openai_base_url: str | None = None
     deepseek_api_key: str | None = None
@@ -110,6 +115,7 @@ class Settings:
             sql_thinking_enabled=_env_bool("SQL_THINKING_ENABLED", False),
             report_thinking_enabled=_env_bool("REPORT_THINKING_ENABLED", False),
             deepseek_reasoning_effort=os.getenv("DEEPSEEK_REASONING_EFFORT", "high").strip() or "high",
+            report_outliner_enabled=_env_bool("REPORT_OUTLINER_ENABLED", False),
             openai_api_key=_env_optional("OPENAI_API_KEY"),
             openai_base_url=_env_optional_url("OPENAI_BASE_URL"),
             deepseek_api_key=_env_optional("DEEPSEEK_API_KEY"),

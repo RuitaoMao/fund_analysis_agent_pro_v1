@@ -31,12 +31,15 @@ from src.utils.table_utils import records_to_markdown
 class ReportWriterAgent:
     """分析报告写作子智能体（技能 + Outliner LLM + Drafter LLM 两阶段）。"""
 
-    def __init__(self, llm_client: LLMClient | None = None, store=None):
+    def __init__(self, llm_client: LLMClient | None = None, store=None, outliner_enabled: bool = False):
         self.llm_client = llm_client
         self.store = store
+        # False（默认）：跳过 Stage 1 LLM，直接用 skill 规则大纲 → 报告写作只剩 1 次 Drafter LLM，wall-time 近似减半。
+        # True：保留两阶段流水线（OUTLINER + DRAFTER），适合追求大纲灵活度的场景。
+        self.outliner_enabled = outliner_enabled
         # 暴露给 workflow 节点用于 trace / 可观测性
         self.last_skill_type: str | None = None
-        self.last_outline_source: str | None = None  # "skill" | "llm_outliner"
+        self.last_outline_source: str | None = None  # "skill" | "llm_outliner" | "skill_fallback"
         # 每个阶段的墙钟时间（毫秒），便于排查"写报告慢"的瓶颈
         self.last_stage_ms: dict[str, float] = {}
 
@@ -91,9 +94,14 @@ class ReportWriterAgent:
             self.last_stage_ms["mock_render"] = (time.perf_counter() - t0) * 1000
             return answer
 
-        # LLM 模式：先 Outliner → 再 Drafter
+        # LLM 模式：先 Outliner（可选）→ 再 Drafter
         t0 = time.perf_counter()
-        outline = self._outline_with_llm(query, tool_result, skill_outline)
+        if self.outliner_enabled:
+            outline = self._outline_with_llm(query, tool_result, skill_outline)
+        else:
+            # 跳过 Stage 1，直接用规则大纲，节省一次 LLM 往返
+            outline = skill_outline
+            self.last_outline_source = "skill"
         self.last_stage_ms["outliner_llm"] = (time.perf_counter() - t0) * 1000
 
         t0 = time.perf_counter()
